@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "968646779511",
+    "project_id": "clean-architecture-proje-b6f4b",
+    "storage_bucket": "clean-architecture-proje-b6f4b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:968646779511:android:92841775e309c65682dc72",
+        "android_client_info": {
+          "package_name": "pion.tech.pionbase"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwgv2dZMf6D788XcN6RuRH7ZMdvHAM4yU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

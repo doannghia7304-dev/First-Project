@@ -1,3 +1,0 @@
-include ':commonRes'
-include ':app'
-rootProject.name = "PionBase"

@@ -71,14 +71,14 @@ abstract class BaseFragment<Binding : ViewBinding , VM : ViewModel>(
 
     abstract fun subscribeObserver(view: View)
 
-    fun safeNav(currentDestination: Int, action: Int) {
+    fun safeNav(currentDestination: Int, action: Int, bundle: Bundle? = null) {
         if (navController.currentDestination?.id == currentDestination) {
             lifecycle.addObserver(object : LifecycleEventObserver {
                 override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
                     if (event == Lifecycle.Event.ON_RESUME) {
                         lifecycle.removeObserver(this)
                         try {
-                            navController.navigate(action)
+                            navController.navigate(action, bundle)
                         } catch (e: IllegalArgumentException) {
                             Log.e(TAG, "safeNav: ${e.message}")
                         }
