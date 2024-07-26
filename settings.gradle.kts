@@ -22,6 +22,6 @@ dependencyResolutionManagement {
 }
 
 
-include(":commonRes")
 include(":app")
 rootProject.name = "PionBase"
+include(":commonRes")
