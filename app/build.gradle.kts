@@ -36,8 +36,11 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled= false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
             ndk {
                 abiFilters += listOf("x86", "x86_64", "armeabi-v7a", "arm64-v8a")
             }
@@ -68,13 +71,13 @@ android {
 
 dependencies {
 
-    implementation (libs.kotlin.stdlib)
+    implementation(libs.kotlin.stdlib)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
-    implementation (libs.androidx.appcompat.resources)
+    implementation(libs.androidx.appcompat.resources)
     implementation(libs.material)
     implementation(libs.androidx.constraintlayout)
-    implementation (libs.androidx.legacy.support.v4)
+    implementation(libs.androidx.legacy.support.v4)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -85,14 +88,14 @@ dependencies {
     implementation(libs.recovery)
 
     // Card View
-    implementation (libs.androidx.cardview)
+    implementation(libs.androidx.cardview)
 
     // Recyclerview
     implementation(libs.androidx.recyclerview)
 
     // ViewModel & LiveData
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation (libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
 
     // Hilt
     implementation(libs.hilt.android)
@@ -109,7 +112,7 @@ dependencies {
     ksp(libs.androidx.room.compiler)
 
     // optional - Kotlin Extensions and Coroutines support for Room
-    implementation (libs.androidx.room.ktx.v240)
+    implementation(libs.androidx.room.ktx.v240)
 
     // Glide
     api(libs.glide)
@@ -121,15 +124,15 @@ dependencies {
     implementation(libs.firebase.analytics.ktx)
 
     // Viewpager2
-    implementation (libs.androidx.viewpager2)
+    implementation(libs.androidx.viewpager2)
 
     // Nav component
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
 
     // Retrofit2
-    implementation (libs.retrofit)
-    implementation (libs.converter.gson)
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
 
     //Okhttp3
     implementation(platform(libs.okhttp.bom))
@@ -137,15 +140,19 @@ dependencies {
     implementation(libs.okhttp3.logging.interceptor)
 
     // Material dialog
-    implementation (libs.core)
-    implementation (libs.lifecycle)
-    implementation (libs.bottomsheets)
+    implementation(libs.core)
+    implementation(libs.lifecycle)
+    implementation(libs.bottomsheets)
 
     // Auto dimen
-    implementation (libs.autodimension)
+    implementation(libs.autodimension)
 
     //Rounded Image View
-    implementation (libs.roundedimageview)
+    implementation(libs.roundedimageview)
 
+    // Timber
+    implementation(libs.timber)
 
+    // LeakCanary
+    debugImplementation(libs.leakcanary.android)
 }

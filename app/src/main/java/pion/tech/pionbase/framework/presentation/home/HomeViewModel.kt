@@ -14,7 +14,7 @@ class HomeViewModel @Inject constructor(
     private val _countValue = MutableStateFlow(0)
     val countValue: StateFlow<Int> = _countValue
 
-    fun plusValue(){
+    fun plusValue() {
         _countValue.value += 1
     }
 }

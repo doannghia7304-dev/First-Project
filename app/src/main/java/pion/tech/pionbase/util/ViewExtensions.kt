@@ -19,7 +19,12 @@ import android.widget.Toast
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
+
+fun View.setBackgroundTint(color: Int) {
+    ViewCompat.setBackgroundTintList(this, ColorStateList.valueOf(color))
+}
 
 fun Context.getActionBarHeight(): Int {
     val tv = TypedValue()
