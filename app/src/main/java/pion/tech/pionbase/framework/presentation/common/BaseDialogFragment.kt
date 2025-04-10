@@ -5,7 +5,6 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -19,12 +18,16 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
+import pion.tech.pionbase.util.PrefUtil
 import timber.log.Timber
+import javax.inject.Inject
 
 abstract class BaseDialogFragment<T : ViewDataBinding>(
     @LayoutRes private val contentLayoutId: Int,
-    private val gravity: Int = Gravity.CENTER
 ) : DialogFragment() {
+
+    @Inject
+    lateinit var prefUtil: PrefUtil
 
     private var bindingComponent: DataBindingComponent? = DataBindingUtil.getDefaultComponent()
 
@@ -55,7 +58,8 @@ abstract class BaseDialogFragment<T : ViewDataBinding>(
         savedInstanceState: Bundle?
     ): View {
         Timber.d("${this::class.simpleName} onCreateView")
-        _binding = DataBindingUtil.inflate(inflater, contentLayoutId, container, false, bindingComponent)
+        _binding =
+            DataBindingUtil.inflate(inflater, contentLayoutId, container, false, bindingComponent)
         return binding.root
     }
 
@@ -69,14 +73,18 @@ abstract class BaseDialogFragment<T : ViewDataBinding>(
             val window = dialog.window
             if (window != null) {
                 window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-                window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT)
+                window.setLayout(
+                    WindowManager.LayoutParams.MATCH_PARENT,
+                    WindowManager.LayoutParams.MATCH_PARENT
+                )
                 val layoutParams = window.attributes
-                layoutParams.gravity = gravity
+                layoutParams.gravity = Gravity.CENTER
                 window.attributes = layoutParams
 
                 window.decorView.setOnTouchListener { v, event ->
                     if (event.action == MotionEvent.ACTION_DOWN) {
-                        val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        val inputMethodManager =
+                            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                         inputMethodManager.hideSoftInputFromWindow(v.windowToken, 0)
                     }
                     false
@@ -93,6 +101,22 @@ abstract class BaseDialogFragment<T : ViewDataBinding>(
     open fun addEvent(savedInstanceState: Bundle?) {}
 
     open fun initData(savedInstanceState: Bundle?) {}
+
+    fun setDialogCanCancel() {
+        val dialog = this.dialog
+        if (dialog != null) {
+            val window = dialog.window
+            if (window != null) {
+                window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                window.setLayout(
+                    WindowManager.LayoutParams.MATCH_PARENT,
+                    WindowManager.LayoutParams.WRAP_CONTENT
+                )
+                dialog.setCancelable(true)
+                dialog.setCanceledOnTouchOutside(true)
+            }
+        }
+    }
 
     override fun onStart() {
         Timber.d("${this::class.simpleName} onStart")
@@ -143,12 +167,10 @@ abstract class BaseDialogFragment<T : ViewDataBinding>(
     }
 
     override fun dismiss() {
-        if (isVisible) {
-            try {
-                super.dismiss()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+        try {
+            super.dismiss()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 }

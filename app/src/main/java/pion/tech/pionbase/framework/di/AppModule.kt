@@ -17,6 +17,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import pion.tech.pionbase.R
 import pion.tech.pionbase.util.PrefUtil
+import javax.inject.Singleton
 
 
 @InstallIn(SingletonComponent::class)
@@ -41,15 +42,11 @@ object AppModule {
     }
 
     @Provides
-    fun provideSharedPrefsEditor(sharedPreferences: SharedPreferences): SharedPreferences.Editor {
-        return sharedPreferences.edit()
-    }
-
-    @Provides
-    fun providePrefUtil(sharedPreferences: SharedPreferences , editor: Editor): PrefUtil {
-        PrefUtil.sharedPreferences = sharedPreferences
-        PrefUtil.editor = editor
-        return PrefUtil()
+    @Singleton
+    fun providePrefUtil(
+        sharedPreferences: SharedPreferences,
+    ): PrefUtil {
+        return PrefUtil(sharedPreferences)
     }
 
 }

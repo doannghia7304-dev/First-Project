@@ -35,7 +35,11 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "BASE_URL", "\"http://cms.piontech.site:9123/stores/\"")
+        }
         release {
+            buildConfigField("String", "BASE_URL", "\"http://cms.piontech.site:9123/stores/\"")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -85,6 +89,9 @@ dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
     implementation(project(":commonRes"))
 
+    // Crash recovery
+    implementation(libs.lib.recovery)
+
     // Card View
     implementation(libs.androidx.cardview)
 
@@ -109,9 +116,6 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
-    // optional - Kotlin Extensions and Coroutines support for Room
-    implementation(libs.androidx.room.ktx.v240)
-
     // Glide
     api(libs.glide)
     annotationProcessor(libs.glide.compiler)
@@ -120,6 +124,7 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.crashlytics.ktx)
     implementation(libs.firebase.analytics.ktx)
+    implementation(libs.firebase.config.ktx)
 
     // Viewpager2
     implementation(libs.androidx.viewpager2)
@@ -151,6 +156,11 @@ dependencies {
     // Timber
     implementation(libs.timber)
 
-    // LeakCanary
-    debugImplementation(libs.leakcanary.android)
+    //Lottie
+    implementation(libs.lottie)
+
+    //Chucker
+    debugImplementation(libs.chucker.library)
+    releaseImplementation(libs.chucker.library.no.op)
+
 }

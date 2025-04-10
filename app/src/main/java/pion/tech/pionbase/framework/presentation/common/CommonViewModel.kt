@@ -5,4 +5,5 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CommonViewModel @Inject constructor() : BaseViewModel() {
+
 }

@@ -1,7 +1,6 @@
 package pion.tech.pionbase.framework.presentation.common
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +13,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
-import androidx.navigation.NavDirections
+import androidx.navigation.NavDestination
 import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -23,8 +22,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import pion.tech.pionbase.framework.MainActivity
+import pion.tech.pionbase.util.PrefUtil
 import timber.log.Timber
-
+import javax.inject.Inject
 
 typealias Inflate<Binding> = (LayoutInflater, ViewGroup?, Boolean) -> Binding
 
@@ -32,6 +32,9 @@ abstract class BaseFragment<Binding : ViewBinding, VM : ViewModel>(
     private val inflate: Inflate<Binding>,
     private val viewModelClass: Class<VM>
 ) : Fragment() {
+
+    @Inject
+    lateinit var prefUtil: PrefUtil
 
     lateinit var navController: NavController
 
@@ -50,7 +53,7 @@ abstract class BaseFragment<Binding : ViewBinding, VM : ViewModel>(
 
 
     private var isInit = false
-    var saveView = false
+    private var saveView = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -73,7 +76,9 @@ abstract class BaseFragment<Binding : ViewBinding, VM : ViewModel>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = findNavController()
-
+        navController.addOnDestinationChangedListener { _, _, _ ->
+            showHideLoading(false)
+        }
         init(view)
         subscribeObserver(view)
     }
@@ -86,41 +91,57 @@ abstract class BaseFragment<Binding : ViewBinding, VM : ViewModel>(
         _binding = null
         super.onDestroyView()
     }
+
     fun safeNav(currentDestination: Int, action: Int, bundle: Bundle? = null) {
         if (navController.currentDestination?.id == currentDestination) {
-            lifecycle.addObserver(object : LifecycleEventObserver {
-                override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-                    if (event == Lifecycle.Event.ON_RESUME) {
-                        lifecycle.removeObserver(this)
-                        try {
-                            navController.navigate(action, bundle)
-                        } catch (e: IllegalArgumentException) {
-                            Log.e(TAG, "safeNav: ${e.message}")
-                        }
-                    }
+            doActionWhenResume {
+                try {
+                    navController.navigate(action, bundle)
+                } catch (e: IllegalArgumentException) {
+                    Timber.tag(TAG).e("safeNav: ${e.message}")
                 }
-            })
+            }
         }
     }
 
-    fun safeNav(currentDestination: Int, navDirections: NavDirections) {
+    var navObserver: LifecycleEventObserver? = null
+    fun safeNavInter(currentDestination: Int, action: Int, bundle: Bundle? = null) {
         if (navController.currentDestination?.id == currentDestination) {
-            lifecycle.addObserver(object : LifecycleEventObserver {
-                override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-                    if (event == Lifecycle.Event.ON_RESUME) {
-                        lifecycle.removeObserver(this)
-                        try {
-                            navController.navigate(navDirections)
-                        } catch (e: IllegalArgumentException) {
-                            Log.e(TAG, "safeNav: ${e.message}")
+            runCatching {
+                navObserver = object : LifecycleEventObserver {
+                    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+                        if (event == Lifecycle.Event.ON_RESUME) {
+                            lifecycle.removeObserver(this)
+                            runCatching {
+                                if (navController.currentDestination?.id == currentDestination) {
+                                    navController.navigate(action, bundle)
+                                }
+                            }
                         }
                     }
                 }
-            })
+                lifecycle.addObserver(navObserver!!)
+                navController.addOnDestinationChangedListener(object :
+                    NavController.OnDestinationChangedListener {
+                    override fun onDestinationChanged(
+                        controller: NavController,
+                        destination: NavDestination,
+                        arguments: Bundle?
+                    ) {
+                        if (destination.id != currentDestination) {
+                            navController.removeOnDestinationChangedListener(this)
+                            lifecycle.removeObserver(navObserver as LifecycleEventObserver)
+                        }
+                    }
+                })
+                if (navController.currentDestination?.id == currentDestination) {
+                    navController.navigate(action, bundle)
+                }
+            }
         }
     }
 
-    fun showHideLoading(isShow: Boolean) {
+    private fun showHideLoading(isShow: Boolean) {
         if (activity != null && activity is MainActivity) {
             if (isShow) {
                 (activity as MainActivity).showLoading()
@@ -133,6 +154,17 @@ abstract class BaseFragment<Binding : ViewBinding, VM : ViewModel>(
     companion object {
         private const val TAG = "BaseFragment"
     }
+}
+
+fun Fragment.doActionWhenResume(action: () -> Unit) {
+    lifecycle.addObserver(object : LifecycleEventObserver {
+        override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+            if (event == Lifecycle.Event.ON_RESUME) {
+                action.invoke()
+                lifecycle.removeObserver(this)
+            }
+        }
+    })
 }
 
 fun Fragment.launchIO(

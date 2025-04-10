@@ -13,3 +13,8 @@
 .externalNativeBuild
 .cxx
 local.properties
+*.log
+*.apk
+*.jks
+*.keystore
+*.hprof

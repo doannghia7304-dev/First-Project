@@ -31,6 +31,9 @@ class FragmentLifecycleCallbacksImpl : FragmentManager.FragmentLifecycleCallback
         Timber.d("${f::class.simpleName} onFragmentSaveInstanceState")
     }
 
+    override fun onFragmentViewDestroyed(fm: FragmentManager, f: Fragment) {
+        Timber.d("${f::class.simpleName} onFragmentViewDestroyed")
+    }
     override fun onFragmentDestroyed(fm: FragmentManager, f: Fragment) {
         Timber.d("${f::class.simpleName} onFragmentDestroyed")
     }

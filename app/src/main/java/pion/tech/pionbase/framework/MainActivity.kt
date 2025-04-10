@@ -23,10 +23,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun showLoading() {
-        LoadingDialog.getInstance(this)?.show()
+        LoadingDialog.getInstance().show(supportFragmentManager)
     }
 
     fun hiddenLoading() {
-        LoadingDialog.getInstance(this)?.hidden()
+        LoadingDialog.getInstance().dismiss()
     }
 }
