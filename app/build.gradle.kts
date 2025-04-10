@@ -82,10 +82,8 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
     implementation(project(":commonRes"))
-
-    // Crash recovery
-    implementation(libs.recovery)
 
     // Card View
     implementation(libs.androidx.cardview)
