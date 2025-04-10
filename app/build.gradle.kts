@@ -86,6 +86,7 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
     implementation(project(":commonRes"))
 
     // Crash recovery
@@ -156,10 +157,10 @@ dependencies {
     implementation(libs.timber)
 
     //Lottie
-    implementation (libs.lottie)
+    implementation(libs.lottie)
 
     //Chucker
-    debugImplementation (libs.chucker.library)
-    releaseImplementation (libs.chucker.library.no.op)
+    debugImplementation(libs.chucker.library)
+    releaseImplementation(libs.chucker.library.no.op)
 
 }
