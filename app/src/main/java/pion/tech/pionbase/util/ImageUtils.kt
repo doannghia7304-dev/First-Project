@@ -1,75 +1,66 @@
 package pion.tech.pionbase.util
 
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.widget.ImageView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import java.io.File
 
-fun ImageView.loadImage(resDrawable: Int) {
+fun ImageView.loadImage(
+    source: Any?,
+    placeholder: Int
+) {
     Glide.with(this)
-        .load(resDrawable)
+        .load(source)
+        .placeholder(placeholder)
         .into(this)
 }
 
-fun ImageView.loadImage(file: File) {
+fun ImageView.loadImage(
+    source: Any?,
+) {
     Glide.with(this)
-        .load(file)
+        .load(source)
         .into(this)
 }
 
-fun ImageView.loadImage(bitmap: Bitmap) {
+fun ImageView.loadWithCallback(
+    data: Any?,
+    onStart: (() -> Unit)? = null,
+    onSuccess: (() -> Unit)? = null,
+    onError: (() -> Unit)? = null,
+) {
+    onStart?.invoke()
+
     Glide.with(this)
-        .load(bitmap)
-        .into(this)
-}
+        .load(data)
+        .listener(object : RequestListener<Drawable> {
+            override fun onResourceReady(
+                resource: Drawable,
+                model: Any,
+                target: com.bumptech.glide.request.target.Target<Drawable>?,
+                dataSource: DataSource,
+                isFirstResource: Boolean
+            ): Boolean {
+                onSuccess?.invoke()
+                return false
+            }
 
-fun ImageView.loadImage(urlImage: String) {
-    Glide.with(this)
-        .load(urlImage)
-        .into(this)
-}
-
-fun ImageView.loadImage(uri: Uri) {
-    Glide.with(this)
-        .load(uri)
-        .into(this)
-}
-
-fun ImageView.loadImage(resDrawable: Int, placeHolder: Int) {
-    Glide.with(this)
-        .load(resDrawable)
-        .placeholder(placeHolder)
-        .into(this)
-}
-
-fun ImageView.loadImage(file: File, placeHolder: Int) {
-    Glide.with(this)
-        .load(file)
-        .placeholder(placeHolder)
-        .into(this)
-}
-
-
-fun ImageView.loadImage(bitmap: Bitmap, placeHolder: Int) {
-    Glide.with(this)
-        .load(bitmap)
-        .placeholder(placeHolder)
-        .into(this)
-}
-
-fun ImageView.loadImage(urlImage: String, placeHolder: Int) {
-    Glide.with(this)
-        .load(urlImage)
-        .placeholder(placeHolder)
-        .into(this)
-}
-
-
-fun ImageView.loadImage(uri: Uri, placeHolder: Int) {
-    Glide.with(this)
-        .load(uri)
-        .placeholder(placeHolder)
+            override fun onLoadFailed(
+                e: GlideException?,
+                model: Any?,
+                target: Target<Drawable>,
+                isFirstResource: Boolean
+            ): Boolean {
+                onError?.invoke()
+                return false
+            }
+        })
         .into(this)
 }
 
