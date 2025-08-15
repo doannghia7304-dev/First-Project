@@ -9,6 +9,7 @@ chuckerLibrary = "4.1.0"
 lib_recovery = "1.0.1"
 recovery = "1.0.0"
 retrofit = "2.11.0"
+roundablelayout = "1.1.4"
 roundedimageview = "2.3.0"
 compileSdkVersion = "35"
 minSdkVersion = "24"
@@ -99,6 +100,7 @@ okhttp3-okhttp = { group = "com.squareup.okhttp3", name = "okhttp" }
 okhttp3-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor" }
 recovery = { module = "com.zxy.android:recovery", version.ref = "recovery" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+roundablelayout = { module = "com.github.zladnrms:RoundableLayout", version.ref = "roundablelayout" }
 roundedimageview = { module = "com.makeramen:roundedimageview", version.ref = "roundedimageview" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3" }

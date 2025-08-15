@@ -7,21 +7,28 @@ plugins {
     id("kotlin-parcelize")
     id("kotlin-kapt")
     id("kotlin-android")
-
 }
 
 android {
     namespace = "pion.tech.pionbase"
-    compileSdk = libs.versions.compileSdkVersion.get().toInt()
+    compileSdk =
+        libs.versions.compileSdkVersion
+            .get()
+            .toInt()
     defaultConfig {
         applicationId = "pion.tech.pionbase"
-        minSdk = libs.versions.minSdkVersion.get().toInt()
-        targetSdk = libs.versions.targetSdkVersion.get().toInt()
+        minSdk =
+            libs.versions.minSdkVersion
+                .get()
+                .toInt()
+        targetSdk =
+            libs.versions.targetSdkVersion
+                .get()
+                .toInt()
         versionCode = 1
         versionName = "1.0.0-debug"
 
-        setProperty("archivesBaseName", "pionbase_${versionName}")
-
+        setProperty("archivesBaseName", "pionbase_$versionName")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -43,7 +50,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
             ndk {
                 abiFilters += listOf("x86", "x86_64", "armeabi-v7a", "arm64-v8a")
@@ -118,7 +125,7 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
 
-    //Okhttp3
+    // Okhttp3
     implementation(platform(libs.okhttp.bom))
     implementation(libs.okhttp3.okhttp)
     implementation(libs.okhttp3.logging.interceptor)
@@ -131,24 +138,26 @@ dependencies {
     // Auto dimen
     implementation(libs.autodimension)
 
-    //Rounded Image View
+    // Rounded Image View
     implementation(libs.roundedimageview)
 
     // Timber
     implementation(libs.timber)
 
-    //Lottie
-    implementation (libs.lottie)
+    // Lottie
+    implementation(libs.lottie)
 
-    //Chucker
-    debugImplementation (libs.chucker.library)
-    releaseImplementation (libs.chucker.library.no.op)
+    // Chucker
+    debugImplementation(libs.chucker.library)
+    releaseImplementation(libs.chucker.library.no.op)
 
     // Room
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
-    //Data store
+    // Data store
     implementation(libs.androidx.datastore.preferences)
 
+    // Roundable layout
+    implementation(libs.roundablelayout)
 }
