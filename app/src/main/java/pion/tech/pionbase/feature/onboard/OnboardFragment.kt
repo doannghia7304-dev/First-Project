@@ -6,7 +6,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import pion.tech.pionbase.R
 import pion.tech.pionbase.app.CommonViewModel
 import pion.tech.pionbase.databinding.FragmentOnboardBinding
-import pion.tech.pionbase.feature.onboard.adapter.OnboardAdapter
+import pion.tech.pionbase.feature.onboard.adapter.OnboardFragmentStateAdapter
 
 @AndroidEntryPoint
 class OnboardFragment :
@@ -14,9 +14,8 @@ class OnboardFragment :
         FragmentOnboardBinding::inflate,
         OnboardViewModel::class.java,
         CommonViewModel::class.java,
-    ),
-    OnboardAdapter.Listener {
-    var adapter: OnboardAdapter? = null
+    ) {
+    var adapter: OnboardFragmentStateAdapter? = null
 
     override fun init(view: View) {
         initView()
@@ -24,13 +23,5 @@ class OnboardFragment :
     }
 
     override fun subscribeObserver(view: View) {
-    }
-
-    override fun onResume() {
-        super.onResume()
-    }
-
-    override fun onDoneOnboard() {
-        navigator.navigateTo(R.id.action_onboardFragment_to_homeFragment)
     }
 }

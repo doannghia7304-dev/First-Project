@@ -9,6 +9,7 @@ import pion.tech.pionbase.app.CommonViewModel
 import pion.tech.pionbase.data.model.language.LanguageUIModel
 import pion.tech.pionbase.databinding.FragmentLanguageBinding
 import pion.tech.pionbase.feature.language.adapter.LanguageAdapter
+import pion.tech.pionbase.util.handleUiState
 
 @AndroidEntryPoint
 class LanguageFragment :
@@ -28,7 +29,9 @@ class LanguageFragment :
 
     override fun subscribeObserver(view: View) {
         viewModel.languageData.collectFlowOnView(viewLifecycleOwner) {
-            adapter.submitList(it)
+            it.handleUiState(onSuccess = { languages ->
+                adapter.submitList(languages)
+            })
         }
     }
 

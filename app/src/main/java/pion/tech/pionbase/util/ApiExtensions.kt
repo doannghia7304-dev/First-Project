@@ -18,7 +18,9 @@ sealed interface UiState<out T> {
         val data: T,
     ) : UiState<T>
 
-    data object Error : UiState<Nothing>
+    data class Error(
+        val exception: Throwable,
+    ) : UiState<Nothing>
 }
 
 /**
@@ -40,8 +42,8 @@ inline fun <T, R> BaseViewModel.handleApiCall(
             result
                 .onSuccess { data ->
                     stateFlow.value = UiState.Success(transform(data))
-                }.onError {
-                    stateFlow.value = UiState.Error
+                }.onError { exception ->
+                    stateFlow.value = UiState.Error(exception)
                 }
         }
     }
@@ -56,6 +58,27 @@ inline fun <T> BaseViewModel.handleApiCall(
     skipIfInProgress: Boolean = true,
 ) {
     handleApiCall(stateFlow, apiCall, { it }, skipIfInProgress)
+}
+
+/**
+ * Extension function for API calls without needing to track UI state
+ * Useful when you just need to process the result without updating UI state
+ */
+inline fun <R> BaseViewModel.handleApiCall(
+    crossinline apiCall: suspend () -> Flow<Result<R>>,
+    crossinline onSuccess: (R) -> Unit = {},
+    crossinline onError: (Throwable) -> Unit = {},
+) {
+    launchIO {
+        apiCall().collect { result ->
+            result
+                .onSuccess { data ->
+                    onSuccess(data)
+                }.onError { exception ->
+                    onError(exception)
+                }
+        }
+    }
 }
 
 /**
@@ -76,7 +99,7 @@ inline fun <T> BaseViewModel.handleLocalDataCall(
             val data = dataCall()
             stateFlow.value = UiState.Success(data)
         } catch (e: Exception) {
-            stateFlow.value = UiState.Error
+            stateFlow.value = UiState.Error(e)
         }
     }
 }
@@ -88,12 +111,12 @@ inline fun <T> UiState<T>.handleUiState(
     crossinline onNone: () -> Unit = {},
     crossinline onLoading: () -> Unit = {},
     crossinline onSuccess: (T) -> Unit = {},
-    crossinline onError: () -> Unit = {},
+    crossinline onError: (Throwable) -> Unit = {},
 ) {
     when (this) {
         is UiState.None -> onNone()
         is UiState.Loading -> onLoading()
         is UiState.Success -> onSuccess(data)
-        is UiState.Error -> onError()
+        is UiState.Error -> onError(exception)
     }
 }

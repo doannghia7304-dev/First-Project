@@ -1,11 +1,10 @@
 package pion.tech.pionbase.feature.onboard
 
-import pion.tech.pionbase.feature.onboard.adapter.OnboardAdapter
+import pion.tech.pionbase.R
+import pion.tech.pionbase.feature.onboard.adapter.OnboardFragmentStateAdapter
 
 fun OnboardFragment.initView() {
-    adapter = OnboardAdapter()
-    adapter!!.setOnboardFragment(this)
-    adapter!!.setListener(this)
+    adapter = OnboardFragmentStateAdapter(this)
     binding.vpMain.adapter = adapter
 }
 
@@ -16,4 +15,12 @@ fun OnboardFragment.onBackEvent() {
 }
 
 fun OnboardFragment.backEvent() {
+}
+
+fun OnboardFragment.nextPage() {
+    binding.vpMain.currentItem = binding.vpMain.currentItem + 1
+}
+
+fun OnboardFragment.goToHomeEvent() {
+    navigator.navigateTo(R.id.action_onboardFragment_to_homeFragment)
 }

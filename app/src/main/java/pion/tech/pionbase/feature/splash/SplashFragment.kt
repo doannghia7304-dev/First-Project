@@ -24,47 +24,16 @@ class SplashFragment :
     var progressAnimator: ValueAnimator? = null
 
     override fun init(view: View) {
+        initView()
+        if (isCameFromLanguage()) {
+            showAds()
+            return
+        }
         onBackEvent()
-        startAnimation()
     }
 
     override fun subscribeObserver(view: View) {
-        commonViewModel.cachedRemoteConfig.collectFlowOnView(viewLifecycleOwner) { result ->
-            result.onSuccess { remoteConfigData ->
-                if (remoteConfigData != null) {
-                    Constant.isRemoteConfigSuccess = remoteConfigData.isRealData
-                    AdsController.setConfigAds(remoteConfigData.firebaseRemoteConfig.getString("config_show_ads"))
-                    AdsController.getInstance().setListAdsData(
-                        listJsonData =
-                            arrayListOf(
-                                remoteConfigData.firebaseRemoteConfig.getString("admob_id"),
-                            ),
-                    )
-                    (activity as? MainActivity)?.initAppResumeAds()
-                    AdsController.getInstance().requestConsentInfoUpdate(
-                        onFailed = { error ->
-                            goToLanguageScreen()
-                        },
-                        onSuccess = { isRequire, isConsentAvailable ->
-                            if (isRequire) {
-                                AdsController
-                                    .getInstance()
-                                    .loadAndShowConsentFormIfRequire(
-                                        onConsentError = { errorConsent ->
-                                            goToLanguageScreen()
-                                        },
-                                        onConsentDone = {
-                                            goToLanguageScreen()
-                                        },
-                                    )
-                            } else {
-                                goToLanguageScreen()
-                            }
-                        },
-                    )
-                }
-            }
-        }
+        observerIapRemoteData()
     }
 
     override fun onDestroyView() {

@@ -1,72 +1,293 @@
-# Pretty Clean Architecture 
+# Pion-Base: Kiến Trúc Ứng Dụng Android
 
-## Tại sao cần sử dụng các mẫu kiến trúc trong phát triển phần mềm
-Tất cả các kiến trúc đều có một mục tiêu chung - quản lý mức độ phức tạp về code trong ứng dụng của bạn. 
-<br>Bạn có thể không cần phải lo lắng về nó trong một dự án nhỏ, nhưng nó sẽ trở thành lifesaver cho những dự án lớn hơn.
+## Tổng Quan Về Kiến Trúc
 
-<br>Có thể bạn đã nhìn thấy biểu đồ này ở đâu đó rồi  
-![Alt text](https://koenig-media.raywenderlich.com/uploads/2019/06/Clean-Architecture-graph.png)
+Dự án này tuân theo kiến trúc ứng dụng được đề xuất bởi Google, tập trung vào hai lớp chính:
 
-Hình tròn này biểu diễn các tầng khác nhau trong ứng dụng. Có 2 ý chính cần lưu ý
-* Vòng tròn trung tâm là trừu tượng nhất, và vòng tròn bên ngoài là cụ thể nhất. Đây được gọi là __Abstraction Principle__ (nguyên lý trừu tượng). Nguyên lý này nói rằng các vòng tròn bên trong sẽ chứa nghiệp vụ logic __( business logic )__, và các vòng tròn bên ngoài sẽ triển khai chi tiết __(implementation details)__.
-* 1 nguyên tắc khác của Clean Architecture là __dependency rule__. Quy tắc này qui định rằng mỗi vòng tròn chỉ có thể phụ thuộc vào vòng tròn bên trong gần nhất
+![Kiến trúc ứng dụng](https://developer.android.com/static/topic/libraries/architecture/images/mad-arch-overview.png)
 
-Các lợi ích của việc sử dụng clean architecture 
-* Các phần code được tách ra và dễ dàng tái sử dụng và testing
-* Khi người khác làm việc với code này, họ có thể tìm hiểu Clean Architecture và sẽ hiểu rõ hơn về nó.
+### Lớp UI (UI Layer)
+Lớp UI hiển thị dữ liệu ứng dụng lên màn hình và phản hồi tương tác của người dùng. Lớp này sử dụng mô hình MVVM (Model-View-ViewModel) với các thành phần:
+- **Fragment**: Định nghĩa giao diện người dùng
+- **FragmentEx**: Xử lý logic tách biệt như xử lý sự kiện click, khởi tạo logic
+- **ViewModel**: Quản lý trạng thái UI và xử lý logic nghiệp vụ
 
-## SOLID Principles
-Nắm vững những nguyên lý này, đồng thời áp dụng chúng trong việc thiết kế + viết code sẽ giúp bạn tiến thêm 1 bước trên con đường thành senior nhé (ông toidicodedao bảo thế).
-_5 nguyên tắc thiết kế giúp thiết kế phần mềm dễ hiểu, linh hoạt và dễ bảo trì hơn_ 
-* __Single Responsibility__:  Một class chỉ nên giữ 1 trách nhiệm duy nhất (Chỉ có thể sửa đổi class với 1 lý do duy nhất)
-* __Open/closed__: Có thể thoải mái mở rộng 1 class, nhưng không được sửa đổi bên trong class đó (open for extension but closed for modification).
-* __Liskov Substitution__: Trong một chương trình, các object của class con có thể thay thế class cha mà không làm thay đổi tính đúng đắn của chương trình
-* __Interface Segregation__: Thay vì dùng 1 interface lớn, ta nên tách thành nhiều interface nhỏ, với nhiều mục đích cụ thể
-* __Dependency Inversion__: 
-<br>1. Các module cấp cao không nên phụ thuộc vào các modules cấp thấp. Cả 2 nên phụ thuộc vào abstraction.
-<br>2. Interface (abstraction) không nên phụ thuộc vào chi tiết, mà ngược lại. (Các class giao tiếp với nhau thông qua interface, không phải thông qua implementation)
+### Lớp Dữ Liệu (Data Layer)
+Lớp Dữ liệu chứa logic nghiệp vụ và quản lý dữ liệu từ các nguồn khác nhau. Lớp này bao gồm:
+- **Repository**: Cung cấp API đơn giản, sạch sẽ cho phần còn lại của ứng dụng
+- **Data Sources**: Quản lý dữ liệu từ các nguồn khác nhau (API, cơ sở dữ liệu, bộ nhớ đệm)
+- **Model**: Đại diện cho dữ liệu trong ứng dụng
 
-<br>__Clean Architecture sử dụng tối đa các nguyên tắc này.__
+## Cấu Trúc Mã Nguồn
 
-## Các layer của Clean Architecture
-Có nhiều ý kiến khác nhau về việc nên có bao nhiêu layer Clean Architecture. Mô hình này không quy định chính xác bao nhiêu layer mà thay vào đó là đặt ra nền tảng và bạn chính là người điều chỉnh số lượng layer trong ứng dụng của mình.
-<br>Ở đây, để đơn giản nhất có thể, chúng ta sử dụng 2 module chính với tổng cộng 5 layer
-<br>__Business Module__
-* __Domain__: chứa các model của app
-* __Data__: định nghĩa trừu tượng của tất cả các nguồn dữ liệu.
-* __Interactors__: còn được gọi là Use case. Xác định các hành động mà người dùng có thể kích hoạt.
+Dự án được tổ chức thành các module chính:
 
-__Framework Module__
-* __Presentation__: giao diện người dùng
-* __Datasource__: Triển khai và phát triển cụ thể cho lớp Data
+### Module Core
+Chứa các thành phần cơ bản và tiện ích được sử dụng trong toàn bộ ứng dụng:
+- **base**: Các lớp cơ sở như BaseFragment, BaseViewModel, BaseDialogFragment
+- **di**: Cấu hình Dependency Injection với Hilt
+- **utils**: Các tiện ích và extension functions
+- **navigator**: Xử lý điều hướng trong ứng dụng
 
-![Alt text](https://camo.githubusercontent.com/b1521f6c9e672cf5077ba69ceab27679ea8a82074a89931d958895476756e2c8/68747470733a2f2f636f64696e67776974686d697463682e73332e616d617a6f6e6177732e636f6d2f7374617469632f636f75727365732f32312f636c65616e5f6172636869746563747572655f6469616772616d732e706e67)
+### Module App
+Chứa các tính năng cụ thể của ứng dụng:
+- **feature**: Các tính năng được tổ chức theo package riêng biệt
+- **data**: Chứa repositories, data sources và models
+- **util**: Các tiện ích cụ thể cho ứng dụng
 
-## Release
-__18/08/2021__: Simplfy packages, add timber, follow best practices: inject dispatchers, main-safe, repository pattern.(Tks 89hniM)
-__01/08/2021__: Room and Retrofit
-__05/04/2021__: Update lib in build gradle<br>
-__22/03/2021__: Update hilt to beta version<br>
-__22/02/2021__: Add view binding, remove deprecated safeNav function<br>
-__15/01/2021__: Add more extensions util (such as: GlideEx, HandlerEx ...), update safeNav function with lifecycle, refactor naming convention<br>
-__15/12/2020__: Add utility functions, refactor mapper class, minSdkVersion 21<br>
-__17/11/2020__: Add sample project using Clean Architecture, Coroutines, Flow, Hilt, Navigation Components 
+## Các Lớp Cơ Sở
 
-## Credits
-1. [https://www.raywenderlich.com/3595916-clean-architecture-tutorial-for-android-getting-started](https://www.raywenderlich.com/3595916-clean-architecture-tutorial-for-android-getting-started)
-2. [https://github.com/mitchtabian/Clean-Notes](https://github.com/mitchtabian/Clean-Notes)
-3. [https://proandroiddev.com/kotlin-clean-architecture-1ad42fcd97fa](https://proandroiddev.com/kotlin-clean-architecture-1ad42fcd97fa)
-4. [https://toidicodedao.com/2015/03/24/solid-la-gi-ap-dung-cac-nguyen-ly-solid-de-tro-thanh-lap-trinh-vien-code-cung/](https://toidicodedao.com/2015/03/24/solid-la-gi-ap-dung-cac-nguyen-ly-solid-de-tro-thanh-lap-trinh-vien-code-cung/)
-5. [https://developer.android.com/kotlin/coroutines/coroutines-best-practices](https://developer.android.com/kotlin/coroutines/coroutines-best-practices)
+### BaseFragment
+```kotlin
+abstract class BaseFragment<Binding : ViewBinding, VM : ViewModel, CommonVM : ViewModel>(
+    private val inflate: Inflate<Binding>,
+    private val viewModelClass: Class<VM>,
+    private val commonViewModelClass: Class<CommonVM>,
+) : Fragment()
+```
 
+BaseFragment là lớp cơ sở cho tất cả các Fragment trong ứng dụng. Nó cung cấp:
+- Quản lý ViewBinding tự động
+- Khởi tạo ViewModel và CommonViewModel
+- Xử lý điều hướng thông qua Navigator
+- Quản lý dialog loading
+- Xử lý nút back hệ thống
 
+### BaseViewModel
+```kotlin
+abstract class BaseViewModel : ViewModel()
+```
 
+BaseViewModel là lớp cơ sở cho tất cả các ViewModel trong ứng dụng. Nó cung cấp:
+- Quản lý coroutines
+- Xử lý lỗi thống nhất
+- Các tiện ích chung cho ViewModel
 
+### BaseDialogFragment và BaseBottomSheetDialogFragment
+Các lớp cơ sở cho dialog và bottom sheet dialog, cung cấp các chức năng tương tự như BaseFragment.
 
+## Mẫu Thành Phần Màn Hình
 
+Mỗi màn hình trong ứng dụng bao gồm 3 thành phần chính:
 
+### 1. Fragment
+Định nghĩa cấu trúc UI và vòng đời của màn hình. Ví dụ:
 
+```kotlin
+@AndroidEntryPoint
+class HomeFragment :
+    BaseFragment<FragmentHomeBinding, HomeViewModel, CommonViewModel>(
+        FragmentHomeBinding::inflate,
+        HomeViewModel::class.java,
+        CommonViewModel::class.java,
+    )
+```
 
+### 2. FragmentEx
+Chứa các extension function cho Fragment, xử lý logic tách biệt như sự kiện click, khởi tạo logic. Ví dụ:
 
+```kotlin
+fun HomeFragment.initView() {
+    commonViewModel.getApiData()
+}
 
+fun HomeFragment.plusEvent() {
+    val listString = listOf("so1", "so2", "so3", "so4", "so5")
+    adapter.submitList(listString)
+}
+```
 
+### 3. ViewModel
+Quản lý trạng thái UI và xử lý logic nghiệp vụ. Ví dụ:
+
+```kotlin
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+    private val dataStoreRepository: DataStoreRepository,
+    private val installedAppsRepository: InstalledAppsRepository,
+) : BaseViewModel()
+```
+
+## Phân Tách Model Theo Lớp
+
+Ứng dụng phân tách model theo lớp để tách biệt trách nhiệm:
+
+### DTO Models (Data Layer)
+Đại diện cho dữ liệu ở lớp Data, thường được sử dụng trong Repository. Ví dụ:
+
+```kotlin
+data class InstalledAppDtoModel(
+    val packageName: String,
+    val appName: String,
+    val icon: Drawable?,
+    val versionName: String?,
+    val isSystemApp: Boolean,
+)
+```
+
+### UI Models (UI Layer)
+Đại diện cho dữ liệu ở lớp UI, được sử dụng trong ViewModel và Fragment. Ví dụ:
+
+```kotlin
+data class InstalledAppUIModel(
+    val packageName: String,
+    val appName: String,
+    val icon: Drawable?,
+    val versionName: String?,
+    val isSystemApp: Boolean,
+)
+```
+
+### Mapping Functions
+Chuyển đổi giữa DTO Models và UI Models thông qua extension function. Ví dụ:
+
+```kotlin
+fun InstalledAppDtoModel.toPresentation(): InstalledAppUIModel =
+    InstalledAppUIModel(
+        packageName = this.packageName,
+        appName = this.appName,
+        icon = this.icon,
+        versionName = this.versionName,
+        isSystemApp = this.isSystemApp,
+    )
+```
+
+## Mẫu Repository
+
+Tất cả các Repository trong ứng dụng đều tuân theo một mẫu nhất định:
+
+### Repository Interface
+Định nghĩa contract cho việc truy cập dữ liệu. Ví dụ:
+
+```kotlin
+interface InstalledAppsRepository {
+    fun getInstalledApps(): Flow<Result<List<InstalledAppDtoModel>>>
+}
+```
+
+### Repository Implementation
+Triển khai Repository Interface, xử lý việc lấy và xử lý dữ liệu. Ví dụ:
+
+```kotlin
+class InstalledAppsRepositoryImpl(
+    @ApplicationContext private val context: Context,
+) : InstalledAppsRepository {
+    override fun getInstalledApps(): Flow<Result<List<InstalledAppDtoModel>>> =
+        flow {
+            try {
+                // Lấy dữ liệu
+                emit(Result.Success(apps))
+            } catch (exception: Exception) {
+                emit(Result.Error(exception))
+            }
+        }.flowOn(Dispatchers.IO)
+}
+```
+
+### Đặc điểm quan trọng:
+- Tất cả các hàm lấy dữ liệu trong Repository đều trả về `Flow<Result<T>>`
+- Sử dụng `Result.Success` và `Result.Error` để xử lý kết quả
+- Sử dụng `flowOn(Dispatchers.IO)` để đảm bảo thao tác được thực hiện trên thread phù hợp
+
+## Quản Lý Trạng Thái UI
+
+Ứng dụng sử dụng `UiState` để quản lý trạng thái UI một cách nhất quán:
+
+```kotlin
+sealed interface UiState<out T> {
+    data object None : UiState<Nothing>
+    data object Loading : UiState<Nothing>
+    data class Success<T>(val data: T) : UiState<T>
+    data class Error(val exception: Throwable) : UiState<Nothing>
+}
+```
+
+### Trong ViewModel:
+```kotlin
+private val _installedAppsUiState = MutableStateFlow<UiState<List<InstalledAppUIModel>>>(UiState.None)
+val installedAppsUiState = _installedAppsUiState.asStateFlow()
+
+fun getInstalledApps() {
+    handleApiCall(
+        stateFlow = _installedAppsUiState,
+        apiCall = { installedAppsRepository.getInstalledApps() },
+        transform = { dtoList: List<InstalledAppDtoModel> -> 
+            dtoList.map { it.toPresentation() } 
+        }
+    )
+}
+```
+
+### Trong Fragment:
+```kotlin
+viewModel.installedAppsUiState.collectFlowOnView(viewLifecycleOwner) {
+    it.handleUiState(
+        onLoading = { showHideLoading(true) },
+        onSuccess = { installedApps -> 
+            showHideLoading(false)
+            // Xử lý dữ liệu
+        },
+        onError = { exception ->
+            showHideLoading(false)
+            // Xử lý lỗi
+        },
+    )
+}
+```
+
+## Nguyên Tắc SOLID
+
+Dự án áp dụng các nguyên tắc SOLID để tạo ra mã nguồn dễ bảo trì và mở rộng:
+
+### Single Responsibility (Trách nhiệm đơn lẻ)
+Mỗi lớp chỉ có một trách nhiệm duy nhất. Ví dụ:
+- Fragment: Hiển thị UI
+- ViewModel: Quản lý trạng thái và logic
+- Repository: Truy cập dữ liệu
+
+### Open/Closed (Mở/Đóng)
+Các lớp mở rộng nhưng đóng sửa đổi. Ví dụ:
+- Sử dụng interface cho Repository để có thể thay đổi implementation mà không ảnh hưởng đến code sử dụng nó
+
+### Liskov Substitution (Thay thế Liskov)
+Các lớp con có thể thay thế lớp cha mà không làm thay đổi tính đúng đắn của chương trình. Ví dụ:
+- Tất cả các Fragment đều kế thừa từ BaseFragment và tuân theo cùng một contract
+
+### Interface Segregation (Phân tách Interface)
+Sử dụng nhiều interface nhỏ thay vì một interface lớn. Ví dụ:
+- Repository interface chỉ định nghĩa các phương thức cần thiết cho một tính năng cụ thể
+
+### Dependency Inversion (Đảo ngược phụ thuộc)
+Phụ thuộc vào abstraction, không phụ thuộc vào implementation. Ví dụ:
+- ViewModel phụ thuộc vào Repository interface, không phụ thuộc vào implementation cụ thể
+- Sử dụng Hilt để inject các dependency
+
+## Lưu Ý Khi Phát Triển
+
+1. **Tổ chức code**:
+    - Tổ chức code theo tính năng (feature)
+    - Mỗi tính năng có 3 thành phần: Fragment, FragmentEx, ViewModel
+
+2. **Dependency Injection**:
+    - Sử dụng Hilt cho dependency injection
+    - Đánh dấu các lớp với @AndroidEntryPoint, @HiltViewModel, @Inject khi cần thiết
+
+3. **Coroutines và Flow**:
+    - Sử dụng coroutines cho các tác vụ bất đồng bộ
+    - Sử dụng Flow để xử lý dữ liệu reactive
+    - Sử dụng StateFlow để quản lý trạng thái UI
+
+4. **Xử lý lỗi**:
+    - Sử dụng Result và UiState để xử lý lỗi một cách nhất quán
+    - Luôn xử lý các trường hợp lỗi trong UI
+
+5. **Mở rộng**:
+    - Khi thêm tính năng mới, tạo package mới trong feature
+    - Tuân theo mẫu Fragment, FragmentEx, ViewModel
+    - Tạo Repository mới nếu cần
+
+## Hình Ảnh Minh Họa
+
+![Kiến trúc MVVM](https://miro.medium.com/v2/resize:fit:1400/1*BpxMFh7DdX0_hqX6ABkDgw.png)
+
+![Luồng dữ liệu](https://developer.android.com/static/topic/libraries/architecture/images/mad-arch-overview-ui.png)
