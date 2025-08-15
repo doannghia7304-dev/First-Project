@@ -20,6 +20,7 @@
         tools:replace="android:label">
         <activity
             android:name=".app.MainActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
