@@ -1,6 +1,7 @@
 package pion.tech.pionbase.util
 
 import android.R
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
@@ -19,10 +20,24 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
+import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import java.lang.Exception
+
+@SuppressLint("ClickableViewAccessibility")
+fun SwitchCompat.preventDrag() {
+    setOnTouchListener { _, event ->
+        if (event.action == MotionEvent.ACTION_MOVE) {
+            // Chặn drag
+            true
+        } else {
+            // Cho phép xử lý bình thường các sự kiện khác (click)
+            false
+        }
+    }
+}
 
 fun View.setBackgroundTint(color: Int) {
     ViewCompat.setBackgroundTintList(this, ColorStateList.valueOf(color))
@@ -33,7 +48,7 @@ fun Context.getActionBarHeight(): Int {
     if (this.theme?.resolveAttribute(
             R.attr.actionBarSize,
             tv,
-            true
+            true,
         ) == true
     ) {
         return TypedValue.complexToDimensionPixelSize(tv.data, resources.displayMetrics)
@@ -45,12 +60,14 @@ fun View.changeBackgroundColor(newColor: Int) {
     setBackgroundColor(
         ContextCompat.getColor(
             context,
-            newColor
-        )
+            newColor,
+        ),
     )
 }
 
-fun ImageView.setTintColor(@ColorRes color: Int) {
+fun ImageView.setTintColor(
+    @ColorRes color: Int,
+) {
     imageTintList = ColorStateList.valueOf(ContextCompat.getColor(context, color))
 }
 
@@ -58,16 +75,21 @@ fun TextView.changeTextColor(newColor: Int) {
     setTextColor(
         ContextCompat.getColor(
             context,
-            newColor
-        )
+            newColor,
+        ),
     )
 }
 
 fun View.animRotation() {
-    val anim = RotateAnimation(
-        0f, 360f,
-        Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f
-    )
+    val anim =
+        RotateAnimation(
+            0f,
+            360f,
+            Animation.RELATIVE_TO_SELF,
+            0.5f,
+            Animation.RELATIVE_TO_SELF,
+            0.5f,
+        )
     anim.interpolator = LinearInterpolator()
     anim.duration = 1500
     anim.isFillEnabled = true
@@ -94,82 +116,101 @@ fun View.inv() {
     visibility = View.INVISIBLE
 }
 
-fun View.setPreventDoubleClick(debounceTime: Long = 500, action: () -> Unit) {
-    this.setOnClickListener(object : View.OnClickListener {
-        private var lastClickTime: Long = 0
-        override fun onClick(v: View?) {
-            if (SystemClock.elapsedRealtime() - lastClickTime < debounceTime) return
-            action()
-            lastClickTime = SystemClock.elapsedRealtime()
-        }
-    })
+fun View.setPreventDoubleClick(
+    debounceTime: Long = 500,
+    action: () -> Unit,
+) {
+    this.setOnClickListener(
+        object : View.OnClickListener {
+            private var lastClickTime: Long = 0
+
+            override fun onClick(v: View?) {
+                if (SystemClock.elapsedRealtime() - lastClickTime < debounceTime) return
+                action()
+                lastClickTime = SystemClock.elapsedRealtime()
+            }
+        },
+    )
 }
 
-fun View.setPreventDoubleClickScaleView(debounceTime: Long = 500, action: () -> Unit) {
-    setOnTouchListener(object : View.OnTouchListener {
-        private var lastClickTime: Long = 0
-        private var rect: Rect? = null
+fun View.setPreventDoubleClickScaleView(
+    debounceTime: Long = 500,
+    action: () -> Unit,
+) {
+    setOnTouchListener(
+        object : View.OnTouchListener {
+            private var lastClickTime: Long = 0
+            private var rect: Rect? = null
 
-        override fun onTouch(v: View, event: MotionEvent): Boolean {
-            fun setScale(scale: Float) {
-                v.scaleX = scale
-                v.scaleY = scale
-            }
-
-            if (event.action == MotionEvent.ACTION_DOWN) {
-                //action down: scale view down
-                rect = Rect(v.left, v.top, v.right, v.bottom)
-                setScale(0.9f)
-            } else if (rect != null && !rect!!.contains(
-                    v.left + event.x.toInt(),
-                    v.top + event.y.toInt()
-                )
-            ) {
-                //action moved out
-                setScale(1f)
-                return false
-            } else if (event.action == MotionEvent.ACTION_UP) {
-                //action up
-                setScale(1f)
-                //handle click too fast
-                if (SystemClock.elapsedRealtime() - lastClickTime < debounceTime) {
-                } else {
-                    lastClickTime = SystemClock.elapsedRealtime()
-                    action()
+            override fun onTouch(
+                v: View,
+                event: MotionEvent,
+            ): Boolean {
+                fun setScale(scale: Float) {
+                    v.scaleX = scale
+                    v.scaleY = scale
                 }
-            } else {
-                //other
-            }
 
-            return true
-        }
-    })
+                if (event.action == MotionEvent.ACTION_DOWN) {
+                    // action down: scale view down
+                    rect = Rect(v.left, v.top, v.right, v.bottom)
+                    setScale(0.9f)
+                } else if (rect != null &&
+                    !rect!!.contains(
+                        v.left + event.x.toInt(),
+                        v.top + event.y.toInt(),
+                    )
+                ) {
+                    // action moved out
+                    setScale(1f)
+                    return false
+                } else if (event.action == MotionEvent.ACTION_UP) {
+                    // action up
+                    setScale(1f)
+                    // handle click too fast
+                    if (SystemClock.elapsedRealtime() - lastClickTime < debounceTime) {
+                    } else {
+                        lastClickTime = SystemClock.elapsedRealtime()
+                        action()
+                    }
+                } else {
+                    // other
+                }
+
+                return true
+            }
+        },
+    )
 }
 
 fun Fragment.displayToast(msg: String) {
     Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
 }
 
-fun Fragment.displayToast(@StringRes msg: Int) {
+fun Fragment.displayToast(
+    @StringRes msg: Int,
+) {
     Toast.makeText(context, getString(msg), Toast.LENGTH_SHORT).show()
 }
 
 fun Fragment.convertDpToPx(dp: Int): Int {
     val dip = dp.toFloat()
-    return TypedValue.applyDimension(
-        TypedValue.COMPLEX_UNIT_DIP,
-        dip,
-        resources.displayMetrics
-    ).toInt()
+    return TypedValue
+        .applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            dip,
+            resources.displayMetrics,
+        ).toInt()
 }
 
 fun Context.convertDpToPx(dp: Int): Int {
     val dip = dp.toFloat()
-    return TypedValue.applyDimension(
-        TypedValue.COMPLEX_UNIT_DIP,
-        dip,
-        resources.displayMetrics
-    ).toInt()
+    return TypedValue
+        .applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            dip,
+            resources.displayMetrics,
+        ).toInt()
 }
 
 fun Context.haveNetworkConnection(): Boolean {
@@ -182,10 +223,18 @@ fun Context.haveNetworkConnection(): Boolean {
             for (ni in netInfo) {
                 if (ni.typeName
                         .equals("WIFI", ignoreCase = true)
-                ) if (ni.isConnected) haveConnectedWifi = true
+                ) {
+                    if (ni.isConnected) {
+                        haveConnectedWifi = true
+                    }
+                }
                 if (ni.typeName
                         .equals("MOBILE", ignoreCase = true)
-                ) if (ni.isConnected) haveConnectedMobile = true
+                ) {
+                    if (ni.isConnected) {
+                        haveConnectedMobile = true
+                    }
+                }
             }
             haveConnectedWifi || haveConnectedMobile
         } catch (e: Exception) {
@@ -210,4 +259,3 @@ fun Context.openBrowser(url: String) {
         ex.printStackTrace()
     }
 }
-
