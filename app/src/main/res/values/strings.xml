@@ -26,4 +26,5 @@
     <string name="des_5">- Full screen ads interspersed between screens</string>
     <string name="des_6">- Banner, native ads are customized as a component of AD (usually with a yellow label)</string>
     <string name="des_7">We are always trying to balance the user experience and advertisement</string>
+    <string name="please_select_language">Please select language</string>
 </resources>

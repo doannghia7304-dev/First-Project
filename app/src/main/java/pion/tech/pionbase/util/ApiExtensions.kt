@@ -4,6 +4,8 @@ import com.piontech.core.base.BaseViewModel
 import com.piontech.core.base.launchIO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
+import pion.tech.pionbase.util.Result
 
 /**
  * Extension functions to reduce boilerplate code for data handling (API and local operations)
@@ -103,6 +105,44 @@ inline fun <T> BaseViewModel.handleLocalDataCall(
         }
     }
 }
+
+/**
+ * Extension function to extract data from Flow<Result<T>> with a default fallback value.
+ * This eliminates the need for repetitive when expressions when working with Result types.
+ *
+ * @param defaultValue The value to return if the Result is not Success
+ * @return The data from Result.Success or the defaultValue
+ */
+suspend fun <T> Flow<Result<T>>.getDataOrDefault(defaultValue: T): T =
+    this.first().let { result ->
+        if (result is Result.Success) result.data else defaultValue
+    }
+
+/**
+ * Extension function to extract data from Flow<Result<T>> with null as fallback.
+ * Useful for nullable types where null is an acceptable fallback.
+ *
+ * @return The data from Result.Success or null
+ */
+suspend fun <T> Flow<Result<T>>.getDataOrNull(): T? =
+    this.first().let { result ->
+        if (result is Result.Success) result.data else null
+    }
+
+/**
+ * Extension function to check if Flow<Result<T>> contains successful data.
+ *
+ * @return true if Result is Success, false otherwise
+ */
+suspend fun <T> Flow<Result<T>>.isSuccess(): Boolean = this.first() is Result.Success
+
+/**
+ * Extension function to get Result<T> directly from Flow<Result<T>>.
+ * Useful when you need to work with the Result wrapper itself.
+ *
+ * @return The Result<T> from the flow
+ */
+suspend fun <T> Flow<Result<T>>.getResult(): Result<T> = this.first()
 
 /**
  * Extension function to handle UI state changes with loading management

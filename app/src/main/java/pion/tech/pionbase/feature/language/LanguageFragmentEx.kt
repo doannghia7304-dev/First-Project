@@ -18,17 +18,30 @@ fun LanguageFragment.initView() {
 
 fun LanguageFragment.applyEvent() {
     binding.ivDone.setPreventDoubleClick {
-        val language = viewModel.getSelectedLanguage()
-        if (language != null) {
-            setLocale(language.localeCode)
-            if (isCameFromSetting()) {
-                findNavController().popBackStack(R.id.settingFragment, false)
-            } else {
-                navigator.navigateTo(R.id.action_languageFragment_to_onboardFragment)
-            }
-        } else {
-            displayToast(getString(R.string.something_error))
+        if (viewModel.getSelectedLanguage() == null) {
+            displayToast(getString(R.string.please_select_language))
+            return@setPreventDoubleClick
         }
+        if (isCameFromSetting()) {
+            applySelectedLanguage()
+            navigateToNextScreen()
+            return@setPreventDoubleClick
+        }
+        applySelectedLanguage()
+        navigateToNextScreen()
+    }
+}
+
+fun LanguageFragment.applySelectedLanguage() {
+    val locales = LocaleListCompat.forLanguageTags(viewModel.getSelectedLanguage()?.localeCode)
+    AppCompatDelegate.setApplicationLocales(locales)
+}
+
+fun LanguageFragment.navigateToNextScreen() {
+    if (isCameFromSetting()) {
+        navigator.navigateTo(R.id.action_languageFragment_to_splashFragment)
+    } else {
+        navigator.navigateTo(R.id.action_languageFragment_to_onboardFragment)
     }
 }
 
@@ -45,11 +58,6 @@ fun LanguageFragment.backEvent() {
     if (isCameFromSetting()) {
         findNavController().navigateUp()
     }
-}
-
-fun setLocale(languageCode: String?) {
-    val locales = LocaleListCompat.forLanguageTags(languageCode)
-    AppCompatDelegate.setApplicationLocales(locales)
 }
 
 fun LanguageFragment.isCameFromSetting(): Boolean = navigator.isCameFrom(R.id.settingFragment)

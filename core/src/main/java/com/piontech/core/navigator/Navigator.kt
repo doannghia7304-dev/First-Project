@@ -5,6 +5,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 
 interface Navigator {
+    fun getCurrentDestinationId(): Int
+
     /**
      * Navigate to a specific route with optional arguments
      */

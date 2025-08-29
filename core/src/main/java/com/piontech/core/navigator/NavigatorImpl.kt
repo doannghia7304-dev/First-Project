@@ -64,6 +64,8 @@ class NavigatorImpl(
         }
     }
 
+    override fun getCurrentDestinationId(): Int = navController.currentDestination?.id ?: 0
+
     override fun navigateTo(
         actionId: Int,
         bundle: Bundle?,

@@ -17,6 +17,7 @@ import androidx.navigation.NavDestination
 import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
 import com.piontech.core.firebaseAnalytics.FirebaseAnalyticsLogger
+import com.piontech.core.lifecycleCallback.FragmentLifecycleAction
 import com.piontech.core.navigator.Navigator
 import com.piontech.core.navigator.NavigatorImpl
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -36,6 +37,9 @@ abstract class BaseFragment<Binding : ViewBinding, VM : ViewModel, CommonVM : Vi
 ) : Fragment() {
     @Inject
     lateinit var logger: FirebaseAnalyticsLogger
+
+    @Inject
+    lateinit var fragmentLifecycleAction: FragmentLifecycleAction
 
     private var _navigator: Navigator? = null
     val navigator: Navigator
@@ -82,6 +86,11 @@ abstract class BaseFragment<Binding : ViewBinding, VM : ViewModel, CommonVM : Vi
         return binding.root
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        fragmentLifecycleAction.executeWhenCreated(this@BaseFragment)
+    }
+
     override fun onViewCreated(
         view: View,
         savedInstanceState: Bundle?,
@@ -96,13 +105,39 @@ abstract class BaseFragment<Binding : ViewBinding, VM : ViewModel, CommonVM : Vi
         subscribeObserver(view)
     }
 
+    override fun onStart() {
+        super.onStart()
+        fragmentLifecycleAction.executeWhenStarted(this@BaseFragment)
+    }
+
     abstract fun init(view: View)
 
     abstract fun subscribeObserver(view: View)
 
+    override fun onResume() {
+        super.onResume()
+        fragmentLifecycleAction.executeWhenResume(this@BaseFragment)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        fragmentLifecycleAction.executeWhenPaused(this@BaseFragment)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        fragmentLifecycleAction.executeWhenStop(this@BaseFragment)
+    }
+
     override fun onDestroyView() {
+        fragmentLifecycleAction.executeWhenViewDestroyed(this@BaseFragment)
         _binding = null
         super.onDestroyView()
+    }
+
+    override fun onDestroy() {
+        fragmentLifecycleAction.executeWhenDestroyed(this@BaseFragment)
+        super.onDestroy()
     }
 
     fun showHideLoading(isShow: Boolean) {
@@ -125,7 +160,7 @@ abstract class BaseFragment<Binding : ViewBinding, VM : ViewModel, CommonVM : Vi
 }
 
 fun Fragment.doActionWhenResume(action: () -> Unit) {
-    lifecycle.addObserver(
+    viewLifecycleOwner.lifecycle.addObserver(
         object : LifecycleEventObserver {
             override fun onStateChanged(
                 source: LifecycleOwner,
@@ -133,7 +168,23 @@ fun Fragment.doActionWhenResume(action: () -> Unit) {
             ) {
                 if (event == Lifecycle.Event.ON_RESUME) {
                     action.invoke()
-                    lifecycle.removeObserver(this)
+                    viewLifecycleOwner.lifecycle.removeObserver(this)
+                }
+            }
+        },
+    )
+}
+
+fun Fragment.doActionWhenStop(action: () -> Unit) {
+    viewLifecycleOwner.lifecycle.addObserver(
+        object : LifecycleEventObserver {
+            override fun onStateChanged(
+                source: LifecycleOwner,
+                event: Lifecycle.Event,
+            ) {
+                if (event == Lifecycle.Event.ON_STOP) {
+                    action.invoke()
+                    viewLifecycleOwner.lifecycle.removeObserver(this)
                 }
             }
         },
