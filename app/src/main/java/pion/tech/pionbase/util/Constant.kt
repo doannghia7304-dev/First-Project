@@ -19,6 +19,6 @@ object Constant {
                 else -> false
             }
 
-        return Constant.isPremium || AdsConstant.isPremium || dataStoreIsPremium
+        return isPremium || AdsConstant.isPremium || dataStoreIsPremium
     }
 }
