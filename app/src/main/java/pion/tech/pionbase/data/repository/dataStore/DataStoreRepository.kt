@@ -6,9 +6,9 @@ import pion.tech.pionbase.util.Result
 interface DataStoreRepository {
     fun getIsPremium(): Flow<Result<Boolean>>
 
-    suspend fun setIsPremium(isPremium: Boolean): Result<Unit>
+    fun setIsPremium(isPremium: Boolean): Flow<Result<Boolean>>
 
     fun getToken(): Flow<Result<String?>>
 
-    suspend fun setToken(token: String): Result<Unit>
+    fun setToken(token: String): Flow<Result<String>>
 }

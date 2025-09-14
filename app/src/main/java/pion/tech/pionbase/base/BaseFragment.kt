@@ -150,7 +150,7 @@ abstract class BaseFragment<Binding : ViewBinding, VM : ViewModel, CommonVM : Vi
             if (loadingDialog == null || !loadingDialog!!.isVisible) {
                 loadingDialog?.dismiss()
                 loadingDialog = LoadingDialog()
-                safeShowDialog(loadingDialog)
+                loadingDialog?.show(childFragmentManager)
             }
         } else {
             loadingDialog?.dismiss()

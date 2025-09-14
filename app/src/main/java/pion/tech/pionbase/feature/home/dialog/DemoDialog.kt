@@ -38,6 +38,7 @@ class DemoDialog :
     override fun addEvent(savedInstanceState: Bundle?) {
         binding.btnClose.setOnClickListener {
             listener?.onDialogNegativeClick()
+            dismiss()
         }
     }
 

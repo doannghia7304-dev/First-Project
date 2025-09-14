@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import pion.tech.pionbase.util.Result
 import java.io.IOException
@@ -26,16 +27,15 @@ class DataStoreRepositoryImpl(
                 emit(Result.Error<Boolean>(exception) as Result<Boolean>)
             }
 
-    override suspend fun setIsPremium(isPremium: Boolean): Result<Unit> {
-        return try {
+    override fun setIsPremium(isPremium: Boolean): Flow<Result<Boolean>> =
+        flow<Result<Boolean>> {
             dataStore.edit {
                 it[isPremiumKey] = isPremium
             }
-            Result.Success(Unit)
-        } catch (exception: Exception) {
-            Result.Error(exception)
+            emit(Result.Success(isPremium))
+        }.catch {
+            emit(Result.Error(it))
         }
-    }
 
     override fun getToken(): Flow<Result<String?>> =
         dataStore.data
@@ -45,14 +45,13 @@ class DataStoreRepositoryImpl(
                 emit(Result.Error<String?>(exception) as Result<String?>)
             }
 
-    override suspend fun setToken(token: String): Result<Unit> {
-        return try {
+    override fun setToken(token: String): Flow<Result<String>> =
+        flow<Result<String>> {
             dataStore.edit {
                 it[tokenKey] = token
             }
-            Result.Success(Unit)
-        } catch (exception: Exception) {
-            Result.Error(exception)
+            emit(Result.Success(token))
+        }.catch {
+            emit(Result.Error(it))
         }
-    }
 }

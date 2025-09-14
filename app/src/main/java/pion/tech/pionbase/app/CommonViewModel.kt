@@ -3,6 +3,7 @@ package pion.tech.pionbase.app
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import pion.tech.pionbase.base.BaseViewModel
 import pion.tech.pionbase.base.launchIO
 import pion.tech.pionbase.data.model.appCategory.AppCategoryUIModel
@@ -67,7 +68,7 @@ class CommonViewModel
 
         fun setPremium(isPremium: Boolean) {
             launchIO {
-                dataStoreRepository.setIsPremium(isPremium)
+                dataStoreRepository.setIsPremium(isPremium).collect()
             }
         }
     }

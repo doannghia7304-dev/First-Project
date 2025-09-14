@@ -29,6 +29,10 @@ class HomeViewModel
 
         suspend fun getIsPremiumValue(): Flow<Result<Boolean>> = dataStoreRepository.getIsPremium()
 
+        init {
+            getInstalledApps()
+        }
+
         fun getInstalledApps() {
             handleApiCall(
                 stateFlow = _installedAppsUiState,

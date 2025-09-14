@@ -37,12 +37,10 @@ class LanguageRepositoryImpl : LanguageRepository {
                 LanguageDtoModel("https://flagcdn.com/w320/bg.png", "Български Език", "bg"),
                 LanguageDtoModel("https://flagcdn.com/w320/gr.png", "Ελληνικά", "el"),
             )
-        return flow {
-            try {
-                emit(Result.Success(listLanguageData))
-            } catch (exception: Exception) {
-                emit(Result.Error(exception))
-            }
+        return flow<Result<List<LanguageDtoModel>>> {
+            emit(Result.Success(listLanguageData))
+        }.catch {
+            emit(Result.Error(it))
         }.flowOn(Dispatchers.IO)
     }
 }
