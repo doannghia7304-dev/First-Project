@@ -2,7 +2,6 @@ package pion.tech.pionbase.feature.onboard.viewpager
 
 import android.view.View
 import dagger.hilt.android.AndroidEntryPoint
-import pion.tech.pionbase.app.CommonViewModel
 import pion.tech.pionbase.base.BaseFragment
 import pion.tech.pionbase.databinding.FragmentOnboardScreen1Binding
 import pion.tech.pionbase.feature.onboard.OnboardFragment
@@ -12,10 +11,9 @@ import pion.tech.pionbase.util.setPreventDoubleClick
 
 @AndroidEntryPoint
 class OnboardScreen1Fragment :
-    BaseFragment<FragmentOnboardScreen1Binding, OnboardViewModel, CommonViewModel>(
+    BaseFragment<FragmentOnboardScreen1Binding, OnboardViewModel>(
         FragmentOnboardScreen1Binding::inflate,
         OnboardViewModel::class.java,
-        CommonViewModel::class.java,
     ) {
     override fun init(view: View) {
         nextEvent()

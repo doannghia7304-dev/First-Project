@@ -9,10 +9,9 @@ import pion.tech.pionbase.feature.onboard.adapter.OnboardFragmentStateAdapter
 
 @AndroidEntryPoint
 class OnboardFragment :
-    BaseFragment<FragmentOnboardBinding, OnboardViewModel, CommonViewModel>(
+    BaseFragment<FragmentOnboardBinding, OnboardViewModel, >(
         FragmentOnboardBinding::inflate,
         OnboardViewModel::class.java,
-        CommonViewModel::class.java,
     ) {
     var adapter: OnboardFragmentStateAdapter? = null
 

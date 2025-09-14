@@ -3,7 +3,6 @@ package pion.tech.pionbase.feature.language
 import android.view.View
 import androidx.core.view.isVisible
 import dagger.hilt.android.AndroidEntryPoint
-import pion.tech.pionbase.app.CommonViewModel
 import pion.tech.pionbase.base.BaseFragment
 import pion.tech.pionbase.data.model.language.LanguageUIModel
 import pion.tech.pionbase.databinding.FragmentLanguageBinding
@@ -13,10 +12,9 @@ import pion.tech.pionbase.util.handleUiState
 
 @AndroidEntryPoint
 class LanguageFragment :
-    BaseFragment<FragmentLanguageBinding, LanguageViewModel, CommonViewModel>(
+    BaseFragment<FragmentLanguageBinding, LanguageViewModel>(
         FragmentLanguageBinding::inflate,
         LanguageViewModel::class.java,
-        CommonViewModel::class.java,
     ),
     LanguageAdapter.Listener {
     val adapter = LanguageAdapter()

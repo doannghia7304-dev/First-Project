@@ -1,9 +1,7 @@
 package pion.tech.pionbase.feature.home
 
-import android.util.Log
 import android.view.View
 import dagger.hilt.android.AndroidEntryPoint
-import pion.tech.pionbase.app.CommonViewModel
 import pion.tech.pionbase.base.BaseFragment
 import pion.tech.pionbase.databinding.FragmentHomeBinding
 import pion.tech.pionbase.feature.home.adapter.InstallAppAdapter
@@ -14,10 +12,9 @@ import pion.tech.pionbase.util.handleUiState
 
 @AndroidEntryPoint
 class HomeFragment :
-    BaseFragment<FragmentHomeBinding, HomeViewModel, CommonViewModel>(
+    BaseFragment<FragmentHomeBinding, HomeViewModel>(
         FragmentHomeBinding::inflate,
         HomeViewModel::class.java,
-        CommonViewModel::class.java,
     ),
     DemoDialog.Listener {
     //    val adapter = DemoMultipleAdapter()

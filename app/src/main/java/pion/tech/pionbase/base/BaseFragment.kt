@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
@@ -27,6 +28,7 @@ import kotlinx.coroutines.withContext
 import pion.datlt.libads.AdsController
 import pion.datlt.libads.utils.AdsConstant
 import pion.tech.pionbase.R
+import pion.tech.pionbase.app.CommonViewModel
 import pion.tech.pionbase.base.firebaseAnalytics.FirebaseAnalyticsLogger
 import pion.tech.pionbase.base.navigator.Navigator
 import pion.tech.pionbase.base.navigator.NavigatorImpl
@@ -40,10 +42,9 @@ import javax.inject.Inject
 
 typealias Inflate<Binding> = (LayoutInflater, ViewGroup?, Boolean) -> Binding
 
-abstract class BaseFragment<Binding : ViewBinding, VM : ViewModel, CommonVM : ViewModel>(
+abstract class BaseFragment<Binding : ViewBinding, VM : ViewModel>(
     private val inflate: Inflate<Binding>,
     private val viewModelClass: Class<VM>,
-    private val commonViewModelClass: Class<CommonVM>,
 ) : Fragment() {
     @Inject
     lateinit var logger: FirebaseAnalyticsLogger
@@ -66,9 +67,7 @@ abstract class BaseFragment<Binding : ViewBinding, VM : ViewModel, CommonVM : Vi
                 "Fragment $this binding cannot be accessed before onCreateView() or after onDestroyView()"
             }
 
-    val commonViewModel: CommonVM by lazy {
-        ViewModelProvider(requireActivity())[commonViewModelClass]
-    }
+    val commonViewModel: CommonViewModel by activityViewModels()
 
     val viewModel: VM by lazy {
         ViewModelProvider(this)[viewModelClass]
