@@ -95,7 +95,6 @@ dependencies {
 
     implementation(project(":LibIAP"))
     implementation(project(":LibAds"))
-    implementation(project(":core"))
 
     // Crash recovery
     implementation(libs.lib.recovery)

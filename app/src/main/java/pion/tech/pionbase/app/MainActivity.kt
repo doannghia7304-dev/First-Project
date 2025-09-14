@@ -16,12 +16,12 @@ import androidx.navigation.fragment.NavHostFragment
 import com.example.libiap.IAPConnector
 import com.example.libiap.SubscribeInterface
 import com.example.libiap.model.ProductModel
-import com.piontech.core.lifecycleCallback.FragmentLifecycleCallbacksImpl
 import dagger.hilt.android.AndroidEntryPoint
 import pion.datlt.libads.AdsController
 import pion.datlt.libads.utils.AdsConstant
 import pion.tech.pionbase.BuildConfig
 import pion.tech.pionbase.R
+import pion.tech.pionbase.base.lifecycleCallback.FragmentLifecycleCallbacksImpl
 import pion.tech.pionbase.util.Constant
 import kotlin.getValue
 

@@ -1,12 +1,11 @@
 package pion.tech.pionbase.feature.onboard.viewpager
 
 import android.view.View
-import com.piontech.core.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import pion.tech.pionbase.app.CommonViewModel
+import pion.tech.pionbase.base.BaseFragment
 import pion.tech.pionbase.databinding.LayoutIapBinding
 import pion.tech.pionbase.feature.onboard.OnboardViewModel
-import pion.tech.pionbase.util.setPreventDoubleClickScaleView
 
 @AndroidEntryPoint
 class OnboardScreen5Fragment :

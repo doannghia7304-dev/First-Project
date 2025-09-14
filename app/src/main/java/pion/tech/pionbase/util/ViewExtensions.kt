@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Rect
+import android.graphics.drawable.Drawable
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.SystemClock
@@ -24,6 +25,11 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import java.lang.Exception
 
 @SuppressLint("ClickableViewAccessibility")
@@ -41,6 +47,10 @@ fun SwitchCompat.preventDrag() {
 
 fun View.setBackgroundTint(color: Int) {
     ViewCompat.setBackgroundTintList(this, ColorStateList.valueOf(color))
+}
+
+fun View.removeBackgroundTint() {
+    ViewCompat.setBackgroundTintList(this, null)
 }
 
 fun Context.getActionBarHeight(): Int {
@@ -71,14 +81,6 @@ fun ImageView.setTintColor(
     imageTintList = ColorStateList.valueOf(ContextCompat.getColor(context, color))
 }
 
-fun TextView.changeTextColor(newColor: Int) {
-    setTextColor(
-        ContextCompat.getColor(
-            context,
-            newColor,
-        ),
-    )
-}
 
 fun View.animRotation() {
     val anim =
@@ -103,18 +105,6 @@ fun View.isShow() = visibility == View.VISIBLE
 fun View.isGone() = visibility == View.GONE
 
 fun View.isInvisible() = visibility == View.INVISIBLE
-
-fun View.show() {
-    visibility = View.VISIBLE
-}
-
-fun View.gone() {
-    visibility = View.GONE
-}
-
-fun View.inv() {
-    visibility = View.INVISIBLE
-}
 
 fun View.setPreventDoubleClick(
     debounceTime: Long = 500,
@@ -258,4 +248,59 @@ fun Context.openBrowser(url: String) {
     } catch (ex: Exception) {
         ex.printStackTrace()
     }
+}
+
+fun ImageView.loadImage(
+    source: Any?,
+    placeholder: Int,
+) {
+    Glide
+        .with(this)
+        .load(source)
+        .placeholder(placeholder)
+        .into(this)
+}
+
+fun ImageView.loadImage(source: Any?) {
+    Glide
+        .with(this)
+        .load(source)
+        .into(this)
+}
+
+fun ImageView.loadWithCallback(
+    data: Any?,
+    onStart: (() -> Unit)? = null,
+    onSuccess: (() -> Unit)? = null,
+    onError: (() -> Unit)? = null,
+) {
+    onStart?.invoke()
+
+    Glide
+        .with(this)
+        .load(data)
+        .listener(
+            object : RequestListener<Drawable> {
+                override fun onResourceReady(
+                    resource: Drawable,
+                    model: Any,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource,
+                    isFirstResource: Boolean,
+                ): Boolean {
+                    onSuccess?.invoke()
+                    return false
+                }
+
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>,
+                    isFirstResource: Boolean,
+                ): Boolean {
+                    onError?.invoke()
+                    return false
+                }
+            },
+        ).into(this)
 }

@@ -1,9 +1,9 @@
 package pion.tech.pionbase.feature.home.adapter
 
 import androidx.databinding.ViewDataBinding
-import com.piontech.core.base.BaseListAdapter
-import com.piontech.core.base.createDiffCallback
 import pion.tech.pionbase.R
+import pion.tech.pionbase.base.BaseListAdapter
+import pion.tech.pionbase.base.createDiffCallback
 import pion.tech.pionbase.databinding.ItemDummy2Binding
 import pion.tech.pionbase.databinding.ItemDummyBinding
 
@@ -11,7 +11,7 @@ class DemoMultipleAdapter :
     BaseListAdapter<String, ViewDataBinding>(
         createDiffCallback(
             areItemsTheSame = { oldItem, newItem -> oldItem == newItem },
-            areContentsTheSame = { oldItem, newItem -> true },
+            areContentsTheSame = { oldItem, newItem -> false },
         ),
     ) {
     private val VIEW_TYPE_1 = 1

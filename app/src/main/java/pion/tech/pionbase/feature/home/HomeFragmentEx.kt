@@ -13,7 +13,6 @@ fun HomeFragment.plusEvent() {
     val listString = listOf("so1", "so2", "so3", "so4", "so5")
     adapter.submitList(listString)
     binding.btnPlus.setPreventDoubleClickScaleView {
-        viewModel.plusValue()
         val bottomSheet = DemoBottomSheet()
         bottomSheet.show(childFragmentManager)
 //        val dialog = DemoDialog.newInstance(dummyTitle = "Day la param1")

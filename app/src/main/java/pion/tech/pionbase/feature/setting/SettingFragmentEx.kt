@@ -15,9 +15,7 @@ import pion.tech.pionbase.R
 import pion.tech.pionbase.feature.setting.dialog.AdvertisementDialog
 import pion.tech.pionbase.feature.setting.dialog.DeveloperDialog
 import pion.tech.pionbase.util.Constant
-import pion.tech.pionbase.util.gone
 import pion.tech.pionbase.util.setPreventDoubleClickScaleView
-import pion.tech.pionbase.util.show
 
 fun SettingFragment.backEvent() {
     onSystemBack {
@@ -110,20 +108,21 @@ fun SettingFragment.gdprEvent() {
     }
 
     if (AdsController.getInstance().isNeedToShowConsent() || BuildConfig.DEBUG) {
-        binding.btnGdpr.show()
+        binding.btnGdpr.isVisible = true
     } else {
-        binding.btnGdpr.gone()
+        binding.btnGdpr.isVisible = false
     }
 }
 
 fun SettingFragment.resetGDPR() {
     if (BuildConfig.DEBUG) {
+        binding.btnResetGdpr.isVisible = true
         binding.btnResetGdpr.setPreventDoubleClickScaleView {
             runCatching {
                 AdsController.getInstance().resetConsent()
             }
         }
     } else {
-        binding.btnResetGdpr.gone()
+        binding.btnResetGdpr.isVisible = false
     }
 }

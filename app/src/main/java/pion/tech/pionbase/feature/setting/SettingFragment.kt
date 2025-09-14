@@ -1,9 +1,9 @@
 package pion.tech.pionbase.feature.setting
 
 import android.view.View
-import com.piontech.core.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import pion.tech.pionbase.app.CommonViewModel
+import pion.tech.pionbase.base.BaseFragment
 import pion.tech.pionbase.databinding.FragmentSettingBinding
 
 @AndroidEntryPoint

@@ -1,13 +1,13 @@
 package pion.tech.pionbase.feature.home
 
 import android.view.View
-import com.piontech.core.base.BaseFragment
-import com.piontech.core.utils.collectFlowOnView
 import dagger.hilt.android.AndroidEntryPoint
 import pion.tech.pionbase.app.CommonViewModel
+import pion.tech.pionbase.base.BaseFragment
 import pion.tech.pionbase.databinding.FragmentHomeBinding
 import pion.tech.pionbase.feature.home.adapter.DemoMultipleAdapter
 import pion.tech.pionbase.feature.home.dialog.DemoDialog
+import pion.tech.pionbase.util.collectFlowOnView
 import pion.tech.pionbase.util.displayToast
 import pion.tech.pionbase.util.handleUiState
 
@@ -22,8 +22,6 @@ class HomeFragment :
     val adapter = DemoMultipleAdapter()
 
     override fun init(view: View) {
-        logger.logScreen("home_show")
-        logger.logEvent("home_view")
         initView()
         plusEvent()
         settingEvent()
@@ -34,10 +32,6 @@ class HomeFragment :
     }
 
     override fun subscribeObserver(view: View) {
-        viewModel.countValue.collectFlowOnView(viewLifecycleOwner) {
-//            binding.tvCount.text = "$it"
-        }
-
         // Observe installed apps state
         viewModel.installedAppsUiState.collectFlowOnView(viewLifecycleOwner) {
             it.handleUiState(

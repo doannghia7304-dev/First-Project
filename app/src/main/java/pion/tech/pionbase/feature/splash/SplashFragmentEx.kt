@@ -1,22 +1,18 @@
 package pion.tech.pionbase.feature.splash
 
 import android.animation.ValueAnimator
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.lifecycleScope
 import com.example.libiap.IAPConnector
-import com.piontech.core.base.launchIO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.withContext
 import pion.datlt.libads.AdsController
 import pion.datlt.libads.utils.AdsConstant
-import pion.datlt.libads.utils.adsuntils.safePreloadAds
-import pion.datlt.libads.utils.adsuntils.showSplashInter
 import pion.datlt.libads.utils.loadAndShowConsentFormIfRequire
 import pion.datlt.libads.utils.requestConsentInfoUpdate
 import pion.tech.pionbase.R
+import pion.tech.pionbase.base.launchIO
 import pion.tech.pionbase.data.model.remoteConfig.RemoteConfigDtoModel
 import pion.tech.pionbase.util.Constant
 import pion.tech.pionbase.util.UiState

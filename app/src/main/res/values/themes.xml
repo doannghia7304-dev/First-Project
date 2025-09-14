@@ -1,5 +1,221 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+
+    <style name="RoundedCorner">
+        <item name="android:background">@drawable/bg_rounded</item>
+    </style>
+
+    <style name="RoundedCorner.1">
+        <item name="cornerRadius">@dimen/_1dp</item>
+    </style>
+
+    <style name="RoundedCorner.2">
+        <item name="cornerRadius">@dimen/_2dp</item>
+    </style>
+
+    <style name="RoundedCorner.3">
+        <item name="cornerRadius">@dimen/_3dp</item>
+    </style>
+
+    <style name="RoundedCorner.4">
+        <item name="cornerRadius">@dimen/_4dp</item>
+    </style>
+
+    <style name="RoundedCorner.5">
+        <item name="cornerRadius">@dimen/_5dp</item>
+    </style>
+
+    <style name="RoundedCorner.6">
+        <item name="cornerRadius">@dimen/_6dp</item>
+    </style>
+
+    <style name="RoundedCorner.7">
+        <item name="cornerRadius">@dimen/_7dp</item>
+    </style>
+
+    <style name="RoundedCorner.8">
+        <item name="cornerRadius">@dimen/_8dp</item>
+    </style>
+
+    <style name="RoundedCorner.9">
+        <item name="cornerRadius">@dimen/_9dp</item>
+    </style>
+
+    <style name="RoundedCorner.10">
+        <item name="cornerRadius">@dimen/_10dp</item>
+    </style>
+
+    <style name="RoundedCorner.11">
+        <item name="cornerRadius">@dimen/_11dp</item>
+    </style>
+
+    <style name="RoundedCorner.12">
+        <item name="cornerRadius">@dimen/_12dp</item>
+    </style>
+
+    <style name="RoundedCorner.13">
+        <item name="cornerRadius">@dimen/_13dp</item>
+    </style>
+
+    <style name="RoundedCorner.14">
+        <item name="cornerRadius">@dimen/_14dp</item>
+    </style>
+
+    <style name="RoundedCorner.15">
+        <item name="cornerRadius">@dimen/_15dp</item>
+    </style>
+
+    <style name="RoundedCorner.16">
+        <item name="cornerRadius">@dimen/_16dp</item>
+    </style>
+
+    <style name="RoundedCorner.17">
+        <item name="cornerRadius">@dimen/_17dp</item>
+    </style>
+
+    <style name="RoundedCorner.18">
+        <item name="cornerRadius">@dimen/_18dp</item>
+    </style>
+
+    <style name="RoundedCorner.19">
+        <item name="cornerRadius">@dimen/_19dp</item>
+    </style>
+
+    <style name="RoundedCorner.20">
+        <item name="cornerRadius">@dimen/_20dp</item>
+    </style>
+
+    <style name="RoundedCorner.21">
+        <item name="cornerRadius">@dimen/_21dp</item>
+    </style>
+
+    <style name="RoundedCorner.22">
+        <item name="cornerRadius">@dimen/_22dp</item>
+    </style>
+
+    <style name="RoundedCorner.23">
+        <item name="cornerRadius">@dimen/_23dp</item>
+    </style>
+
+    <style name="RoundedCorner.24">
+        <item name="cornerRadius">@dimen/_24dp</item>
+    </style>
+
+    <style name="RoundedCorner.25">
+        <item name="cornerRadius">@dimen/_25dp</item>
+    </style>
+
+    <style name="RoundedCorner.26">
+        <item name="cornerRadius">@dimen/_26dp</item>
+    </style>
+
+    <style name="RoundedCorner.27">
+        <item name="cornerRadius">@dimen/_27dp</item>
+    </style>
+
+    <style name="RoundedCorner.28">
+        <item name="cornerRadius">@dimen/_28dp</item>
+    </style>
+
+    <style name="RoundedCorner.29">
+        <item name="cornerRadius">@dimen/_29dp</item>
+    </style>
+
+    <style name="RoundedCorner.30">
+        <item name="cornerRadius">@dimen/_30dp</item>
+    </style>
+
+    <style name="RoundedCorner.31">
+        <item name="cornerRadius">@dimen/_31dp</item>
+    </style>
+
+    <style name="RoundedCorner.32">
+        <item name="cornerRadius">@dimen/_32dp</item>
+    </style>
+
+    <style name="RoundedCorner.33">
+        <item name="cornerRadius">@dimen/_33dp</item>
+    </style>
+
+    <style name="RoundedCorner.34">
+        <item name="cornerRadius">@dimen/_34dp</item>
+    </style>
+
+    <style name="RoundedCorner.35">
+        <item name="cornerRadius">@dimen/_35dp</item>
+    </style>
+
+    <style name="RoundedCorner.36">
+        <item name="cornerRadius">@dimen/_36dp</item>
+    </style>
+
+    <style name="RoundedCorner.37">
+        <item name="cornerRadius">@dimen/_37dp</item>
+    </style>
+
+    <style name="RoundedCorner.38">
+        <item name="cornerRadius">@dimen/_38dp</item>
+    </style>
+
+    <style name="RoundedCorner.39">
+        <item name="cornerRadius">@dimen/_39dp</item>
+    </style>
+
+    <style name="RoundedCorner.40">
+        <item name="cornerRadius">@dimen/_40dp</item>
+    </style>
+
+    <style name="RoundedCorner.41">
+        <item name="cornerRadius">@dimen/_41dp</item>
+    </style>
+
+    <style name="RoundedCorner.42">
+        <item name="cornerRadius">@dimen/_42dp</item>
+    </style>
+
+    <style name="RoundedCorner.43">
+        <item name="cornerRadius">@dimen/_43dp</item>
+    </style>
+
+    <style name="RoundedCorner.44">
+        <item name="cornerRadius">@dimen/_44dp</item>
+    </style>
+
+    <style name="RoundedCorner.45">
+        <item name="cornerRadius">@dimen/_45dp</item>
+    </style>
+
+    <style name="RoundedCorner.46">
+        <item name="cornerRadius">@dimen/_46dp</item>
+    </style>
+
+    <style name="RoundedCorner.47">
+        <item name="cornerRadius">@dimen/_47dp</item>
+    </style>
+
+    <style name="RoundedCorner.48">
+        <item name="cornerRadius">@dimen/_48dp</item>
+    </style>
+
+    <style name="RoundedCorner.49">
+        <item name="cornerRadius">@dimen/_49dp</item>
+    </style>
+
+    <style name="RoundedCorner.50">
+        <item name="cornerRadius">@dimen/_50dp</item>
+    </style>
+
+    <style name="RoundedCorner.100">
+        <item name="cornerRadius">@dimen/_100dp</item>
+    </style>
+
+    <style name="RoundedCorner.200">
+        <item name="cornerRadius">@dimen/_200dp</item>
+    </style>
+
+    <style name="RoundedCorner.300">
+        <item name="cornerRadius">@dimen/_200dp</item>
+    </style>
+
     <style name="Theme.BaseClean" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_500</item>

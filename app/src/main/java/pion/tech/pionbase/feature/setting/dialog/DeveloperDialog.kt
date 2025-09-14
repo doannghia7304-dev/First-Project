@@ -1,8 +1,8 @@
 package pion.tech.pionbase.feature.setting.dialog
 
 import android.os.Bundle
-import com.piontech.core.base.BaseDialogFragment
 import pion.tech.pionbase.R
+import pion.tech.pionbase.base.BaseDialogFragment
 import pion.tech.pionbase.databinding.DialogDeveloperBinding
 import pion.tech.pionbase.util.setPreventDoubleClickScaleView
 

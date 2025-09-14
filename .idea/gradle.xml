@@ -13,7 +13,6 @@
             <option value="$PROJECT_DIR$/LibAds" />
             <option value="$PROJECT_DIR$/LibIAP" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/core" />
           </set>
         </option>
       </GradleProjectSettings>

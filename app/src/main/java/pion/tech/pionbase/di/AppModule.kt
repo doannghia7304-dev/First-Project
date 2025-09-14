@@ -9,15 +9,12 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
-import com.piontech.core.lifecycleCallback.FragmentLifecycleAction
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import pion.tech.pionbase.BuildConfig
 import pion.tech.pionbase.R
-import pion.tech.pionbase.data.repository.dataStore.DataStoreRepository
-import pion.tech.pionbase.util.FragmentLifecycleActionImpl
 import javax.inject.Singleton
 
 val Context.dataStore by preferencesDataStore(name = "${BuildConfig.APPLICATION_ID}_preferences")
@@ -45,8 +42,4 @@ object AppModule {
     @Provides
     @Singleton
     fun provideDataStore(application: Application): DataStore<Preferences> = application.dataStore
-
-    @Provides
-    fun provideFragmentLifecycleAction(dataStoreRepository: DataStoreRepository): FragmentLifecycleAction =
-        FragmentLifecycleActionImpl(dataStoreRepository)
 }

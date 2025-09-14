@@ -2,13 +2,13 @@ package pion.tech.pionbase.feature.language
 
 import android.view.View
 import androidx.core.view.isVisible
-import com.piontech.core.base.BaseFragment
-import com.piontech.core.utils.collectFlowOnView
 import dagger.hilt.android.AndroidEntryPoint
 import pion.tech.pionbase.app.CommonViewModel
+import pion.tech.pionbase.base.BaseFragment
 import pion.tech.pionbase.data.model.language.LanguageUIModel
 import pion.tech.pionbase.databinding.FragmentLanguageBinding
 import pion.tech.pionbase.feature.language.adapter.LanguageAdapter
+import pion.tech.pionbase.util.collectFlowOnView
 import pion.tech.pionbase.util.handleUiState
 
 @AndroidEntryPoint
