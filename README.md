@@ -1,57 +1,77 @@
 # Pion-Base: Kiến Trúc Ứng Dụng Android
 
-## Tổng Quan Về Kiến Trúc
+## Tổng Quan Về Dự Án
 
-Dự án này tuân theo kiến trúc ứng dụng được đề xuất bởi Google, tập trung vào hai lớp chính:
+Pion-Base là một dự án mẫu (template) cho ứng dụng Android tuân theo kiến trúc được đề xuất bởi Google. Dự án này tập trung vào việc tạo ra một nền tảng vững chắc cho việc phát triển ứng dụng Android với kiến trúc sạch, dễ bảo trì và mở rộng.
 
 ![Kiến trúc ứng dụng](https://developer.android.com/static/topic/libraries/architecture/images/mad-arch-overview.png)
 
+## Kiến Trúc Ứng Dụng
+
+Dự án sử dụng kiến trúc 2 lớp chính (bỏ qua Domain Layer để đơn giản hóa):
+
 ### Lớp UI (UI Layer)
 Lớp UI hiển thị dữ liệu ứng dụng lên màn hình và phản hồi tương tác của người dùng. Lớp này sử dụng mô hình MVVM (Model-View-ViewModel) với các thành phần:
-- **Fragment**: Định nghĩa giao diện người dùng
-- **FragmentEx**: Xử lý logic tách biệt như xử lý sự kiện click, khởi tạo logic
+- **Fragment**: Định nghĩa giao diện người dùng và vòng đời màn hình
+- **FragmentEx**: Extension functions xử lý logic tách biệt như sự kiện click, khởi tạo logic
 - **ViewModel**: Quản lý trạng thái UI và xử lý logic nghiệp vụ
 
 ### Lớp Dữ Liệu (Data Layer)
-Lớp Dữ liệu chứa logic nghiệp vụ và quản lý dữ liệu từ các nguồn khác nhau. Lớp này bao gồm:
+Lớp Dữ liệu chứa logic truy cập dữ liệu và quản lý dữ liệu từ các nguồn khác nhau:
 - **Repository**: Cung cấp API đơn giản, sạch sẽ cho phần còn lại của ứng dụng
-- **Data Sources**: Quản lý dữ liệu từ các nguồn khác nhau (API, cơ sở dữ liệu, bộ nhớ đệm)
-- **Model**: Đại diện cho dữ liệu trong ứng dụng
+- **Data Sources**: Quản lý dữ liệu từ API, cơ sở dữ liệu Room, DataStore
+- **DTO Models**: Đại diện cho dữ liệu ở lớp Data
+- **UI Models**: Đại diện cho dữ liệu ở lớp UI
 
-## Cấu Trúc Mã Nguồn
+## Cấu Trúc Dự Án
 
-Dự án được tổ chức thành các module chính:
-
-### Module Core
-Chứa các thành phần cơ bản và tiện ích được sử dụng trong toàn bộ ứng dụng:
-- **base**: Các lớp cơ sở như BaseFragment, BaseViewModel, BaseDialogFragment
-- **di**: Cấu hình Dependency Injection với Hilt
-- **utils**: Các tiện ích và extension functions
-- **navigator**: Xử lý điều hướng trong ứng dụng
-
-### Module App
-Chứa các tính năng cụ thể của ứng dụng:
-- **feature**: Các tính năng được tổ chức theo package riêng biệt
-- **data**: Chứa repositories, data sources và models
-- **util**: Các tiện ích cụ thể cho ứng dụng
+```
+app/
+├── src/main/java/pion/tech/pionbase/
+│   ├── app/                    # Application class và CommonViewModel
+│   ├── base/                   # Các lớp cơ sở
+│   │   ├── BaseFragment.kt
+│   │   ├── BaseViewModel.kt
+│   │   ├── BaseDialogFragment.kt
+│   │   └── BaseBottomSheetDialogFragment.kt
+│   ├── data/                   # Lớp dữ liệu
+│   │   ├── database/           # Room database
+│   │   ├── dto/                # Data Transfer Objects
+│   │   ├── remote/             # API interfaces
+│   │   └── repository/         # Repository implementations
+│   ├── di/                     # Dependency Injection với Hilt
+│   ├── feature/                # Các tính năng của ứng dụng
+│   │   ├── splash/             # Màn hình khởi động
+│   │   ├── onboard/            # Màn hình giới thiệu
+│   │   ├── home/               # Màn hình chính
+│   │   ├── setting/            # Màn hình cài đặt
+│   │   └── language/           # Màn hình chọn ngôn ngữ
+│   └── util/                   # Các tiện ích và constants
+├── LibAds/                     # Module quản lý quảng cáo
+└── LibIAP/                     # Module mua hàng trong ứng dụng
+```
 
 ## Các Lớp Cơ Sở
 
 ### BaseFragment
 ```kotlin
-abstract class BaseFragment<Binding : ViewBinding, VM : ViewModel, CommonVM : ViewModel>(
+abstract class BaseFragment<Binding : ViewBinding, VM : ViewModel>(
     private val inflate: Inflate<Binding>,
     private val viewModelClass: Class<VM>,
-    private val commonViewModelClass: Class<CommonVM>,
 ) : Fragment()
 ```
 
 BaseFragment là lớp cơ sở cho tất cả các Fragment trong ứng dụng. Nó cung cấp:
-- Quản lý ViewBinding tự động
-- Khởi tạo ViewModel và CommonViewModel
-- Xử lý điều hướng thông qua Navigator
-- Quản lý dialog loading
-- Xử lý nút back hệ thống
+- Quản lý ViewBinding tự động với lazy initialization
+- Khởi tạo ViewModel thông qua ViewModelProvider
+- CommonViewModel được inject thông qua activityViewModels()
+- Xử lý điều hướng thông qua Navigator pattern
+- Quản lý LoadingDialog tự động
+- Tích hợp Firebase Analytics Logger
+- Quản lý DataStore Repository
+- Xử lý quảng cáo (App Resume Ads) với premium logic
+- Hỗ trợ coroutines với các extension functions (launchIO, launchMain, launchDefault)
+- Xử lý nút back hệ thống với callback tùy chỉnh
 
 ### BaseViewModel
 ```kotlin
@@ -76,11 +96,38 @@ Mỗi màn hình trong ứng dụng bao gồm 3 thành phần chính:
 ```kotlin
 @AndroidEntryPoint
 class HomeFragment :
-    BaseFragment<FragmentHomeBinding, HomeViewModel, CommonViewModel>(
+    BaseFragment<FragmentHomeBinding, HomeViewModel>(
         FragmentHomeBinding::inflate,
         HomeViewModel::class.java,
-        CommonViewModel::class.java,
-    )
+    ),
+    DemoDialog.Listener {
+    
+    val adapter = InstallAppAdapter()
+
+    override fun init(view: View) {
+        initView()
+        settingEvent()
+        showDemoDialogEvent()
+        onBackEvent()
+    }
+
+    override fun subscribeObserver(view: View) {
+        // Observe installed apps state
+        viewModel.installedAppsUiState.collectFlowOnView(viewLifecycleOwner) {
+            it.handleUiState(
+                onLoading = { showHideLoading(true) },
+                onSuccess = { installedApps -> 
+                    showHideLoading(false)
+                    adapter.submitList(installedApps) 
+                },
+                onError = { 
+                    showHideLoading(false)
+                    displayToast("Failed to load installed apps") 
+                }
+            )
+        }
+    }
+}
 ```
 
 ### 2. FragmentEx
@@ -235,38 +282,56 @@ viewModel.installedAppsUiState.collectFlowOnView(viewLifecycleOwner) {
 }
 ```
 
-## Nguyên Tắc SOLID
+## Các Tính Năng Được Triển Khai
 
-Dự án áp dụng các nguyên tắc SOLID để tạo ra mã nguồn dễ bảo trì và mở rộng:
+Dự án Pion-Base bao gồm các màn hình và tính năng cơ bản sau:
 
-### Single Responsibility (Trách nhiệm đơn lẻ)
-Mỗi lớp chỉ có một trách nhiệm duy nhất. Ví dụ:
-- Fragment: Hiển thị UI
-- ViewModel: Quản lý trạng thái và logic
-- Repository: Truy cập dữ liệu
+### 1. Splash Screen (SplashFragment)
+- Màn hình khởi động ứng dụng
+- Hiển thị logo và loading
+- Điều hướng tự động đến onboard hoặc home
 
-### Open/Closed (Mở/Đóng)
-Các lớp mở rộng nhưng đóng sửa đổi. Ví dụ:
-- Sử dụng interface cho Repository để có thể thay đổi implementation mà không ảnh hưởng đến code sử dụng nó
+### 2. Onboard Screen (OnboardFragment) 
+- Màn hình giới thiệu ứng dụng cho người dùng mới
+- Hướng dẫn sử dụng cơ bản
+- Lưu trạng thái đã xem onboard vào DataStore
 
-### Liskov Substitution (Thay thế Liskov)
-Các lớp con có thể thay thế lớp cha mà không làm thay đổi tính đúng đắn của chương trình. Ví dụ:
-- Tất cả các Fragment đều kế thừa từ BaseFragment và tuân theo cùng một contract
+### 3. Home Screen (HomeFragment)
+- Màn hình chính của ứng dụng
+- Hiển thị danh sách ứng dụng đã cài đặt trên thiết bị
+- Tích hợp với InstallAppAdapter để hiển thị danh sách
+- Kết nối với API để lấy categories và templates
+- Hỗ trợ dialog demo với callback interface
 
-### Interface Segregation (Phân tách Interface)
-Sử dụng nhiều interface nhỏ thay vì một interface lớn. Ví dụ:
-- Repository interface chỉ định nghĩa các phương thức cần thiết cho một tính năng cụ thể
+### 4. Settings Screen (SettingFragment)
+- Màn hình cài đặt ứng dụng
+- Quản lý các tùy chọn người dùng
+- Tích hợp premium functionality
 
-### Dependency Inversion (Đảo ngược phụ thuộc)
-Phụ thuộc vào abstraction, không phụ thuộc vào implementation. Ví dụ:
-- ViewModel phụ thuộc vào Repository interface, không phụ thuộc vào implementation cụ thể
-- Sử dụng Hilt để inject các dependency
+### 5. Language Screen (LanguageFragment)
+- Màn hình chọn ngôn ngữ
+- Hỗ trợ đa ngôn ngữ
+- Lưu lựa chọn ngôn ngữ vào DataStore
+
+### Các Repository Được Triển Khai:
+- **ApiRepository**: Quản lý các API calls
+- **DataStoreRepository**: Lưu trữ preferences và settings
+- **InstalledAppsRepository**: Quản lý danh sách ứng dụng đã cài đặt
+- **LanguageRepository**: Quản lý ngôn ngữ ứng dụng
+- **RemoteConfigRepository**: Quản lý Firebase Remote Config
+
+### Tích Hợp Thư Viện:
+- **LibAds**: Module quản lý quảng cáo (App Resume Ads, Banner, Interstitial)
+- **LibIAP**: Module mua hàng trong ứng dụng (In-App Purchase)
+- **Firebase Analytics**: Theo dõi và phân tích hành vi người dùng
+- **Room Database**: Cơ sở dữ liệu local với DummyDAO
+- **DataStore**: Lưu trữ preferences thay thế SharedPreferences
 
 ## Lưu Ý Khi Phát Triển
 
 1. **Tổ chức code**:
     - Tổ chức code theo tính năng (feature)
-    - Mỗi tính năng có 3 thành phần: Fragment, FragmentEx, ViewModel
+    - Mỗi tính năng có 3 thành phần chính: Fragment, FragmentEx (extension functions), ViewModel
 
 2. **Dependency Injection**:
     - Sử dụng Hilt cho dependency injection
@@ -276,15 +341,28 @@ Phụ thuộc vào abstraction, không phụ thuộc vào implementation. Ví d�
     - Sử dụng coroutines cho các tác vụ bất đồng bộ
     - Sử dụng Flow để xử lý dữ liệu reactive
     - Sử dụng StateFlow để quản lý trạng thái UI
+    - Sử dụng các extension functions: launchIO, launchMain, launchDefault
 
-4. **Xử lý lỗi**:
-    - Sử dụng Result và UiState để xử lý lỗi một cách nhất quán
-    - Luôn xử lý các trường hợp lỗi trong UI
+4. **Xử lý lỗi và trạng thái**:
+    - Sử dụng Result<T> và UiState<T> để xử lý lỗi một cách nhất quán
+    - Luôn xử lý các trường hợp loading, success, error trong UI
+    - Sử dụng handleUiState extension function
 
-5. **Mở rộng**:
-    - Khi thêm tính năng mới, tạo package mới trong feature
-    - Tuân theo mẫu Fragment, FragmentEx, ViewModel
-    - Tạo Repository mới nếu cần
+5. **Model và Repository**:
+    - Phân tách DTO Models (Data Layer) và UI Models (UI Layer)
+    - Sử dụng toPresentation() extension function để mapping
+    - Repository functions phải return Flow<Result<T>>
+
+6. **Mở rộng dự án**:
+    - Khi thêm tính năng mới, tạo package mới trong feature/
+    - Tuân theo pattern Fragment + FragmentEx + ViewModel
+    - Tạo Repository và DTO/UI Models nếu cần
+    - Sử dụng các base classes (BaseFragment, BaseViewModel, etc.)
+
+7. **Performance và Memory**:
+    - Sử dụng ViewBinding thay vì findViewById
+    - Quản lý lifecycle đúng cách với viewLifecycleOwner
+    - Cancel coroutines khi không cần thiết
 
 ## Hình Ảnh Minh Họa
 
