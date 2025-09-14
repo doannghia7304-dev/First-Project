@@ -193,7 +193,6 @@ fun Fragment.doActionWhenResume(action: () -> Unit) {
         return
     }
 
-    // Nếu chưa RESUMED thì chờ tới khi onResume
     lifecycle.addObserver(
         object : LifecycleEventObserver {
             override fun onStateChanged(
