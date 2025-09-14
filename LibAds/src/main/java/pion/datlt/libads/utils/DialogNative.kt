@@ -29,6 +29,7 @@ object DialogNative {
 
     private var dialog: Dialog? = null
     private var listener: NativeInterListener? = null
+    private var listDismissListener = mutableListOf<() -> Unit>()
 
     fun show(
         context: Activity,
@@ -36,8 +37,8 @@ object DialogNative {
         spaceName: String,
         listener: NativeInterListener? = null
     ) {
+        listDismissListener.clear()
         this.listener = listener
-
         if (dialog?.isShowing == true) {
             listener?.onShowNative()
             return
@@ -122,8 +123,6 @@ object DialogNative {
             }
         }
 
-
-
         AdsController.getInstance().showLoadedAds(
             spaceName = spaceName,
             layoutToAttachAds = binding.adViewGroup,
@@ -145,6 +144,7 @@ object DialogNative {
 
                 override fun onAdClick() {
                     super.onAdClick()
+                    listener?.onClickNative()
                     dismiss()
                     setLastTimeShowInter(spaceNameConfig = configName)
                 }
@@ -169,12 +169,19 @@ object DialogNative {
     }
 
     fun runWhenNativeDismiss(onDismiss: () -> Unit) {
+        listDismissListener.add(onDismiss)
         if (dialog?.isShowing == true) {
             dialog?.setOnDismissListener {
-                onDismiss.invoke()
+                listDismissListener.forEach {
+                    it.invoke()
+                }
+                listDismissListener.clear()
             }
         } else {
-            onDismiss.invoke()
+            listDismissListener.forEach {
+                it.invoke()
+            }
+            listDismissListener.clear()
         }
     }
 
@@ -187,4 +194,5 @@ object DialogNative {
 interface NativeInterListener {
     fun onShowNative()
     fun onCloseNative()
+    fun onClickNative()
 }

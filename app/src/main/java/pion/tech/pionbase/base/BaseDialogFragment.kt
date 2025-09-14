@@ -3,7 +3,6 @@ package pion.tech.pionbase.base
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -13,6 +12,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.LayoutRes
+import androidx.core.graphics.drawable.toDrawable
 import androidx.databinding.DataBindingComponent
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
@@ -25,7 +25,6 @@ import javax.inject.Inject
 abstract class BaseDialogFragment<T : ViewDataBinding>(
     @LayoutRes private val contentLayoutId: Int,
 ) : DialogFragment() {
-
     @Inject
     lateinit var logger: FirebaseAnalyticsLogger
 
@@ -34,13 +33,12 @@ abstract class BaseDialogFragment<T : ViewDataBinding>(
     private var _binding: T? = null
 
     protected val binding: T
-        get() = checkNotNull(_binding) {
-            "DialogFragment ${this::class.simpleName} binding cannot be accessed before onCreateView() or after onDestroyView()"
-        }
+        get() =
+            checkNotNull(_binding) {
+                "DialogFragment ${this::class.simpleName} binding cannot be accessed before onCreateView() or after onDestroyView()"
+            }
 
-    protected inline fun binding(block: T.() -> Unit): T {
-        return binding.apply(block)
-    }
+    protected inline fun binding(block: T.() -> Unit): T = binding.apply(block)
 
     override fun onAttach(context: Context) {
         Timber.d("${this::class.simpleName} onAttach")
@@ -55,7 +53,7 @@ abstract class BaseDialogFragment<T : ViewDataBinding>(
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         Timber.d("${this::class.simpleName} onCreateView")
         _binding =
@@ -64,7 +62,10 @@ abstract class BaseDialogFragment<T : ViewDataBinding>(
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         Timber.d("${this::class.simpleName} onViewCreated $savedInstanceState")
         super.onViewCreated(view, savedInstanceState)
 
@@ -72,10 +73,10 @@ abstract class BaseDialogFragment<T : ViewDataBinding>(
         if (dialog != null) {
             val window = dialog.window
             if (window != null) {
-                window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                window.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
                 window.setLayout(
                     WindowManager.LayoutParams.MATCH_PARENT,
-                    WindowManager.LayoutParams.MATCH_PARENT
+                    WindowManager.LayoutParams.MATCH_PARENT,
                 )
                 val layoutParams = window.attributes
                 layoutParams.gravity = Gravity.CENTER
@@ -107,10 +108,10 @@ abstract class BaseDialogFragment<T : ViewDataBinding>(
         if (dialog != null) {
             val window = dialog.window
             if (window != null) {
-                window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                window.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
                 window.setLayout(
                     WindowManager.LayoutParams.MATCH_PARENT,
-                    WindowManager.LayoutParams.WRAP_CONTENT
+                    WindowManager.LayoutParams.WRAP_CONTENT,
                 )
                 dialog.setCancelable(true)
                 dialog.setCanceledOnTouchOutside(true)
@@ -154,7 +155,10 @@ abstract class BaseDialogFragment<T : ViewDataBinding>(
         show(manager, tag)
     }
 
-    override fun show(manager: FragmentManager, tag: String?) {
+    override fun show(
+        manager: FragmentManager,
+        tag: String?,
+    ) {
         if (isVisible) {
             return
         }

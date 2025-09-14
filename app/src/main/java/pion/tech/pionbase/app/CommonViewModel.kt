@@ -31,6 +31,7 @@ class CommonViewModel
 
         init {
             fetchRemoteConfig()
+            getAppId()
         }
 
         private fun fetchRemoteConfig() {
@@ -62,12 +63,6 @@ class CommonViewModel
                 apiCall = { apiRepository.getTemplateData(categoryId) },
                 transform = { data -> data.map { item -> item.toPresentation() } },
             )
-        }
-
-        fun getApiData() {
-            if (_getCategoryUiState.value !is UiState.Success || _getTemplateUiState.value !is UiState.Success) {
-                getAppId()
-            }
         }
 
         fun setPremium(isPremium: Boolean) {

@@ -1,9 +1,8 @@
-package pion.tech.pionbase.data.dummy
+package pion.tech.pionbase.data.model.dummy
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import pion.tech.pionbase.data.dummy.DummyUiModel
 
 @Entity(tableName = DummyEntity.TABLE_NAME)
 data class DummyEntity(

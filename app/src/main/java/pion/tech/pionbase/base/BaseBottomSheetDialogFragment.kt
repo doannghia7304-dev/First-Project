@@ -8,8 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.databinding.DataBindingComponent
 import androidx.annotation.LayoutRes
+import androidx.databinding.DataBindingComponent
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.FragmentManager
@@ -20,9 +20,8 @@ import timber.log.Timber
 import javax.inject.Inject
 
 abstract class BaseBottomSheetDialogFragment<T : ViewDataBinding>(
-    @LayoutRes private val contentLayoutId: Int
+    @LayoutRes private val contentLayoutId: Int,
 ) : BottomSheetDialogFragment() {
-
     @Inject
     lateinit var logger: FirebaseAnalyticsLogger
 
@@ -31,13 +30,12 @@ abstract class BaseBottomSheetDialogFragment<T : ViewDataBinding>(
     private var _binding: T? = null
 
     protected val binding: T
-        get() = checkNotNull(_binding) {
-            "BottomSheetDialogFragment ${this::class.simpleName} binding cannot be accessed before onCreateView() or after onDestroyView()"
-        }
+        get() =
+            checkNotNull(_binding) {
+                "BottomSheetDialogFragment ${this::class.simpleName} binding cannot be accessed before onCreateView() or after onDestroyView()"
+            }
 
-    protected inline fun binding(block: T.() -> Unit): T {
-        return binding.apply(block)
-    }
+    protected inline fun binding(block: T.() -> Unit): T = binding.apply(block)
 
     override fun onAttach(context: Context) {
         Timber.d("${this::class.simpleName} onAttach")
@@ -52,7 +50,7 @@ abstract class BaseBottomSheetDialogFragment<T : ViewDataBinding>(
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         Timber.d("${this::class.simpleName} onCreateView")
         _binding =
@@ -61,7 +59,10 @@ abstract class BaseBottomSheetDialogFragment<T : ViewDataBinding>(
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         Timber.d("${this::class.simpleName} onViewCreated")
         super.onViewCreated(view, savedInstanceState)
 
@@ -76,15 +77,14 @@ abstract class BaseBottomSheetDialogFragment<T : ViewDataBinding>(
 
     open fun initData(savedInstanceState: Bundle?) {}
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return super.onCreateDialog(savedInstanceState).apply {
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
+        super.onCreateDialog(savedInstanceState).apply {
             setOnShowListener {
                 val bottomSheet =
                     findViewById<View>(R.id.design_bottom_sheet) as FrameLayout?
                 bottomSheet?.setBackgroundResource(android.R.color.transparent)
             }
         }
-    }
 
     override fun onStart() {
         Timber.d("${this::class.simpleName} onStart")
@@ -122,7 +122,10 @@ abstract class BaseBottomSheetDialogFragment<T : ViewDataBinding>(
         show(manager, tag)
     }
 
-    override fun show(manager: FragmentManager, tag: String?) {
+    override fun show(
+        manager: FragmentManager,
+        tag: String?,
+    ) {
         if (isVisible) {
             return
         }

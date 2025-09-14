@@ -6,8 +6,10 @@ import android.os.Bundle
 import timber.log.Timber
 
 class ActivityLifecycleCallbacksImpl : Application.ActivityLifecycleCallbacks {
-
-    override fun onActivityCreated(activity: Activity, bundle: Bundle?) {
+    override fun onActivityCreated(
+        activity: Activity,
+        bundle: Bundle?,
+    ) {
         Timber.d("${activity::class.java.simpleName} onActivityCreated")
     }
 
@@ -27,7 +29,10 @@ class ActivityLifecycleCallbacksImpl : Application.ActivityLifecycleCallbacks {
         Timber.d("${activity::class.java.simpleName} onActivityStopped")
     }
 
-    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
+    override fun onActivitySaveInstanceState(
+        activity: Activity,
+        outState: Bundle,
+    ) {
         Timber.d("${activity::class.java.simpleName} onActivitySaveInstanceState")
     }
 

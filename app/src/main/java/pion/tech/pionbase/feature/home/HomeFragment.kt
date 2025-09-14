@@ -10,6 +10,7 @@ import pion.tech.pionbase.feature.home.dialog.DemoDialog
 import pion.tech.pionbase.util.collectFlowOnView
 import pion.tech.pionbase.util.displayToast
 import pion.tech.pionbase.util.handleUiState
+import timber.log.Timber
 
 @AndroidEntryPoint
 class HomeFragment :
@@ -36,46 +37,46 @@ class HomeFragment :
         viewModel.installedAppsUiState.collectFlowOnView(viewLifecycleOwner) {
             it.handleUiState(
                 onLoading = {
+                    Timber.tag("sagawgawgawggaw").d("chay vao loading")
+
                     showHideLoading(true)
-                    logger.logEvent("installed_apps_loading")
                 },
                 onSuccess = { installedApps ->
+                    Timber.tag("sagawgawgawggaw").d("chay vao onSuccess")
+
                     showHideLoading(false)
-                    logger.logEvent("installed_apps_loaded") {
-                        putString("count", installedApps.size.toString())
-                    }
-                    // Handle the list of installed apps here
-                    // You can update UI, show in RecyclerView, etc.
                 },
                 onError = {
+                    Timber.tag("sagawgawgawggaw").d("chay vao onError")
                     showHideLoading(false)
-                    logger.logEvent("installed_apps_error")
                     displayToast("Failed to load installed apps")
                 },
             )
         }
 
-        commonViewModel.getCategoryUiState.collectFlowOnView(viewLifecycleOwner) {
-            it.handleUiState(
-                onLoading = { showHideLoading(true) },
-                onSuccess = { listAppCategory ->
-                    val templateCategoryId =
-                        listAppCategory.firstOrNull { item -> item.name == "Template" }?.id
-                    if (templateCategoryId != null) {
-                        commonViewModel.getTemplate(templateCategoryId)
-                    }
-                },
-                onError = { showHideLoading(false) },
-            )
-        }
-
-        commonViewModel.getTemplateUiState.collectFlowOnView(viewLifecycleOwner) {
-            it.handleUiState(
-                onLoading = { showHideLoading(true) },
-                onSuccess = { showHideLoading(false) },
-                onError = { showHideLoading(false) },
-            )
-        }
+//        commonViewModel.getCategoryUiState.collectFlowOnView(viewLifecycleOwner) {
+//            Timber.tag("sagawgawgawggaw").d("getCategoryUiState: ${it}")
+//            it.handleUiState(
+//                onLoading = { showHideLoading(true) },
+//                onSuccess = { listAppCategory ->
+//                    val templateCategoryId =
+//                        listAppCategory.firstOrNull { item -> item.name == "Template" }?.id
+//                    if (templateCategoryId != null) {
+//                        commonViewModel.getTemplate(templateCategoryId)
+//                    }
+//                },
+//                onError = { showHideLoading(false) },
+//            )
+//        }
+//
+//        commonViewModel.getTemplateUiState.collectFlowOnView(viewLifecycleOwner) {
+//            Timber.tag("sagawgawgawggaw").d("getTemplateUiState: ${it}")
+//            it.handleUiState(
+//                onLoading = { showHideLoading(true) },
+//                onSuccess = { showHideLoading(false) },
+//                onError = { showHideLoading(false) },
+//            )
+//        }
     }
 
     override fun onDialogPositiveClick() {

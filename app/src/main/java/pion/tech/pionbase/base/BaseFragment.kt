@@ -26,11 +26,11 @@ import pion.datlt.libads.AdsController
 import pion.datlt.libads.utils.AdsConstant
 import pion.tech.pionbase.R
 import pion.tech.pionbase.base.firebaseAnalytics.FirebaseAnalyticsLogger
-import pion.tech.pionbase.base.lifecycleCallback.FragmentLifecycleAction
 import pion.tech.pionbase.base.navigator.Navigator
 import pion.tech.pionbase.base.navigator.NavigatorImpl
 import pion.tech.pionbase.data.repository.dataStore.DataStoreRepository
 import pion.tech.pionbase.util.Constant
+import pion.tech.pionbase.util.safeShowDialog
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -143,11 +143,18 @@ abstract class BaseFragment<Binding : ViewBinding, VM : ViewModel, CommonVM : Vi
         super.onDestroyView()
     }
 
+    private var loadingDialog: LoadingDialog? = null
+
     fun showHideLoading(isShow: Boolean) {
         if (isShow) {
-            LoadingDialog.getInstance().show(childFragmentManager)
+            if (loadingDialog == null || !loadingDialog!!.isVisible) {
+                loadingDialog?.dismiss()
+                loadingDialog = LoadingDialog()
+                safeShowDialog(loadingDialog)
+            }
         } else {
-            LoadingDialog.getInstance().dismiss()
+            loadingDialog?.dismiss()
+            loadingDialog = null
         }
     }
 
@@ -163,7 +170,13 @@ abstract class BaseFragment<Binding : ViewBinding, VM : ViewModel, CommonVM : Vi
 }
 
 fun Fragment.doActionWhenResume(action: () -> Unit) {
-    viewLifecycleOwner.lifecycle.addObserver(
+    if (isResumed) {
+        action()
+        return
+    }
+
+    // Nếu chưa RESUMED thì chờ tới khi onResume
+    lifecycle.addObserver(
         object : LifecycleEventObserver {
             override fun onStateChanged(
                 source: LifecycleOwner,
@@ -179,7 +192,7 @@ fun Fragment.doActionWhenResume(action: () -> Unit) {
 }
 
 fun Fragment.doActionWhenStop(action: () -> Unit) {
-    viewLifecycleOwner.lifecycle.addObserver(
+    lifecycle.addObserver(
         object : LifecycleEventObserver {
             override fun onStateChanged(
                 source: LifecycleOwner,

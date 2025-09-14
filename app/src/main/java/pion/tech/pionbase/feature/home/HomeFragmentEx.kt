@@ -6,7 +6,6 @@ import pion.tech.pionbase.util.setPreventDoubleClickScaleView
 
 fun HomeFragment.initView() {
     binding.rvMain.adapter = adapter
-    commonViewModel.getApiData()
 }
 
 fun HomeFragment.plusEvent() {

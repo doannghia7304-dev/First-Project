@@ -23,12 +23,8 @@ fun Fragment.safeShowDialog(
 ) {
     if (dialog == null) return
     DialogNative.runWhenNativeDismiss {
-        if (isResumed) {
-            dialog.show(fragmentManager, tag)
-        } else {
-            doActionWhenResume {
-                dialog.show(fragmentManager, tag)
-            }
+        doActionWhenResume {
+            dialog.show(fragmentManager)
         }
     }
 }
@@ -39,12 +35,8 @@ fun Fragment.safeShowBottomSheet(
 ) {
     if (dialog == null) return
     DialogNative.runWhenNativeDismiss {
-        if (isResumed) {
-            dialog.show(fragmentManager, tag)
-        } else {
-            doActionWhenResume {
-                dialog.show(fragmentManager, tag)
-            }
+        doActionWhenResume {
+            dialog.show(fragmentManager)
         }
     }
 }

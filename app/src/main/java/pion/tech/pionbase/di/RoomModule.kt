@@ -9,7 +9,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import pion.tech.pionbase.data.database.AppDatabase
-import pion.tech.pionbase.data.local.dao.DummyDAO
+import pion.tech.pionbase.data.database.dao.DummyDAO
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)

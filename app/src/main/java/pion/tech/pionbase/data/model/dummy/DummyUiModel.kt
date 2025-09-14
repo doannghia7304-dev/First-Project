@@ -1,4 +1,4 @@
-package pion.tech.pionbase.data.dummy
+package pion.tech.pionbase.data.model.dummy
 
 data class DummyUiModel(
     val id: Long,

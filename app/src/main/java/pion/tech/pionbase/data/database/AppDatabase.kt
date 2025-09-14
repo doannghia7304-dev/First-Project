@@ -2,8 +2,8 @@ package pion.tech.pionbase.data.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import pion.tech.pionbase.data.dummy.DummyEntity
-import pion.tech.pionbase.data.local.dao.DummyDAO
+import pion.tech.pionbase.data.model.dummy.DummyEntity
+import pion.tech.pionbase.data.database.dao.DummyDAO
 
 @Database(entities = [DummyEntity::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {

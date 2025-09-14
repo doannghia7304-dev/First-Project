@@ -1,4 +1,4 @@
-package pion.tech.pionbase.base.di
+package pion.tech.pionbase.di
 
 import android.app.Application
 import com.google.firebase.analytics.FirebaseAnalytics

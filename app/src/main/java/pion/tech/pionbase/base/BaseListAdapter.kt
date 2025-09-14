@@ -19,31 +19,43 @@ private interface BaseRecyclerAdapter<Item : Any, ViewBinding : ViewDataBinding>
     /**
      * bind view
      */
-    fun bindView(binding: ViewBinding, item: Item, position: Int)
+    fun bindView(
+        binding: ViewBinding,
+        item: Item,
+        position: Int,
+    )
 }
 
 /**
  * base recycler view adapter
  */
 abstract class BaseListAdapter<Item : Any, ViewBinding : ViewDataBinding>(
-    diffCallback: DiffUtil.ItemCallback<Item>
+    diffCallback: DiffUtil.ItemCallback<Item>,
 ) : ListAdapter<Item, BaseViewHolder<ViewBinding>>(
-    AsyncDifferConfig.Builder(diffCallback)
-        .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
-        .build()
-), BaseRecyclerAdapter<Item, ViewBinding> {
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<ViewBinding> {
-        val binding: ViewBinding = DataBindingUtil.inflate(
-            LayoutInflater.from(parent.context),
-            getLayoutRes(viewType),
-            parent,
-            false
-        )
+        AsyncDifferConfig
+            .Builder(diffCallback)
+            .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
+            .build(),
+    ),
+    BaseRecyclerAdapter<Item, ViewBinding> {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): BaseViewHolder<ViewBinding> {
+        val binding: ViewBinding =
+            DataBindingUtil.inflate(
+                LayoutInflater.from(parent.context),
+                getLayoutRes(viewType),
+                parent,
+                false,
+            )
         return BaseViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: BaseViewHolder<ViewBinding>, position: Int) {
+    override fun onBindViewHolder(
+        holder: BaseViewHolder<ViewBinding>,
+        position: Int,
+    ) {
         val item = getItem(position)
         if (item != null) {
             bindView(holder.binding, item, position)
@@ -53,19 +65,21 @@ abstract class BaseListAdapter<Item : Any, ViewBinding : ViewDataBinding>(
 }
 
 open class BaseViewHolder<ViewBinding : ViewDataBinding>(
-    val binding: ViewBinding
+    val binding: ViewBinding,
 ) : RecyclerView.ViewHolder(binding.root)
 
 inline fun <T> createDiffCallback(
     crossinline areItemsTheSame: (T, T) -> Boolean,
-    crossinline areContentsTheSame: (T, T) -> Boolean
-): DiffUtil.ItemCallback<T> {
-    return object : DiffUtil.ItemCallback<T>() {
-        override fun areItemsTheSame(oldItem: T & Any, newItem: T & Any): Boolean =
-            areItemsTheSame(oldItem, newItem)
+    crossinline areContentsTheSame: (T, T) -> Boolean,
+): DiffUtil.ItemCallback<T> =
+    object : DiffUtil.ItemCallback<T>() {
+        override fun areItemsTheSame(
+            oldItem: T & Any,
+            newItem: T & Any,
+        ): Boolean = areItemsTheSame(oldItem, newItem)
 
-        override fun areContentsTheSame(oldItem: T & Any, newItem: T & Any): Boolean =
-            areContentsTheSame(oldItem, newItem)
+        override fun areContentsTheSame(
+            oldItem: T & Any,
+            newItem: T & Any,
+        ): Boolean = areContentsTheSame(oldItem, newItem)
     }
-}
-
