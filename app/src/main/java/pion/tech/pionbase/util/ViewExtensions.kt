@@ -81,7 +81,6 @@ fun ImageView.setTintColor(
     imageTintList = ColorStateList.valueOf(ContextCompat.getColor(context, color))
 }
 
-
 fun View.animRotation() {
     val anim =
         RotateAnimation(
@@ -99,12 +98,6 @@ fun View.animRotation() {
     anim.fillAfter = true
     startAnimation(anim)
 }
-
-fun View.isShow() = visibility == View.VISIBLE
-
-fun View.isGone() = visibility == View.GONE
-
-fun View.isInvisible() = visibility == View.INVISIBLE
 
 fun View.setPreventDoubleClick(
     debounceTime: Long = 500,
