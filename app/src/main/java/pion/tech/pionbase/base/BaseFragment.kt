@@ -21,7 +21,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import pion.datlt.libads.AdsController
 import pion.datlt.libads.utils.AdsConstant
 import pion.tech.pionbase.R
@@ -30,6 +32,8 @@ import pion.tech.pionbase.base.navigator.Navigator
 import pion.tech.pionbase.base.navigator.NavigatorImpl
 import pion.tech.pionbase.data.repository.dataStore.DataStoreRepository
 import pion.tech.pionbase.util.Constant
+import pion.tech.pionbase.util.Constant.isPremium
+import pion.tech.pionbase.util.getDataOrDefault
 import pion.tech.pionbase.util.safeShowDialog
 import timber.log.Timber
 import javax.inject.Inject
@@ -116,7 +120,7 @@ abstract class BaseFragment<Binding : ViewBinding, VM : ViewModel, CommonVM : Vi
         super.onResume()
         val config: Boolean = AdsConstant.listConfigAds["appresume"]?.isOn ?: false
         launchIO {
-            if (Constant.isPremiumValue(dataStoreRepository) || navigator.getCurrentDestinationId() == R.id.splashFragment ||
+            if (isPremiumValue() || navigator.getCurrentDestinationId() == R.id.splashFragment ||
                 navigator.getCurrentDestinationId() == R.id.onboardFragment ||
                 !config
             ) {
@@ -161,6 +165,20 @@ abstract class BaseFragment<Binding : ViewBinding, VM : ViewModel, CommonVM : Vi
     fun onSystemBack(action: () -> Unit) {
         activity?.onBackPressedDispatcher?.addCallback(this, true) {
             action.invoke()
+        }
+    }
+
+    suspend fun isPremiumValue(): Boolean =
+        withContext(Dispatchers.IO) {
+            val dataStoreIsPremium = dataStoreRepository.getIsPremium().getDataOrDefault(false)
+            return@withContext isPremium || AdsConstant.isPremium || dataStoreIsPremium
+        }
+
+    fun setPremiumValue(isPremium: Boolean) {
+        launchIO {
+            dataStoreRepository.setIsPremium(isPremium).first()
+            Constant.isPremium = isPremium
+            AdsConstant.isPremium = isPremium
         }
     }
 

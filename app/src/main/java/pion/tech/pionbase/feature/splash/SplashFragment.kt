@@ -23,6 +23,7 @@ class SplashFragment :
             return
         }
         onBackEvent()
+        initGdpr()
     }
 
     override fun subscribeObserver(view: View) {

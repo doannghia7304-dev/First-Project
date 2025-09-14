@@ -71,4 +71,17 @@ class CommonViewModel
                 dataStoreRepository.setIsPremium(isPremium).collect()
             }
         }
+
+        private val _checkGdprState = MutableStateFlow(GDPRState.NONE)
+        val checkGdprState = _checkGdprState.asStateFlow()
+
+        fun setGdprState(state: GDPRState) {
+            _checkGdprState.value = state
+        }
     }
+
+enum class GDPRState {
+    NONE,
+    LOADING,
+    DONE,
+}

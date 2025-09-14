@@ -11,14 +11,4 @@ object Constant {
     const val iapId = "removeads"
     var isRemoteConfigSuccess = false
 
-    suspend fun isPremiumValue(dataStoreRepository: DataStoreRepository): Boolean {
-        val dataStoreResult = dataStoreRepository.getIsPremium().first()
-        val dataStoreIsPremium =
-            when (dataStoreResult) {
-                is Result.Success -> dataStoreResult.data
-                else -> false
-            }
-
-        return isPremium || AdsConstant.isPremium || dataStoreIsPremium
-    }
 }

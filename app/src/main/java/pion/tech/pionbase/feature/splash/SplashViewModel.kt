@@ -11,14 +11,4 @@ import javax.inject.Inject
 @HiltViewModel
 class SplashViewModel
     @Inject
-    constructor(
-        private val dataStoreRepository: DataStoreRepository,
-    ) : BaseViewModel() {
-        suspend fun isPremium(): Boolean = Constant.isPremiumValue(dataStoreRepository)
-
-        fun setPremium(isPremium: Boolean) {
-            launchIO {
-                dataStoreRepository.setIsPremium(isPremium).collect()
-            }
-        }
-    }
+    constructor() : BaseViewModel()

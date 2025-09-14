@@ -12,6 +12,7 @@ import pion.datlt.libads.utils.AdsConstant
 import pion.datlt.libads.utils.loadAndShowConsentFormIfRequire
 import pion.datlt.libads.utils.requestConsentInfoUpdate
 import pion.tech.pionbase.R
+import pion.tech.pionbase.app.GDPRState
 import pion.tech.pionbase.base.launchIO
 import pion.tech.pionbase.data.model.remoteConfig.RemoteConfigDtoModel
 import pion.tech.pionbase.util.Constant
@@ -56,7 +57,7 @@ fun SplashFragment.initView() {
 fun SplashFragment.goToNextScreen() {
     launchIO {
         val destination =
-            if (viewModel.isPremium() || isCameFromLanguage()) {
+            if (isPremiumValue() || isCameFromLanguage()) {
                 R.id.action_splashFragment_to_homeFragment
             } else {
                 R.id.action_splashFragment_to_languageFragment
@@ -149,6 +150,29 @@ fun SplashFragment.preloadLanguageAds() {
 //    }
 }
 
+fun SplashFragment.initGdpr() {
+    commonViewModel.setGdprState(GDPRState.LOADING)
+    AdsController.getInstance().requestConsentInfoUpdate(
+        onFailed = { _ ->
+            commonViewModel.setGdprState(GDPRState.DONE)
+        },
+        onSuccess = { isRequire, _ ->
+            if (isRequire) {
+                AdsController.getInstance().loadAndShowConsentFormIfRequire(
+                    onConsentError = { _ ->
+                        commonViewModel.setGdprState(GDPRState.DONE)
+                    },
+                    onConsentDone = {
+                        commonViewModel.setGdprState(GDPRState.DONE)
+                    },
+                )
+            } else {
+                commonViewModel.setGdprState(GDPRState.DONE)
+            }
+        },
+    )
+}
+
 fun SplashFragment.observerIapRemoteData() {
     if (isCameFromLanguage()) return
     if (context?.haveNetworkConnection() != true) {
@@ -159,16 +183,18 @@ fun SplashFragment.observerIapRemoteData() {
     combine(
         IAPConnector.stateCheckIap,
         commonViewModel.remoteConfigUiState,
-    ) { stateCheckIap, remoteConfigData ->
-        // Only proceed when both IAP check is complete and remote config data is available
+        commonViewModel.checkGdprState,
+    ) { stateCheckIap, remoteConfigData, checkGdprState ->
         Timber.tag(tag).d("stateCheckIap: $stateCheckIap")
         Timber.tag(tag).d("remoteConfigData: $remoteConfigData")
+        Timber.tag(tag).d("checkGdprState: $checkGdprState")
         if (stateCheckIap !in
             listOf(
                 IAPConnector.StateCheckIap.DONE,
                 IAPConnector.StateCheckIap.FAILED,
             ) ||
-            remoteConfigData !is UiState.Success
+            remoteConfigData !is UiState.Success ||
+            checkGdprState != GDPRState.DONE
         ) {
             return@combine
         }
@@ -184,34 +210,16 @@ fun SplashFragment.updatePremiumStatus(isIapCheckSuccessful: Boolean) {
     if (isIapCheckSuccessful) {
         val productModel = IAPConnector.getAllProductModel().find { it.isPurchase }
         val isPremium = productModel?.isPurchase == true
-        Constant.isPremium = isPremium
-        viewModel.setPremium(isPremium)
-        AdsConstant.isPremium = isPremium
+        setPremiumValue(isPremium)
     } else {
-        Constant.isPremium = false
-        viewModel.setPremium(false)
-        AdsConstant.isPremium = false
+        setPremiumValue(false)
     }
 }
 
 fun SplashFragment.handlerLogicRemoteConfig(remoteConfigData: RemoteConfigDtoModel?) {
     if (remoteConfigData == null) return
-
     mapRemoteConfigData(remoteConfigData)
-
-    AdsController.getInstance().requestConsentInfoUpdate(
-        onFailed = { _ -> showAds() },
-        onSuccess = { isRequire, _ ->
-            if (isRequire) {
-                AdsController.getInstance().loadAndShowConsentFormIfRequire(
-                    onConsentError = { _ -> showAds() },
-                    onConsentDone = { showAds() },
-                )
-            } else {
-                showAds()
-            }
-        },
-    )
+    showAds()
 }
 
 fun SplashFragment.mapRemoteConfigData(data: RemoteConfigDtoModel) {
