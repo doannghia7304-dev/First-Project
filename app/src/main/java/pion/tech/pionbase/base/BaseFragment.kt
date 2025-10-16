@@ -200,7 +200,7 @@ fun Fragment.doActionWhenResume(action: () -> Unit) {
             ) {
                 if (event == Lifecycle.Event.ON_RESUME) {
                     action.invoke()
-                    viewLifecycleOwner.lifecycle.removeObserver(this)
+                    lifecycle.removeObserver(this)
                 }
             }
         },
@@ -216,7 +216,7 @@ fun Fragment.doActionWhenStop(action: () -> Unit) {
             ) {
                 if (event == Lifecycle.Event.ON_STOP) {
                     action.invoke()
-                    viewLifecycleOwner.lifecycle.removeObserver(this)
+                    lifecycle.removeObserver(this)
                 }
             }
         },
