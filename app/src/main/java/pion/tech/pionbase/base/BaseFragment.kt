@@ -117,12 +117,22 @@ abstract class BaseFragment<Binding : ViewBinding, VM : ViewModel>(
 
     override fun onResume() {
         super.onResume()
+        handleAppResumeAds()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        jobSetBlockAds?.cancel()
+    }
+
+    /**
+     * Handle app resume ads logic
+     * Blocks ads for premium users or specific screens
+     */
+    private fun handleAppResumeAds() {
         val config: Boolean = AdsConstant.listConfigAds["appresume"]?.isOn ?: false
         launchIO {
-            if (isPremiumValue() || navigator.getCurrentDestinationId() == R.id.splashFragment ||
-                navigator.getCurrentDestinationId() == R.id.onboardFragment ||
-                !config
-            ) {
+            if (shouldBlockAds(config)) {
                 AdsController.Companion.isBlockOpenAds = true
             } else {
                 jobSetBlockAds =
@@ -136,9 +146,15 @@ abstract class BaseFragment<Binding : ViewBinding, VM : ViewModel>(
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-        jobSetBlockAds?.cancel()
+    /**
+     * Check if ads should be blocked
+     */
+    private suspend fun shouldBlockAds(config: Boolean): Boolean {
+        val currentDestination = navigator.getCurrentDestinationId()
+        return isPremiumValue() ||
+            currentDestination == R.id.splashFragment ||
+            currentDestination == R.id.onboardFragment ||
+            !config
     }
 
     override fun onDestroyView() {
@@ -148,17 +164,29 @@ abstract class BaseFragment<Binding : ViewBinding, VM : ViewModel>(
 
     private var loadingDialog: LoadingDialog? = null
 
+    /**
+     * Show or hide loading dialog
+     * @param isShow true to show, false to hide
+     */
     fun showHideLoading(isShow: Boolean) {
         if (isShow) {
-            if (loadingDialog == null || !loadingDialog!!.isVisible) {
-                loadingDialog?.dismiss()
-                loadingDialog = LoadingDialog()
-                loadingDialog?.show(childFragmentManager)
-            }
+            showLoading()
         } else {
-            loadingDialog?.dismiss()
-            loadingDialog = null
+            hideLoading()
         }
+    }
+
+    private fun showLoading() {
+        if (loadingDialog == null || loadingDialog?.isVisible == false) {
+            loadingDialog?.dismiss()
+            loadingDialog = LoadingDialog()
+            loadingDialog?.show(childFragmentManager)
+        }
+    }
+
+    private fun hideLoading() {
+        loadingDialog?.dismiss()
+        loadingDialog = null
     }
 
     fun onSystemBack(action: () -> Unit) {
@@ -223,7 +251,14 @@ fun Fragment.doActionWhenStop(action: () -> Unit) {
     )
 }
 
-fun Fragment.launchIO(
+/**
+ * Launch a coroutine with exception handling
+ * @param dispatcher The dispatcher to use (default: Dispatchers.IO)
+ * @param onError Callback for error handling
+ * @param block The coroutine block to execute
+ */
+private fun Fragment.launchWithExceptionHandler(
+    dispatcher: kotlinx.coroutines.CoroutineDispatcher,
     onError: (Throwable) -> Unit = { },
     block: suspend CoroutineScope.() -> Unit,
 ): Job {
@@ -234,33 +269,20 @@ fun Fragment.launchIO(
                 onError(throwable)
             }
         }
-    return lifecycleScope.launch(Dispatchers.IO + exceptionHandler, block = block)
+    return lifecycleScope.launch(dispatcher + exceptionHandler, block = block)
 }
+
+fun Fragment.launchIO(
+    onError: (Throwable) -> Unit = { },
+    block: suspend CoroutineScope.() -> Unit,
+): Job = launchWithExceptionHandler(Dispatchers.IO, onError, block)
 
 fun Fragment.launchDefault(
     onError: (Throwable) -> Unit = { },
     block: suspend CoroutineScope.() -> Unit,
-): Job {
-    val exceptionHandler =
-        CoroutineExceptionHandler { _, throwable ->
-            Timber.e("${this::class.java.simpleName} error: $throwable")
-            lifecycleScope.launch(Dispatchers.Main) {
-                onError(throwable)
-            }
-        }
-    return lifecycleScope.launch(Dispatchers.Default + exceptionHandler, block = block)
-}
+): Job = launchWithExceptionHandler(Dispatchers.Default, onError, block)
 
 fun Fragment.launchMain(
     onError: (Throwable) -> Unit = { },
     block: suspend CoroutineScope.() -> Unit,
-): Job {
-    val exceptionHandler =
-        CoroutineExceptionHandler { _, throwable ->
-            Timber.e("${this::class.java.simpleName} error: $throwable")
-            lifecycleScope.launch(Dispatchers.Main) {
-                onError(throwable)
-            }
-        }
-    return lifecycleScope.launch(Dispatchers.Main + exceptionHandler, block = block)
-}
+): Job = launchWithExceptionHandler(Dispatchers.Main, onError, block)

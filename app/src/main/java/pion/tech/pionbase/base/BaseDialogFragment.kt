@@ -68,33 +68,36 @@ abstract class BaseDialogFragment<T : ViewDataBinding>(
     ) {
         Timber.d("${this::class.simpleName} onViewCreated $savedInstanceState")
         super.onViewCreated(view, savedInstanceState)
-
-        val dialog = this.dialog
-        if (dialog != null) {
-            val window = dialog.window
-            if (window != null) {
-                window.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
-                window.setLayout(
-                    WindowManager.LayoutParams.MATCH_PARENT,
-                    WindowManager.LayoutParams.MATCH_PARENT,
-                )
-                val layoutParams = window.attributes
-                layoutParams.gravity = Gravity.CENTER
-                window.attributes = layoutParams
-
-                window.decorView.setOnTouchListener { v, event ->
-                    if (event.action == MotionEvent.ACTION_DOWN) {
-                        val inputMethodManager =
-                            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                        inputMethodManager.hideSoftInputFromWindow(v.windowToken, 0)
-                    }
-                    false
-                }
-            }
-        }
+        setupDialogWindow()
         initData(savedInstanceState)
         initView(savedInstanceState)
         addEvent(savedInstanceState)
+    }
+
+    /**
+     * Setup dialog window properties
+     */
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setupDialogWindow() {
+        dialog?.window?.apply {
+            setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+            setLayout(
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.MATCH_PARENT,
+            )
+            attributes = attributes.apply {
+                gravity = Gravity.CENTER
+            }
+
+            decorView.setOnTouchListener { v, event ->
+                if (event.action == MotionEvent.ACTION_DOWN) {
+                    val inputMethodManager =
+                        requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    inputMethodManager.hideSoftInputFromWindow(v.windowToken, 0)
+                }
+                false
+            }
+        }
     }
 
     open fun initView(savedInstanceState: Bundle?) {}
@@ -103,22 +106,24 @@ abstract class BaseDialogFragment<T : ViewDataBinding>(
 
     open fun initData(savedInstanceState: Bundle?) {}
 
+    /**
+     * Set dialog to be cancelable
+     */
     fun setDialogCanCancel() {
-        val dialog = this.dialog
-        if (dialog != null) {
-            val window = dialog.window
-            if (window != null) {
-                window.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
-                window.setLayout(
+        dialog?.apply {
+            window?.apply {
+                setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+                setLayout(
                     WindowManager.LayoutParams.MATCH_PARENT,
                     WindowManager.LayoutParams.WRAP_CONTENT,
                 )
-                dialog.setCancelable(true)
-                dialog.setCanceledOnTouchOutside(true)
             }
+            setCancelable(true)
+            setCanceledOnTouchOutside(true)
         }
     }
 
+    // Lifecycle methods with logging
     override fun onStart() {
         Timber.d("${this::class.simpleName} onStart")
         super.onStart()

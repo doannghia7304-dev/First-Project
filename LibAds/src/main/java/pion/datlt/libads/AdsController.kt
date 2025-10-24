@@ -920,6 +920,9 @@ class AdsController private constructor(
                                 override fun onCloseNative() {
                                     preloadAds()
                                 }
+
+                                override fun onClickNative() {
+                                }
                             })
                     }
                     break

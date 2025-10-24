@@ -80,12 +80,12 @@ abstract class BaseBottomSheetDialogFragment<T : ViewDataBinding>(
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
         super.onCreateDialog(savedInstanceState).apply {
             setOnShowListener {
-                val bottomSheet =
-                    findViewById<View>(R.id.design_bottom_sheet) as FrameLayout?
-                bottomSheet?.setBackgroundResource(android.R.color.transparent)
+                findViewById<View>(R.id.design_bottom_sheet)
+                    ?.setBackgroundResource(android.R.color.transparent)
             }
         }
 
+    // Lifecycle methods with logging
     override fun onStart() {
         Timber.d("${this::class.simpleName} onStart")
         super.onStart()
