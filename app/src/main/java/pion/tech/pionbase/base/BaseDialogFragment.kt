@@ -146,9 +146,11 @@ abstract class BaseDialogFragment<T : ViewDataBinding>(
 
     override fun onDestroyView() {
         Timber.d("${this::class.simpleName} onDestroyView")
-        super.onDestroyView()
+        // Remove touch listener to prevent memory leak
+        dialog?.window?.decorView?.setOnTouchListener(null)
         _binding?.unbind()
         _binding = null
+        super.onDestroyView()
     }
 
     override fun onDestroy() {

@@ -158,6 +158,7 @@ abstract class BaseFragment<Binding : ViewBinding, VM : ViewModel>(
     }
 
     override fun onDestroyView() {
+        hideLoading()
         _binding = null
         super.onDestroyView()
     }
