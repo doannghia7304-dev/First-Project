@@ -3,7 +3,6 @@ package pion.datlt.libads.admob.ads
 import android.app.Activity
 import android.graphics.Color
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +23,6 @@ import pion.datlt.libads.callback.PreloadCallback
 import pion.datlt.libads.model.AdsChild
 import pion.datlt.libads.utils.AdDef
 import pion.datlt.libads.utils.AdsConstant
-import pion.datlt.libads.utils.CommonUtils
 import pion.datlt.libads.utils.StateLoadAd
 import java.util.*
 
@@ -32,14 +30,8 @@ class AdmobBanner300x250Ads : AdmobAds() {
 
     private var adView: AdView? = null
     private var mAdCallback: AdCallback? = null
-    private var stateLoadAd: StateLoadAd = StateLoadAd.NONE
     private var mCallbackPreload: PreloadCallback? = null
-
-    private var mDestinationToShowAds : Int? = null
-
-    var adSourceId = ""
-    var adSourceName = ""
-    var adUnitId = ""
+    private var mDestinationToShowAds: Int? = null
 
     override fun loadAndShow(
         activity: Activity,
@@ -48,8 +40,8 @@ class AdmobBanner300x250Ads : AdmobAds() {
         adCallback: AdCallback?,
         lifecycle: Lifecycle?,
         timeout: Long?,
-        layoutToAttachAds: ViewGroup?,
-        viewAdsInflateFromXml: View?,
+        viewGroupAds: ViewGroup?,
+        viewAds: View?,
         adChoice: Int?,
         positionCollapsibleBanner: String?,
         isOneTimeCollapsible: Boolean?,
@@ -58,12 +50,7 @@ class AdmobBanner300x250Ads : AdmobAds() {
     ) {
         mAdCallback = adCallback
         mDestinationToShowAds = destinationToShowAds
-
-        if (stateLoadAd == StateLoadAd.LOADING){
-            //khong load cai moi nua
-            //doi cai cu load xong roi show
-        }else{
-            //load cai moi
+        if (stateLoadAd != StateLoadAd.LOADING) {
             load(
                 activity = activity,
                 adsChild = adsChild,
@@ -74,8 +61,8 @@ class AdmobBanner300x250Ads : AdmobAds() {
                             activity = activity,
                             adsChild = adsChild,
                             destinationToShowAds = destinationToShowAds,
-                            layoutToAttachAds = layoutToAttachAds,
-                            viewAdsInflateFromXml = viewAdsInflateFromXml,
+                            viewGroupAds = viewGroupAds,
+                            viewAds = viewAds,
                             lifecycle = lifecycle,
                             adCallback = adCallback,
                             timeShowNativeCollapsibleAfterClose = timeShowNativeCollapsibleAfterClose
@@ -111,11 +98,15 @@ class AdmobBanner300x250Ads : AdmobAds() {
         adsChild: AdsChild,
         isPreload: Boolean,
         loadCallback: PreloadCallback? = null
-    ){
-        Log.d("TESTERADSEVENT", "start load banner 300x250 : ads name ${adsChild.spaceName} id ${adsChild.adsId}")
+    ) {
         CoroutineScope(Dispatchers.IO).launch {
             stateLoadAd = StateLoadAd.LOADING
-            val idAds = if (AdsConstant.isDebug) AdsConstant.ID_ADMOB_BANNER_TEST else adsChild.adsId
+            Log.d(
+                "TESTERADSEVENT",
+                "start load banner 300x250 : ads name ${adsChild.spaceName} id ${adsChild.adsId}"
+            )
+            val idAds =
+                if (AdsConstant.isDebug) AdsConstant.ID_ADMOB_BANNER_TEST else adsChild.adsId
 
             adView = AdView(activity.applicationContext)
             adView?.setBackgroundColor(Color.WHITE)
@@ -125,13 +116,15 @@ class AdmobBanner300x250Ads : AdmobAds() {
             adView?.adListener = object : AdListener() {
                 override fun onAdOpened() {
                     super.onAdOpened()
-                    CommonUtils.showToastDebug(activity, "Admob banner 300:250: ${adsChild.adsId}")
                 }
 
                 override fun onAdClicked() {
                     super.onAdClicked()
+                    Log.d(
+                        "TESTERADSEVENT",
+                        "click banner 300x250 : ads name ${adsChild.spaceName} id ${adsChild.adsId}"
+                    )
                     mAdCallback?.onAdClick()
-                    Log.d("TESTERADSEVENT", "click banner 300x250 : ads name ${adsChild.spaceName} id ${adsChild.adsId}")
                 }
 
                 override fun onAdClosed() {
@@ -142,8 +135,11 @@ class AdmobBanner300x250Ads : AdmobAds() {
 
                 override fun onAdFailedToLoad(error: LoadAdError) {
                     super.onAdFailedToLoad(error)
-                    Log.d("TESTERADSEVENT", "load failed banner 300x250 : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : $error")
                     stateLoadAd = StateLoadAd.LOAD_FAILED
+                    Log.d(
+                        "TESTERADSEVENT",
+                        "load failed banner 300x250 : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : ${error.message}"
+                    )
                     mAdCallback?.onAdFailToLoad(error.message)
                     loadCallback?.onLoadFail(error.message)
                     if (isPreload) {
@@ -153,43 +149,45 @@ class AdmobBanner300x250Ads : AdmobAds() {
 
                 override fun onAdLoaded() {
                     super.onAdLoaded()
-                    Log.d("TESTERADSEVENT", "load success banner 300x250 : ads name ${adsChild.spaceName} id ${adsChild.adsId}")
                     timeLoader = Date().time
-                    adView?.let{
-                        it.responseInfo?.adapterResponses?.forEach {responseInfo ->
-                            if (responseInfo.adSourceId.isNotEmpty()){
+                    adView?.let {
+                        it.responseInfo?.adapterResponses?.forEach { responseInfo ->
+                            if (responseInfo.adSourceId.isNotEmpty()) {
                                 adSourceId = responseInfo.adSourceId
                             }
-                            if (responseInfo.adSourceName.isNotEmpty()){
+                            if (responseInfo.adSourceName.isNotEmpty()) {
                                 adSourceName = responseInfo.adSourceName
                             }
                         }
                         adUnitId = it.adUnitId
                     }
-
                     stateLoadAd = StateLoadAd.SUCCESS
+                    Log.d(
+                        "TESTERADSEVENT",
+                        "load success banner 300x250 : ads name ${adsChild.spaceName} id ${adsChild.adsId}"
+                    )
                     loadCallback?.onLoadDone()
 
-                    if (isPreload){
+                    if (isPreload) {
                         mCallbackPreload?.onLoadDone()
                     }
                 }
             }
 
-            adView?.onPaidEventListener = OnPaidEventListener {adValue ->
+            adView?.onPaidEventListener = OnPaidEventListener { adValue ->
                 val bundle = Bundle().apply {
-                    putString("ad_unit_id" , adUnitId)
-                    putInt("precision_type" , adValue.precisionType)
-                    putLong("revenue_micros" , adValue.valueMicros)
-                    putString("ad_source_id" , adSourceId)
-                    putString("ad_source_name" , adSourceName)
-                    putString("ad_type" , AdDef.ADS_TYPE_ADMOB.BANNER)
-                    putString("currency_code" , adValue.currencyCode)
+                    putString("ad_unit_id", adUnitId)
+                    putInt("precision_type", adValue.precisionType)
+                    putLong("revenue_micros", adValue.valueMicros)
+                    putString("ad_source_id", adSourceId)
+                    putString("ad_source_name", adSourceName)
+                    putString("ad_type", AdDef.ADS_TYPE_ADMOB.BANNER)
+                    putString("currency_code", adValue.currencyCode)
                 }
                 mAdCallback?.onPaidEvent(bundle)
             }
 
-            withContext(Dispatchers.Main){
+            withContext(Dispatchers.Main) {
                 adView?.loadAd(
                     AdRequest.Builder().build()
                 )
@@ -204,40 +202,47 @@ class AdmobBanner300x250Ads : AdmobAds() {
         destinationToShowAds: Int?,
         adCallback: AdCallback?,
         lifecycle: Lifecycle?,
-        layoutToAttachAds: ViewGroup?,
-        viewAdsInflateFromXml: View?,
+        viewGroupAds: ViewGroup?,
+        viewAds: View?,
         timeShowNativeCollapsibleAfterClose: Int?
     ) {
         mAdCallback = adCallback
         mDestinationToShowAds = destinationToShowAds
 
-        if (adView != null && layoutToAttachAds != null){
-            if (mDestinationToShowAds != null && mDestinationToShowAds != AdsController.currentDestinationId){
+        if (adView != null && viewGroupAds != null) {
+            if (mDestinationToShowAds != null && mDestinationToShowAds != AdsController.currentDestinationId) {
+                Log.d(
+                    "TESTERADSEVENT",
+                    "show failed banner 300x250 : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : show in wrong destination"
+                )
                 adCallback?.onAdFailToLoad("show in wrong destination")
-                Log.d("TESTERADSEVENT", "show failed banner 300x250 : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : show in wrong destination")
-
-            }else if (!wasLoadTimeLessThanNHoursAgo()) {
+            } else if (!wasLoadTimeLessThanNHoursAgo()) {
                 stateLoadAd = StateLoadAd.SHOW_FAILED
-                adCallback?.onAdFailToLoad("ads expired")
                 Log.d(
                     "TESTERADSEVENT",
                     "show failed banner 300x250 : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : ads expired"
                 )
-            } else{
-                layoutToAttachAds.removeAllViews()
+                adCallback?.onAdFailToLoad("ads expired")
+            } else {
+                viewGroupAds.removeAllViews()
                 if (adView!!.parent != null) {
                     (adView!!.parent as ViewGroup).removeView(adView)
                 }
-                layoutToAttachAds.addView(adView)
+                viewGroupAds.visibility = View.VISIBLE
+                viewGroupAds.addView(adView)
                 stateLoadAd = StateLoadAd.HAS_BEEN_OPENED
-                CommonUtils.showToastDebug(activity, "Admob banner 300:250 id: ${adsChild.adsId}")
+                Log.d(
+                    "TESTERADSEVENT",
+                    "show success banner 300x250 : ads name ${adsChild.spaceName} id ${adsChild.adsId}"
+                )
                 mAdCallback?.onAdShow()
-                Log.d("TESTERADSEVENT", "show success banner 300x250 : ads name ${adsChild.spaceName} id ${adsChild.adsId}")
             }
-        }else{
+        } else {
+            Log.d(
+                "TESTERADSEVENT",
+                "show failed banner 300x250 : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : layout null"
+            )
             adCallback?.onAdFailToLoad("layout null")
-            Log.d("TESTERADSEVENT", "show failed banner 300x250 : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : layout null")
-
         }
     }
 
@@ -249,7 +254,11 @@ class AdmobBanner300x250Ads : AdmobAds() {
         mCallbackPreload = null
     }
 
-    override fun getStateLoadAd(): StateLoadAd {
-        return stateLoadAd
+    override fun destroyAds() {
+        adView = null
+        mAdCallback = null
+        mCallbackPreload = null
+        mDestinationToShowAds = null
+        stateLoadAd = StateLoadAd.NULL
     }
 }

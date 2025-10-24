@@ -5,9 +5,8 @@ import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
@@ -34,9 +33,7 @@ import com.google.android.gms.ads.nativead.NativeAdOptions
 import com.google.android.gms.ads.nativead.NativeAdView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import pion.datlt.libads.AdsController
 import pion.datlt.libads.R
 import pion.datlt.libads.callback.AdCallback
@@ -44,7 +41,6 @@ import pion.datlt.libads.callback.PreloadCallback
 import pion.datlt.libads.model.AdsChild
 import pion.datlt.libads.utils.AdDef
 import pion.datlt.libads.utils.AdsConstant
-import pion.datlt.libads.utils.CommonUtils
 import pion.datlt.libads.utils.StateLoadAd
 import java.util.*
 
@@ -54,16 +50,7 @@ class AdmobNativeAds : AdmobAds() {
 
     private var mPreloadCallback: PreloadCallback? = null
     private var mAdCallback: AdCallback? = null
-    private var error = ""
-    private var stateLoadAd = StateLoadAd.NONE
     private var mAdsChild: AdsChild? = null
-
-    private var mDestinationToShowAds: Int? = null
-
-    var adSourceId = ""
-    var adSourceName = ""
-    var adUnitId = ""
-
 
     override fun loadAndShow(
         activity: Activity,
@@ -72,8 +59,8 @@ class AdmobNativeAds : AdmobAds() {
         adCallback: AdCallback?,
         lifecycle: Lifecycle?,
         timeout: Long?,
-        layoutToAttachAds: ViewGroup?,
-        viewAdsInflateFromXml: View?,
+        viewGroupAds: ViewGroup?,
+        viewAds: View?,
         adChoice: Int?,
         positionCollapsibleBanner: String?,
         isOneTimeCollapsible: Boolean?,
@@ -81,13 +68,7 @@ class AdmobNativeAds : AdmobAds() {
         timeShowNativeCollapsibleAfterClose: Int?
     ) {
         mAdCallback = adCallback
-        mDestinationToShowAds = destinationToShowAds
-
-        if (stateLoadAd == StateLoadAd.LOADING) {
-            //khong load cai moi nua
-            //doi cai cu load xong roi show
-        } else {
-            //load cai moi
+        if (stateLoadAd != StateLoadAd.LOADING) {
             load(
                 activity = activity,
                 adsChild = adsChild,
@@ -99,8 +80,8 @@ class AdmobNativeAds : AdmobAds() {
                             activity = activity,
                             adsChild = adsChild,
                             destinationToShowAds = destinationToShowAds,
-                            layoutToAttachAds = layoutToAttachAds,
-                            viewAdsInflateFromXml = viewAdsInflateFromXml,
+                            viewGroupAds = viewGroupAds,
+                            viewAds = viewAds,
                             lifecycle = lifecycle,
                             adCallback = adCallback,
                             timeShowNativeCollapsibleAfterClose = timeShowNativeCollapsibleAfterClose
@@ -141,16 +122,13 @@ class AdmobNativeAds : AdmobAds() {
         loadCallback: PreloadCallback? = null
     ) {
         CoroutineScope(Dispatchers.IO).launch {
+            stateLoadAd = StateLoadAd.LOADING
             Log.d(
                 "TESTERADSEVENT",
                 "start load native : ads name ${adsChild.spaceName} id ${adsChild.adsId}"
             )
-            stateLoadAd = StateLoadAd.LOADING
             val id = if (AdsConstant.isDebug) AdsConstant.ID_ADMOB_NATIVE_TEST else adsChild.adsId
             mAdsChild = adsChild
-            error = ""
-
-
             val videoOptions = VideoOptions.Builder().setStartMuted(true).build()
             val adOptions = NativeAdOptions.Builder()
                 .setVideoOptions(videoOptions)
@@ -162,11 +140,19 @@ class AdmobNativeAds : AdmobAds() {
             val adLoader = AdLoader.Builder(activity.applicationContext, id)
                 .forNativeAd { adNative ->
                     //đã load xong view, hiển thị lên nếu cần
+                    timeLoader = Date().time
                     nativeAds?.destroy()
                     nativeAds = null
                     nativeAds = adNative
                     stateLoadAd = StateLoadAd.SUCCESS
+                    Log.d(
+                        "TESTERADSEVENT",
+                        "load success native : ads name ${adsChild.spaceName} id ${adsChild.adsId}"
+                    )
                     loadCallback?.onLoadDone()
+                    if (isPreload) {
+                        mPreloadCallback?.onLoadDone()
+                    }
                     adNative.responseInfo?.adapterResponses?.forEach { responseInfo ->
                         if (responseInfo.adSourceId.isNotEmpty()) {
                             adSourceId = responseInfo.adSourceId
@@ -176,7 +162,6 @@ class AdmobNativeAds : AdmobAds() {
                         }
                     }
                     adUnitId = id
-
                     adNative.setOnPaidEventListener { adValue ->
                         val bundle = Bundle().apply {
                             putString("ad_unit_id", adUnitId)
@@ -194,27 +179,15 @@ class AdmobNativeAds : AdmobAds() {
                 .withAdListener(object : AdListener() {
                     override fun onAdLoaded() {
                         super.onAdLoaded()
-                        Log.d(
-                            "TESTERADSEVENT",
-                            "load success native : ads name ${adsChild.spaceName} id ${adsChild.adsId}"
-                        )
-                        timeLoader = Date().time
-
-
-
-                        if (isPreload) {
-                            mPreloadCallback?.onLoadDone()
-                        }
                     }
 
                     override fun onAdFailedToLoad(adError: LoadAdError) {
                         //gọi khi ad load failed
+                        stateLoadAd = StateLoadAd.LOAD_FAILED
                         Log.d(
                             "TESTERADSEVENT",
                             "load failed native : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : ${adError.message}"
                         )
-                        error = adError.message
-                        stateLoadAd = StateLoadAd.LOAD_FAILED
                         mAdCallback?.onAdFailToLoad(adError.message)
                         loadCallback?.onLoadFail(adError.message)
                         if (isPreload) {
@@ -233,20 +206,19 @@ class AdmobNativeAds : AdmobAds() {
 
                     override fun onAdClicked() {
                         super.onAdClicked()
-                        mAdCallback?.onAdClick()
                         Log.d(
                             "TESTERADSEVENT",
                             "click native : ads name ${adsChild.spaceName} id ${adsChild.adsId}"
                         )
+                        mAdCallback?.onAdClick()
                     }
 
                 })
                 .withNativeAdOptions(adOptions)
                 .build()
 
-            withContext(Dispatchers.Main) {
-                adLoader.loadAd(AdRequest.Builder().build())
-            }
+            adLoader.loadAd(AdRequest.Builder().build())
+
         }
     }
 
@@ -256,19 +228,15 @@ class AdmobNativeAds : AdmobAds() {
         destinationToShowAds: Int?,
         adCallback: AdCallback?,
         lifecycle: Lifecycle?,
-        layoutToAttachAds: ViewGroup?,
-        viewAdsInflateFromXml: View?,
+        viewGroupAds: ViewGroup?,
+        viewAds: View?,
         timeShowNativeCollapsibleAfterClose: Int?
     ) {
-        val startTime = System.currentTimeMillis()
         mAdCallback = adCallback // show
-        mDestinationToShowAds = destinationToShowAds
-
-
-        if (layoutToAttachAds != null) {
-            layoutToAttachAds.visibility = View.VISIBLE
-            if (viewAdsInflateFromXml != null) {
-                viewAdsInflateFromXml.visibility = View.VISIBLE
+        if (viewGroupAds != null) {
+            viewGroupAds.visibility = View.VISIBLE
+            if (viewAds != null) {
+                viewAds.visibility = View.VISIBLE
                 val nativeAdView = NativeAdView(activity)
                 nativeAdView.layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
@@ -278,67 +246,57 @@ class AdmobNativeAds : AdmobAds() {
                 //layout ads là lớp ngoài cùng, sẽ là layout chứa toàn bộ khu vực qc
                 //adsviewgroup là lớp trong được chứa bới layout ads, sẽ là phần chứa native view
                 //clear các view con nằm trong adsview
-                viewAdsInflateFromXml.parent?.let {
-                    (it as ViewGroup).removeView(viewAdsInflateFromXml)
+                viewAds.parent?.let {
+                    (it as ViewGroup).removeView(viewAds)
                 }
 
-                nativeAdView.addView(viewAdsInflateFromXml)
+                nativeAdView.addView(viewAds)
 
-                if (mDestinationToShowAds != null && mDestinationToShowAds != AdsController.currentDestinationId) {
-                    adCallback?.onAdFailToLoad("show in wrong destination")
+                if (destinationToShowAds != null && destinationToShowAds != AdsController.currentDestinationId) {
                     Log.d(
                         "TESTERADSEVENT",
                         "show failed native : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : show in wrong destination"
                     )
-
+                    adCallback?.onAdFailToLoad("show in wrong destination")
                 } else {
-                    nativeAds?.let {
-                        if (reshowAdsRunnable != null) {
-                            kotlin.runCatching {
-                                handler.removeCallbacks(reshowAdsRunnable!!)
-                            }
-                        }
-                        reshowAdsRunnable = null
+                    if (nativeAds != null) {
                         populateUnifiedNativeAdView(
-                            it,
+                            nativeAds!!,
                             nativeAdView,
-                            layoutToAttachAds,
-                            viewAdsInflateFromXml,
-                            timeShowNativeCollapsibleAfterClose ?: AdsConstant.RESHOW_NATIVE_TIME,
+                            viewGroupAds,
+                            viewAds,
                             adCallback
                         )
+
                         //clear các view con nằm trong adsViewGroup
-                        layoutToAttachAds.removeAllViews()
-                        layoutToAttachAds.addView(nativeAdView)
+                        viewGroupAds.removeAllViews()
+                        viewGroupAds.addView(nativeAdView)
                         stateLoadAd = StateLoadAd.HAS_BEEN_OPENED
-                        CommonUtils.showToastDebug(
-                            activity,
-                            "Admob Native id: ${adsChild.adsId}"
+                        Log.d(
+                            "TESTERADSEVENT",
+                            "show success native : ads name ${adsChild.spaceName} id ${adsChild.adsId}"
                         )
                         mAdCallback?.onAdShow()
+                    } else {
+                        Log.d(
+                            "TESTERADSEVENT",
+                            "show failed native : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : nativeAds is null"
+                        )
+                        mAdCallback?.onAdFailToLoad("nativeAds is null")
                     }
-                    Log.d(
-                        "TESTERADSEVENT",
-                        "show success native : ads name ${adsChild.spaceName} id ${adsChild.adsId}"
-                    )
-
                 }
             } else {
-                CommonUtils.showToastDebug(activity, "viewAdsInflateFromXml native not null")
                 Log.d(
                     "TESTERADSEVENT",
-                    "show failed native : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : viewAdsInflateFromXml native not null"
+                    "show failed native : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : viewAds native must not null"
                 )
             }
         } else {
-            CommonUtils.showToastDebug(activity, "layoutToAttachAds native not null")
             Log.d(
                 "TESTERADSEVENT",
-                "show failed native : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : layoutToAttachAds native not null"
+                "show failed native : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : viewGroupAds native must not null"
             )
-
         }
-        Log.d("CHECKSHOWTIMENATIVE", "show: ${startTime - System.currentTimeMillis()}")
     }
 
     override fun setPreloadCallback(preloadCallback: PreloadCallback?) {
@@ -349,24 +307,18 @@ class AdmobNativeAds : AdmobAds() {
         mPreloadCallback = null
     }
 
-    override fun getStateLoadAd(): StateLoadAd {
-        return stateLoadAd
-    }
-
     private fun populateUnifiedNativeAdView(
         nativeAd: NativeAd,
         adView: NativeAdView,
-        layoutToAttachAds: ViewGroup,
-        viewAdsInflateFromXml: View,
-        timeShowNativeCollapsibleAfterClose: Int,
+        viewGroupAds: ViewGroup,
+        viewAds: View,
         adCallback: AdCallback? = null
     ) {
         bindMediaView(
             nativeAd,
             adView,
-            layoutToAttachAds,
-            viewAdsInflateFromXml,
-            timeShowNativeCollapsibleAfterClose,
+            viewGroupAds,
+            viewAds,
             adCallback
         )
         bindHeadLineView(nativeAd, adView)
@@ -384,23 +336,31 @@ class AdmobNativeAds : AdmobAds() {
     private fun bindMediaView(
         nativeAd: NativeAd,
         adView: NativeAdView,
-        layoutToAttachAds: ViewGroup,
-        viewAdsInflateFromXml: View,
-        timeShowNativeCollapsibleAfterClose: Int,
+        viewGroupAds: ViewGroup,
+        viewAds: View,
         adCallback: AdCallback? = null
     ) {
         if (nativeAd.mediaContent == null) return //qc nay khong co media view val ratio : Float = nativeAds.mediaContent!!.aspectRatio
-        val viewGroup = adView.findViewById<ViewGroup>(R.id.ad_media)
+        val viewGroupMedia = adView.findViewById<ViewGroup>(R.id.ad_media)
         //neu co media view, hoac khong phai template collapsible thi chay code cu
-        val viewTag = viewAdsInflateFromXml.tag
+        val viewTag = viewAds.tag
         isCollapsed = false
+
+
+        //dau tien la phai xoa di thang container truoc do neu co
+        closeOtherMediaView(viewGroupAds)
 
 
         if (viewTag != "collapsible") {
 
-            if (viewGroup != null) {
+            if (viewGroupMedia != null) {
                 val mediaView = MediaView(adView.context)
-                viewGroup.addView(
+                try {
+                    mediaView.setImageScaleType(ImageView.ScaleType.CENTER_CROP)
+                }catch (e : Exception){
+
+                }
+                viewGroupMedia.addView(
                     mediaView,
                     ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
@@ -416,15 +376,13 @@ class AdmobNativeAds : AdmobAds() {
 
             return
         }
-        closeOtherMediaView(layoutToAttachAds)
         val adsRatio = nativeAd.mediaContent!!.aspectRatio
         val ratio = if (adsRatio < 1.5) {
             1.5f
         } else {
             adsRatio
         }
-        val layoutAds = layoutToAttachAds.parent as ViewGroup
-        val rootView = layoutAds.parent as ConstraintLayout
+        val rootView = viewGroupAds.parent as ConstraintLayout
 
 
         //check xem neu chua co id thi them id
@@ -436,10 +394,9 @@ class AdmobNativeAds : AdmobAds() {
             }
         }
 
-        //dau tien la phai xoa di thang container truoc do neu co
 
         //tao 1 frame layout
-        val mediaContainer = FrameLayout(layoutToAttachAds.context).apply {
+        val mediaContainer = FrameLayout(viewGroupAds.context).apply {
             id = R.id.ad_media_container
             layoutParams = ConstraintLayout.LayoutParams(
                 ConstraintLayout.LayoutParams.MATCH_PARENT,
@@ -448,12 +405,11 @@ class AdmobNativeAds : AdmobAds() {
                 dimensionRatio = ratio.toString()
             }
         }
-        mediaContainer.background =
-            viewAdsInflateFromXml.findViewById<ViewGroup>(R.id.adViewHolder).background
+        mediaContainer.background = viewAds.findViewById<ViewGroup>(R.id.adViewHolder).background
         rootView.addView(mediaContainer)
         val constraintSet = ConstraintSet().apply {
             clone(rootView)
-            connect(mediaContainer.id, ConstraintSet.BOTTOM, layoutAds.id, ConstraintSet.TOP)
+            connect(mediaContainer.id, ConstraintSet.BOTTOM, viewGroupAds.id, ConstraintSet.TOP)
         }
         constraintSet.applyTo(rootView)
 
@@ -471,6 +427,11 @@ class AdmobNativeAds : AdmobAds() {
         mediaContainer.addView(mediaViewGroup)
         //bind qc vao mediaview group
         val mediaView = MediaView(adView.context)
+        try {
+            mediaView.setImageScaleType(ImageView.ScaleType.CENTER_CROP)
+        }catch (e : Exception){
+
+        }
         mediaViewGroup.addView(
             mediaView,
             ViewGroup.LayoutParams(
@@ -501,23 +462,9 @@ class AdmobNativeAds : AdmobAds() {
         buttonClose.radius = convertDpToPx(buttonClose.context, 20f)
         mediaContainer.addView(buttonClose)
         buttonClose.setOnClickListener {
-            reshowAdsRunnable = Runnable {
-                try {
-                    isCollapsed = false
-                    mediaContainer.visibility = View.VISIBLE
-                    layoutToAttachAds.visibility = View.VISIBLE
-                    layoutAds.visibility = View.VISIBLE
-                } catch (e: Exception) {
-                    kotlin.runCatching {
-                        mediaContainer.visibility = View.GONE
-                    }
-                    isCollapsed = true
-                }
-            }
-            handler.postDelayed(reshowAdsRunnable!!, timeShowNativeCollapsibleAfterClose * 1000L)
             isCollapsed = true
             mediaContainer.visibility = View.GONE
-            adCallback?.onClickCloseCollapsible()
+            adCallback?.onClickCloseNativeCollapsible()
         }
 
         val imageView = ImageView(mediaContainer.context).apply {
@@ -533,14 +480,14 @@ class AdmobNativeAds : AdmobAds() {
 
         //đoạn code này dùng trong trường hợp
         //khi aarn view quảng cáo thì colapsible cũng sẽ đóng luôn
-        layoutToAttachAds.viewTreeObserver.addOnGlobalLayoutListener(object :
+        viewGroupAds.viewTreeObserver.addOnGlobalLayoutListener(object :
             OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 if (isCollapsed) {
                     mediaContainer.visibility = View.GONE
-                    layoutAds.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    viewGroupAds.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 } else {
-                    mediaContainer.visibility = layoutToAttachAds.visibility
+                    mediaContainer.visibility = viewGroupAds.visibility
                 }
             }
         })
@@ -555,8 +502,6 @@ class AdmobNativeAds : AdmobAds() {
         } else {
             (adView.headlineView as TextView).text = nativeAd.headline
         }
-
-
     }
 
     private fun bindBodyView(nativeAd: NativeAd, adView: NativeAdView) {
@@ -612,16 +557,24 @@ class AdmobNativeAds : AdmobAds() {
     private fun bindCTAView(nativeAd: NativeAd, adView: NativeAdView) {
         adView.callToActionView = adView.findViewById(R.id.ad_call_to_action)
         if (adView.callToActionView != null) {
-            if (adView.callToActionView != null) {
-                if (nativeAd.callToAction == null) {
-                    adView.callToActionView!!.visibility = View.INVISIBLE
+            if (adView.callToActionView is TextView) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    (adView.callToActionView as TextView).setAutoSizeTextTypeUniformWithConfiguration(
+                        10,     // min size in sp
+                        40,   // max size in sp
+                        2,     // step size in sp
+                        TypedValue.COMPLEX_UNIT_SP
+                    )
+                }
+            }
+            if (nativeAd.callToAction == null) {
+                adView.callToActionView!!.visibility = View.INVISIBLE
+            } else {
+                adView.callToActionView!!.visibility = View.VISIBLE
+                if (adView.callToActionView is Button) {
+                    (adView.callToActionView as Button).text = nativeAd.callToAction
                 } else {
-                    adView.callToActionView!!.visibility = View.VISIBLE
-                    if (adView.callToActionView is Button) {
-                        (adView.callToActionView as Button).text = nativeAd.callToAction
-                    } else {
-                        (adView.callToActionView as TextView).text = nativeAd.callToAction
-                    }
+                    (adView.callToActionView as TextView).text = nativeAd.callToAction
                 }
             }
         }
@@ -683,19 +636,39 @@ class AdmobNativeAds : AdmobAds() {
         )
     }
 
-    private fun closeOtherMediaView(layoutToAttachAds: ViewGroup) {
-        val layoutAds = layoutToAttachAds.parent as ViewGroup
-        val rootView = layoutAds.parent as ConstraintLayout
+    private fun closeOtherMediaView(viewGroupAds: ViewGroup) {
+        val rootView = viewGroupAds.parent as ConstraintLayout
         val oldContainerView = rootView.findViewById<ViewGroup>(R.id.ad_media_container)
-        if (oldContainerView != null) {
+        if (oldContainerView != null && isConstrainedTo(oldContainerView, viewGroupAds)) {
             rootView.removeView(oldContainerView)
         }
     }
 
+    private fun isConstrainedTo(viewA: View, viewB: View): Boolean {
+        val params = viewA.layoutParams
+        if (params !is ConstraintLayout.LayoutParams) return false
+        val targetId = viewB.id
+        return params.startToStart == targetId ||
+                params.startToEnd == targetId ||
+                params.endToStart == targetId ||
+                params.endToEnd == targetId ||
+                params.topToTop == targetId ||
+                params.topToBottom == targetId ||
+                params.bottomToTop == targetId ||
+                params.bottomToBottom == targetId ||
+                params.baselineToBaseline == targetId
+    }
+
     companion object {
         var isCollapsed = false
-        private var handler = Handler(Looper.getMainLooper())
-        private var reshowAdsRunnable: Runnable? = null
+    }
+
+    override fun destroyAds() {
+        nativeAds = null
+        mPreloadCallback = null
+        mAdCallback = null
+        mAdsChild = null
+        stateLoadAd = StateLoadAd.NULL
     }
 
 }

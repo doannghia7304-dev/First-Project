@@ -2,33 +2,13 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:background="@color/bg_ads"
     android:layout_height="match_parent">
 
-
     <FrameLayout
-        android:id="@+id/layoutAds"
-        android:background="@color/bg_ads"
+        android:id="@+id/adViewGroup"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <FrameLayout
-            android:id="@+id/adViewGroup"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <ImageView
-            android:id="@+id/btnCloseNativeFull"
-            android:layout_width="@dimen/_26dp"
-            android:layout_height="@dimen/_26dp"
-            android:layout_gravity="end"
-            android:layout_margin="@dimen/_20dp"
-            android:padding="@dimen/_6dp"
-            android:background="@drawable/bg_radius_100"
-            android:backgroundTint="@color/white"
-            android:src="@drawable/ic_close"
-            app:tint="@color/black" />
-
-    </FrameLayout>
+        android:layout_height="match_parent" />
 
 
 </FrameLayout>

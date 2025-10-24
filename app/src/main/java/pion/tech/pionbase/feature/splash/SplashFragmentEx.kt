@@ -1,24 +1,10 @@
 package pion.tech.pionbase.feature.splash
 
 import android.animation.ValueAnimator
-import androidx.lifecycle.lifecycleScope
-import com.example.libiap.IAPConnector
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.withContext
-import pion.datlt.libads.AdsController
-import pion.datlt.libads.utils.AdsConstant
-import pion.datlt.libads.utils.loadAndShowConsentFormIfRequire
-import pion.datlt.libads.utils.requestConsentInfoUpdate
 import pion.tech.pionbase.R
-import pion.tech.pionbase.app.GDPRState
 import pion.tech.pionbase.base.launchIO
-import pion.tech.pionbase.data.model.remoteConfig.RemoteConfigDtoModel
-import pion.tech.pionbase.util.Constant
-import pion.tech.pionbase.util.UiState
-import pion.tech.pionbase.util.haveNetworkConnection
-import timber.log.Timber
 
 fun SplashFragment.onBackEvent() {
     onSystemBack {
@@ -148,96 +134,4 @@ fun SplashFragment.preloadLanguageAds() {
 //            spaceNameAds = "language2.2_native",
 //        )
 //    }
-}
-
-fun SplashFragment.initGdpr() {
-    commonViewModel.setGdprState(GDPRState.LOADING)
-    AdsController.getInstance().requestConsentInfoUpdate(
-        onFailed = { _ ->
-            commonViewModel.setGdprState(GDPRState.DONE)
-        },
-        onSuccess = { isRequire, _ ->
-            if (isRequire) {
-                AdsController.getInstance().loadAndShowConsentFormIfRequire(
-                    onConsentError = { _ ->
-                        commonViewModel.setGdprState(GDPRState.DONE)
-                    },
-                    onConsentDone = {
-                        commonViewModel.setGdprState(GDPRState.DONE)
-                    },
-                )
-            } else {
-                commonViewModel.setGdprState(GDPRState.DONE)
-            }
-        },
-    )
-}
-
-fun SplashFragment.observerIapRemoteData() {
-    if (isCameFromLanguage()) return
-    if (context?.haveNetworkConnection() != true) {
-        goToNextScreen()
-        return
-    }
-    val tag = "observerIapRemoteData"
-    combine(
-        IAPConnector.stateCheckIap,
-        commonViewModel.remoteConfigUiState,
-        commonViewModel.checkGdprState,
-    ) { stateCheckIap, remoteConfigData, checkGdprState ->
-        Timber.tag(tag).d("stateCheckIap: $stateCheckIap")
-        Timber.tag(tag).d("remoteConfigData: $remoteConfigData")
-        Timber.tag(tag).d("checkGdprState: $checkGdprState")
-        if (stateCheckIap !in
-            listOf(
-                IAPConnector.StateCheckIap.DONE,
-                IAPConnector.StateCheckIap.FAILED,
-            ) ||
-            remoteConfigData !is UiState.Success ||
-            checkGdprState != GDPRState.DONE
-        ) {
-            return@combine
-        }
-
-        // Update premium status based on IAP check result
-        updatePremiumStatus(stateCheckIap == IAPConnector.StateCheckIap.DONE)
-        // Process remote config data
-        handlerLogicRemoteConfig(remoteConfigData.data)
-    }.launchIn(viewLifecycleOwner.lifecycleScope)
-}
-
-fun SplashFragment.updatePremiumStatus(isIapCheckSuccessful: Boolean) {
-    if (isIapCheckSuccessful) {
-        val productModel = IAPConnector.getAllProductModel().find { it.isPurchase }
-        val isPremium = productModel?.isPurchase == true
-        setPremiumValue(isPremium)
-    } else {
-        setPremiumValue(false)
-    }
-}
-
-fun SplashFragment.handlerLogicRemoteConfig(remoteConfigData: RemoteConfigDtoModel?) {
-    if (remoteConfigData == null) return
-    mapRemoteConfigData(remoteConfigData)
-    showAds()
-}
-
-fun SplashFragment.mapRemoteConfigData(data: RemoteConfigDtoModel) {
-//    runCatching {
-//        AdsController.setConfigAds(data.firebaseRemoteConfig.getString("config_show_ads"))
-//    }
-//    runCatching {
-//        AdsController
-//            .getInstance()
-//            .setListAdsData(listJsonData = arrayListOf(data.firebaseRemoteConfig.getString("admob_id")))
-//    }
-    Constant.isRemoteConfigSuccess = data.isRealData
-//    runCatching {
-//        Constant.timeShowDialogChangeLanguage =
-//            data.firebaseRemoteConfig.getLong("timeShowDialogChangeLanguage")
-//    }.onFailure {
-//        Constant.timeShowDialogChangeLanguage = 4000L
-//    }
-//
-//    initNativeFullAfterInter()
 }

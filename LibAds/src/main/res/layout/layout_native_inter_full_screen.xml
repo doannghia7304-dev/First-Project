@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:tag="fullscreen"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -82,6 +83,7 @@
             android:backgroundTint="#CC1C83E2"
             android:textAlignment="center"
             android:gravity="center"
+            android:paddingVertical="@dimen/_14dp"
             android:fontFamily="@font/font_700"
             app:layout_constraintDimensionRatio="312:30"
             android:textColor="@color/white"

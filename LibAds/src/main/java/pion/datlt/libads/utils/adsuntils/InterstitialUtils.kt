@@ -10,727 +10,513 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
+import androidx.navigation.fragment.findNavController
+import pion.datlt.libads.AdsActivity
 import pion.datlt.libads.AdsController
 import pion.datlt.libads.callback.AdCallback
 import pion.datlt.libads.callback.PreloadCallback
+import pion.datlt.libads.utils.AdDef
 import pion.datlt.libads.utils.AdsConstant
 import pion.datlt.libads.utils.DialogLoadAdsUtils
 import pion.datlt.libads.utils.StateLoadAd
 
-fun Fragment.loadAndShowInterstitial(
-    spaceNameConfig: String,
-    spaceName: String,
-    timeOut: Long = 7000L,
+fun Fragment.showAdsInterstitial(
+    configName: String,
+    listSpaceName: List<String>,
+    timeout: Long = 7000L,
     destinationToShowAds: Int? = null,
-    isScreenType: Boolean = true,
+    isShowLoadingView: Boolean = true,
+    timeShowLoadingView: Long = 500L,
+    isLoadingScreenType: Boolean = false,
     navOrBack: () -> Unit,
-    onCloseAds: (() -> Unit)? = null
+    onAdsDone: ((isSuccess: Boolean) -> Unit)? = null
 ) {
-    if (checkConditionShowAds(context, spaceNameConfig)) {
+    if (checkConditionShowAds(context, configName)) {
         AdsController.isInterIsShowing = true
+        //theo doi lifecycle event
         var fragmentEvent = Lifecycle.Event.ON_ANY
         val callback = object : Application.ActivityLifecycleCallbacks {
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-
+                Log.d("CHECKINTERLOGIC", "onActivityCreated: ")
             }
 
             override fun onActivityStarted(activity: Activity) {
-
+                Log.d("CHECKINTERLOGIC", "onActivityStarted: ")
             }
 
             override fun onActivityResumed(activity: Activity) {
-
+                Log.d("CHECKINTERLOGIC", "onActivityResumed: ")
             }
 
             override fun onActivityPaused(activity: Activity) {
-
+                Log.d("CHECKINTERLOGIC", "onActivityPaused: ")
             }
 
             override fun onActivityStopped(activity: Activity) {
                 fragmentEvent = Lifecycle.Event.ON_STOP
+                Log.d("CHECKINTERLOGIC", "onActivityStopped: ")
             }
 
             override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
-
+                Log.d("CHECKINTERLOGIC", "onActivitySaveInstanceState: ")
             }
 
             override fun onActivityDestroyed(activity: Activity) {
-
+                Log.d("CHECKINTERLOGIC", "onActivityDestroyed: ")
             }
         }
         AdsController.getInstance().activity.application.registerActivityLifecycleCallbacks(callback)
-        val lifecycleObserver = object : LifecycleEventObserver {
-            override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-                if (event == Lifecycle.Event.ON_STOP) {
-                    fragmentEvent = event
-                }
-            }
-        }
-        DialogLoadAdsUtils.getInstance().showDialogLoadingAds(activity, isScreenType)
-
-        AdsController.getInstance().loadAndShow(
-            spaceName = spaceName,
-            destinationToShowAds = destinationToShowAds,
-            lifecycle = lifecycle,
-            timeout = timeOut,
-            adCallback = object : AdCallback {
-                override fun onAdShow() {
-                    Log.d("CHECKNATIVEAFTERINTER", "showLoadedInter onAdShow $spaceNameConfig $spaceName : ${AdsConstant.listConfigAds[spaceNameConfig]?.isShowNativeAfterInter == true}")
-
-                    if (AdsConstant.listConfigAds[spaceNameConfig]?.isShowNativeAfterInter == true){
-                        Log.d("CHECKNATIVEAFTERINTER", "showNativeTrigger == null ${AdsController.getInstance().showNativeTrigger == null}")
-                        AdsController.getInstance().showNativeTrigger?.invoke()
-                    }
-
-
-
-                    DialogLoadAdsUtils.getInstance().hideDialogLoadingAds()
-                    AdsController.isInterIsShowing = true
-                    setLastTimeShowInter(spaceNameConfig)
-                    navOrBack.invoke()
-                }
-
-                override fun onAdClose() {
-                    AdsController.isInterIsShowing = false
-                    AdsController.isBlockOpenAds = fragmentEvent == Lifecycle.Event.ON_STOP
-                    AdsController.getInstance().activity.application.unregisterActivityLifecycleCallbacks(
-                        callback
-                    )
-                    lifecycle.removeObserver(lifecycleObserver)
-                    setLastTimeShowInter(spaceNameConfig)
-                    onCloseAds?.invoke()
-                }
-
-                override fun onAdFailToLoad(messageError: String?) {
-                    DialogLoadAdsUtils.getInstance().hideDialogLoadingAds(0)
-                    AdsController.isInterIsShowing = false
-                    AdsController.isBlockOpenAds = fragmentEvent == Lifecycle.Event.ON_STOP
-                    AdsController.getInstance().activity.application.unregisterActivityLifecycleCallbacks(
-                        callback
-                    )
-                    lifecycle.removeObserver(lifecycleObserver)
-                    navOrBack.invoke()
-                    onCloseAds?.invoke()
-                }
-
-                override fun onAdClick() {
-                    AdsController.isBlockOpenAds = true
-                }
-            })
-    } else {
-        navOrBack.invoke()
-        onCloseAds?.invoke()
-    }
-}
-
-
-fun Fragment.showLoadedInter(
-    spaceNameConfig: String,
-    spaceName: String,
-    timeOut: Long = 7000L,
-    isPreloadAfterShow: Boolean = false,
-    destinationToShowAds: Int? = null,
-    isShowLoadingView: Boolean = false,
-    timeShowLoadingView: Long = 1000L,
-    isScreenType: Boolean = true,
-    navOrBack: () -> Unit,
-    onCloseAds: (() -> Unit)? = null
-) {
-    if (checkConditionShowAds(context, spaceNameConfig)) {
-
-        AdsController.isInterIsShowing = true
-        var fragmentEvent = Lifecycle.Event.ON_ANY
-        val callback = object : Application.ActivityLifecycleCallbacks {
-            override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-
-            }
-
-            override fun onActivityStarted(activity: Activity) {
-
-            }
-
-            override fun onActivityResumed(activity: Activity) {
-
-            }
-
-            override fun onActivityPaused(activity: Activity) {
-
-            }
-
-            override fun onActivityStopped(activity: Activity) {
-                fragmentEvent = Lifecycle.Event.ON_STOP
-            }
-
-            override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
-
-            }
-
-            override fun onActivityDestroyed(activity: Activity) {
-
-            }
-        }
-        AdsController.getInstance().activity.application.registerActivityLifecycleCallbacks(callback)
-        val lifecycleObserver = object : LifecycleEventObserver {
-            override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-                if (event == Lifecycle.Event.ON_STOP) {
-                    fragmentEvent = event
-                }
+        val lifecycleObserver = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_STOP) {
+                fragmentEvent = event
             }
         }
 
-        val countDownTimer = object : CountDownTimer(timeShowLoadingView, timeShowLoadingView) {
-            override fun onTick(p0: Long) {
-                //do nothing
-            }
-
-            override fun onFinish() {
-                AdsController.getInstance().showLoadedAds(
-                    spaceName = spaceName,
-                    destinationToShowAds = destinationToShowAds,
-                    lifecycle = lifecycle,
-                    timeout = timeOut,
-                    adCallback = object : AdCallback {
-
-                        override fun onAdShow() {
-                            Log.d("CHECKNATIVEAFTERINTER", "showLoadedInter onAdShow $spaceNameConfig $spaceName : ${AdsConstant.listConfigAds[spaceNameConfig]?.isShowNativeAfterInter == true}")
-
-                            if (AdsConstant.listConfigAds[spaceNameConfig]?.isShowNativeAfterInter == true){
-                                Log.d("CHECKNATIVEAFTERINTER", "showNativeTrigger == null ${AdsController.getInstance().showNativeTrigger == null}")
-                                AdsController.getInstance().showNativeTrigger?.invoke()
-                            }
-
-
-                            DialogLoadAdsUtils.getInstance().hideDialogLoadingAds()
-                            AdsController.isInterIsShowing = true
-                            setLastTimeShowInter(spaceNameConfig)
-                            navOrBack.invoke()
-                        }
-
-                        override fun onAdClose() {
-                            AdsController.isInterIsShowing = false
-                            AdsController.isBlockOpenAds = fragmentEvent == Lifecycle.Event.ON_STOP
-                            AdsController.getInstance().activity.application.unregisterActivityLifecycleCallbacks(
-                                callback
-                            )
-                            lifecycle.removeObserver(lifecycleObserver)
-                            setLastTimeShowInter(spaceNameConfig)
-                            if (isPreloadAfterShow) {
-                                safePreloadAds(
-                                    spaceNameAds = spaceName,
-                                    spaceNameConfig = spaceNameConfig
-                                )
-                            }
-                            onCloseAds?.invoke()
-                        }
-
-                        override fun onAdFailToLoad(messageError: String?) {
-                            DialogLoadAdsUtils.getInstance().hideDialogLoadingAds(0)
-                            AdsController.isInterIsShowing = false
-                            AdsController.isBlockOpenAds = fragmentEvent == Lifecycle.Event.ON_STOP
-                            AdsController.getInstance().activity.application.unregisterActivityLifecycleCallbacks(
-                                callback
-                            )
-                            lifecycle.removeObserver(lifecycleObserver)
-                            if (isPreloadAfterShow) {
-                                safePreloadAds(
-                                    spaceNameAds = spaceName,
-                                    spaceNameConfig = spaceNameConfig
-                                )
-                            }
-                            navOrBack.invoke()
-                            onCloseAds?.invoke()
-                        }
-
-                        override fun onAdClick() {
-                            AdsController.isBlockOpenAds = true
-                        }
-                    }
-                )
-            }
-        }
-
-
-        if (isShowLoadingView) {
-            DialogLoadAdsUtils.getInstance().showDialogLoadingAds(activity, isScreenType)
-            countDownTimer.start()
-        } else {
-            countDownTimer.onFinish()
-        }
-
-
-    } else {
-        navOrBack.invoke()
-        onCloseAds?.invoke()
-    }
-}
-
-fun Fragment.showSplashInter(
-    spaceNameConfig: String,
-    spaceNameInter1: String,
-    spaceNameInter2: String,
-    spaceNameOpenAds: String,
-    timeOut: Long = 15000L,
-    destinationToShowAds: Int? = null,
-    navOrBack: () -> Unit
-) {
-    if (checkConditionShowAds(context, spaceNameConfig)) {
-
-
-        var stateAds1 = StateLoadAd.LOADING
-        var stateAds2 = StateLoadAd.LOADING
-        var stateAds3 = StateLoadAd.LOADING
-
-
+        val mapResult = LinkedHashMap<String, StateLoadAd>()
         var isTimeOut = false
-        val timeOutRunnable = Runnable {
-            isTimeOut = true
-            if (stateAds1 == StateLoadAd.SUCCESS) {
-                //show 1
-                showLoadedInter(
-                    spaceNameConfig = spaceNameConfig,
-                    spaceName = spaceNameInter1,
-                    timeOut = 7000L,
-                    destinationToShowAds = destinationToShowAds,
-                    navOrBack = navOrBack
-                )
-            } else if (stateAds2 == StateLoadAd.SUCCESS) {
-                //show 2
-                showLoadedInter(
-                    spaceNameConfig = spaceNameConfig,
-                    spaceName = spaceNameInter2,
-                    timeOut = 7000L,
-                    destinationToShowAds = destinationToShowAds,
-                    navOrBack = navOrBack
-                )
-            } else if (stateAds3 == StateLoadAd.SUCCESS) {
-                //show 3
-                showLoadedOpenApp(
-                    spaceNameConfig = spaceNameConfig,
-                    spaceName = spaceNameOpenAds,
-                    destinationToShowAds = destinationToShowAds,
-                    timeOut = 7000L,
-                    navOrBack = navOrBack
-                )
-            } else {
-                //nav luon
-                navOrBack.invoke()
+        var isDialogLoadingDone = !isShowLoadingView
+
+        var adsNeedToShow: String? = null
+        fun showAds(spaceName: String) {
+            if (!isDialogLoadingDone) {
+                adsNeedToShow = spaceName
+                return
             }
-        }
-        val handler = Handler(Looper.getMainLooper())
-        handler.postDelayed(timeOutRunnable, timeOut)
+            mapResult[spaceName] = StateLoadAd.HAS_BEEN_OPENED
+            //show ads
+            var isShowSuccess = false
+            AdsController.getInstance().showLoadedAds(
+                spaceName = spaceName,
+                destinationToShowAds = destinationToShowAds,
+                lifecycle = lifecycle,
+                timeout = timeout,
+                adCallback = object : AdCallback {
+                    override fun onAdShow() {
+                        isShowSuccess = true
+                        if (AdsConstant.listConfigAds[configName]?.isShowNativeAfterInter == true) {
+                            AdsController.getInstance().showNativeTrigger?.invoke()
+                        }
+                        DialogLoadAdsUtils.getInstance().hideDialogLoadingAds()
+                        AdsController.isInterIsShowing = true
+                        setLastTimeShowInter()
+                        navOrBack.invoke()
+                    }
 
-        fun checkShowAds() {
-            if (isTimeOut) return
-            if (stateAds1 == StateLoadAd.SUCCESS) {
-                stateAds1 = StateLoadAd.HAS_BEEN_OPENED
-                handler.removeCallbacks(timeOutRunnable)
-                //show 1
-                showLoadedInter(
-                    spaceNameConfig = spaceNameConfig,
-                    spaceName = spaceNameInter1,
-                    timeOut = 7000L,
-                    destinationToShowAds = destinationToShowAds,
-                    navOrBack = navOrBack
-                )
-            } else if (stateAds1 == StateLoadAd.LOAD_FAILED && stateAds2 == StateLoadAd.SUCCESS) {
-                stateAds2 = StateLoadAd.HAS_BEEN_OPENED
-                handler.removeCallbacks(timeOutRunnable)
-                //show 2
-                showLoadedInter(
-                    spaceNameConfig = spaceNameConfig,
-                    spaceName = spaceNameInter2,
-                    timeOut = 7000L,
-                    destinationToShowAds = destinationToShowAds,
-                    navOrBack = navOrBack
-                )
-            } else if (stateAds1 == StateLoadAd.LOAD_FAILED && stateAds2 == StateLoadAd.LOAD_FAILED && stateAds3 == StateLoadAd.SUCCESS) {
-                stateAds3 = StateLoadAd.HAS_BEEN_OPENED
-                handler.removeCallbacks(timeOutRunnable)
-                //show 3
-                showLoadedOpenApp(
-                    spaceNameConfig = spaceNameConfig,
-                    spaceName = spaceNameOpenAds,
-                    destinationToShowAds = destinationToShowAds,
-                    timeOut = 7000L,
-                    navOrBack = navOrBack
-                )
-            } else if (stateAds1 == StateLoadAd.LOAD_FAILED && stateAds2 == StateLoadAd.LOAD_FAILED && stateAds3 == StateLoadAd.LOAD_FAILED) {
-                //nav luon
-                handler.removeCallbacks(timeOutRunnable)
-                navOrBack.invoke()
-            }
-        }
+                    override fun onAdClose() {
+                        AdsController.isInterIsShowing = false
+                        AdsController.isBlockOpenAds = fragmentEvent == Lifecycle.Event.ON_STOP
+                        AdsController.getInstance().activity.application.unregisterActivityLifecycleCallbacks(
+                            callback
+                        )
+                        lifecycle.removeObserver(lifecycleObserver)
+                        setLastTimeShowInter()
+                        if (checkIsPreloadAfterShow(spaceNameConfig = configName)) {
+                            safePreloadAds(
+                                configName = spaceName,
+                                spaceName = configName
+                            )
+                        }
+                        onAdsDone?.invoke(isShowSuccess)
+                    }
 
-        safePreloadAds(
-            spaceNameConfig = spaceNameConfig,
-            spaceNameAds = spaceNameInter1,
-            preloadCallback = object : PreloadCallback {
-                override fun onLoadDone() {
-                    stateAds1 = StateLoadAd.SUCCESS
-                    checkShowAds()
-                }
-
-                override fun onLoadFail(error: String) {
-                    stateAds1 = StateLoadAd.LOAD_FAILED
-                    checkShowAds()
-                }
-            })
-        safePreloadAds(
-            spaceNameConfig = spaceNameConfig,
-            spaceNameAds = spaceNameInter2,
-            preloadCallback = object : PreloadCallback {
-                override fun onLoadDone() {
-                    stateAds2 = StateLoadAd.SUCCESS
-                    checkShowAds()
-                }
-
-                override fun onLoadFail(error: String) {
-                    stateAds2 = StateLoadAd.LOAD_FAILED
-                    checkShowAds()
-                }
-            })
-        safePreloadAds(
-            spaceNameConfig = spaceNameConfig,
-            spaceNameAds = spaceNameOpenAds,
-            preloadCallback = object : PreloadCallback {
-                override fun onLoadDone() {
-                    stateAds3 = StateLoadAd.SUCCESS
-                    checkShowAds()
-                }
-
-                override fun onLoadFail(error: String) {
-                    stateAds3 = StateLoadAd.LOAD_FAILED
-                    checkShowAds()
-                }
-            })
-
-    } else {
-        navOrBack.invoke()
-    }
-}
-
-fun Fragment.show3LoadedInter(
-    spaceNameConfig: String,
-    spaceName1: String,
-    spaceName2: String,
-    spaceName3: String,
-    timeOut: Long = 7000L,
-    isPreloadAfterShow: Boolean = false,
-    destinationToShowAds: Int? = null,
-    isShowLoadingView: Boolean = false,
-    timeShowLoadingView: Long = 1000L,
-    isScreenType: Boolean = true,
-    navOrBack: () -> Unit,
-    onCloseAds: (() -> Unit)? = null
-) {
-    if (checkConditionShowAds(context, spaceNameConfig)) {
-        //show dialog load truoc
-        AdsController.isInterIsShowing = true
-        val countDownTimer = object : CountDownTimer(timeShowLoadingView, timeShowLoadingView) {
-            override fun onTick(p0: Long) {
-                //do nothing
-            }
-
-            override fun onFinish() {
-                //load qc o day
-
-                var stateInter1 = StateLoadAd.LOADING
-                var stateInter2 = StateLoadAd.LOADING
-                var stateInter3 = StateLoadAd.LOADING
-
-                var isTimeOut = false
-                val timeOutRunnable = Runnable {
-                    isTimeOut = true
-                    if (stateInter1 == StateLoadAd.SUCCESS){
-                        //show 1
-                        showLoadedInter(
-                            spaceNameConfig = spaceNameConfig,
-                            spaceName = spaceName1,
-                            timeOut = timeOut,
-                            isPreloadAfterShow = isPreloadAfterShow,
-                            destinationToShowAds = destinationToShowAds,
-                            navOrBack = navOrBack,
-                            onCloseAds = onCloseAds)
-                    }else if (stateInter2 == StateLoadAd.SUCCESS){
-                        //show 2
-                        showLoadedInter(
-                            spaceNameConfig = spaceNameConfig,
-                            spaceName = spaceName2,
-                            timeOut = timeOut,
-                            isPreloadAfterShow = isPreloadAfterShow,
-                            destinationToShowAds = destinationToShowAds,
-                            navOrBack = navOrBack,
-                            onCloseAds = onCloseAds)
-                    }else if (stateInter3 == StateLoadAd.SUCCESS){
-                        //show 3
-                        showLoadedInter(
-                            spaceNameConfig = spaceNameConfig,
-                            spaceName = spaceName3,
-                            timeOut = timeOut,
-                            isPreloadAfterShow = isPreloadAfterShow,
-                            destinationToShowAds = destinationToShowAds,
-                            navOrBack = navOrBack,
-                            onCloseAds = onCloseAds)
-                    }else{
-                        //ket thuc luong
+                    override fun onAdFailToLoad(messageError: String?) {
                         DialogLoadAdsUtils.getInstance().hideDialogLoadingAds(0)
                         AdsController.isInterIsShowing = false
+                        AdsController.isBlockOpenAds = fragmentEvent == Lifecycle.Event.ON_STOP
+                        AdsController.getInstance().activity.application.unregisterActivityLifecycleCallbacks(
+                            callback
+                        )
+                        lifecycle.removeObserver(lifecycleObserver)
+                        if (checkIsPreloadAfterShow(spaceNameConfig = configName)) {
+                            safePreloadAds(
+                                configName = spaceName,
+                                spaceName = configName
+                            )
+                        }
                         navOrBack.invoke()
-                        onCloseAds?.invoke()
+                        onAdsDone?.invoke(false)
                     }
-                }
 
-                val handler = Handler(Looper.getMainLooper())
-                handler.postDelayed(timeOutRunnable , timeOut)
-
-                fun checkShowInter(){
-                    if (!isTimeOut){
-                        if (stateInter1 == StateLoadAd.SUCCESS){
-                            //show 1
-                            handler.removeCallbacks(timeOutRunnable)
-                            stateInter1 = StateLoadAd.HAS_BEEN_OPENED
-                            showLoadedInter(
-                                spaceNameConfig = spaceNameConfig,
-                                spaceName = spaceName1,
-                                timeOut = timeOut,
-                                isPreloadAfterShow = isPreloadAfterShow,
-                                destinationToShowAds = destinationToShowAds,
-                                navOrBack = navOrBack,
-                                onCloseAds = onCloseAds)
-                        }else if (stateInter1 == StateLoadAd.LOAD_FAILED && stateInter2 == StateLoadAd.SUCCESS){
-                            //show 2
-                            handler.removeCallbacks(timeOutRunnable)
-                            stateInter2 = StateLoadAd.HAS_BEEN_OPENED
-                            showLoadedInter(
-                                spaceNameConfig = spaceNameConfig,
-                                spaceName = spaceName2,
-                                timeOut = timeOut,
-                                isPreloadAfterShow = isPreloadAfterShow,
-                                destinationToShowAds = destinationToShowAds,
-                                navOrBack = navOrBack,
-                                onCloseAds = onCloseAds)
-                        }else if (stateInter1 == StateLoadAd.LOAD_FAILED && stateInter2 == StateLoadAd.LOAD_FAILED && stateInter3 == StateLoadAd.SUCCESS){
-                            //show 3
-                            handler.removeCallbacks(timeOutRunnable)
-                            stateInter3 = StateLoadAd.HAS_BEEN_OPENED
-                            showLoadedInter(
-                                spaceNameConfig = spaceNameConfig,
-                                spaceName = spaceName3,
-                                timeOut = timeOut,
-                                isPreloadAfterShow = isPreloadAfterShow,
-                                destinationToShowAds = destinationToShowAds,
-                                navOrBack = navOrBack,
-                                onCloseAds = onCloseAds)
-                        }else if (stateInter1 == StateLoadAd.LOAD_FAILED && stateInter2 == StateLoadAd.LOAD_FAILED && stateInter3 == StateLoadAd.LOAD_FAILED){
-                            //ket thuc luong
-                            DialogLoadAdsUtils.getInstance().hideDialogLoadingAds(0)
-                            handler.removeCallbacks(timeOutRunnable)
-                            AdsController.isInterIsShowing = false
-                            navOrBack.invoke()
-                            onCloseAds?.invoke()
+                    override fun onAdClick() {
+                        super.onAdClick()
+                        AdsController.isBlockOpenAds = true
+                        if (activity is AdsActivity) {
+                            (activity as AdsActivity).sendNotification()
                         }
                     }
                 }
+            )
+        }
 
-                safePreloadAds(spaceNameConfig = spaceNameConfig, spaceNameAds = spaceName1, preloadCallback = object : PreloadCallback{
-                    override fun onLoadDone() {
-                        stateInter1 = StateLoadAd.SUCCESS
-                        checkShowInter()
-                    }
-
-                    override fun onLoadFail(error: String) {
-                        stateInter1 = StateLoadAd.LOAD_FAILED
-                        checkShowInter()
-                    }
-
-                })
-                safePreloadAds(spaceNameConfig = spaceNameConfig, spaceNameAds = spaceName2, preloadCallback = object : PreloadCallback{
-                    override fun onLoadDone() {
-                        stateInter2 = StateLoadAd.SUCCESS
-                        checkShowInter()
-                    }
-
-                    override fun onLoadFail(error: String) {
-                        stateInter2 = StateLoadAd.LOAD_FAILED
-                        checkShowInter()
-                    }
-                })
-                safePreloadAds(spaceNameConfig = spaceNameConfig, spaceNameAds = spaceName3, preloadCallback = object : PreloadCallback{
-                    override fun onLoadDone() {
-                        stateInter3 = StateLoadAd.SUCCESS
-                        checkShowInter()
-                    }
-
-                    override fun onLoadFail(error: String) {
-                        stateInter3 = StateLoadAd.LOAD_FAILED
-                        checkShowInter()
-                    }
-                })
+        fun showAnySuccess() {
+            for (result in mapResult) {
+                if (result.value == StateLoadAd.SUCCESS) {
+                    showAds(result.key)
+                    break
+                }
             }
         }
 
-        if (isShowLoadingView) {
-            DialogLoadAdsUtils.getInstance().showDialogLoadingAds(activity, isScreenType)
-            countDownTimer.start()
-        } else {
-            countDownTimer.onFinish()
-        }
-    }else{
-        navOrBack.invoke()
-        onCloseAds?.invoke()
-    }
-}
-
-fun Fragment.loadAndShow3Inter(
-    spaceNameConfig: String,
-    spaceName1: String,
-    spaceName2: String,
-    spaceName3: String,
-    timeOut: Long = 7000L,
-    destinationToShowAds: Int? = null,
-    isScreenType: Boolean = true,
-    navOrBack: () -> Unit,
-    onCloseAds: (() -> Unit)? = null
-) {
-    if (checkConditionShowAds(context, spaceNameConfig)) {
-        //show dialog load truoc
-        AdsController.isInterIsShowing = true
-        DialogLoadAdsUtils.getInstance().showDialogLoadingAds(activity, isScreenType)
-
-
-        //load qc o day
-
-        var stateInter1 = StateLoadAd.LOADING
-        var stateInter2 = StateLoadAd.LOADING
-        var stateInter3 = StateLoadAd.LOADING
-
-        var isTimeOut = false
         val timeOutRunnable = Runnable {
             isTimeOut = true
-            if (stateInter1 == StateLoadAd.SUCCESS){
-                //show 1
-                showLoadedInter(
-                    spaceNameConfig = spaceNameConfig,
-                    spaceName = spaceName1,
-                    timeOut = timeOut,
-                    destinationToShowAds = destinationToShowAds,
-                    navOrBack = navOrBack,
-                    onCloseAds = onCloseAds)
-            }else if (stateInter2 == StateLoadAd.SUCCESS){
-                //show 2
-                showLoadedInter(
-                    spaceNameConfig = spaceNameConfig,
-                    spaceName = spaceName2,
-                    timeOut = timeOut,
-                    destinationToShowAds = destinationToShowAds,
-                    navOrBack = navOrBack,
-                    onCloseAds = onCloseAds)
-            }else if (stateInter3 == StateLoadAd.SUCCESS){
-                //show 3
-                showLoadedInter(
-                    spaceNameConfig = spaceNameConfig,
-                    spaceName = spaceName3,
-                    timeOut = timeOut,
-                    destinationToShowAds = destinationToShowAds,
-                    navOrBack = navOrBack,
-                    onCloseAds = onCloseAds)
-            }else{
-                //ket thuc luong
-                DialogLoadAdsUtils.getInstance().hideDialogLoadingAds(0)
+            if (mapResult.any { it.value == StateLoadAd.HAS_BEEN_OPENED }) return@Runnable
+            val isAnySuccess = mapResult.values.any { it == StateLoadAd.SUCCESS }
+            if (isAnySuccess) {
+                //thanh cong cai nao show cai do
+                showAnySuccess()
+            } else {
+                //co quang cao van dang duoc loading hoac load failed
+                //cho phep chuyen man, hoac thuc hien hanh dong
                 AdsController.isInterIsShowing = false
+                DialogLoadAdsUtils.getInstance().hideDialogLoadingAds(0)
                 navOrBack.invoke()
-                onCloseAds?.invoke()
+                onAdsDone?.invoke(false)
             }
         }
 
         val handler = Handler(Looper.getMainLooper())
-        handler.postDelayed(timeOutRunnable , timeOut)
+        handler.postDelayed(timeOutRunnable, timeout)
+        val handlerDialogLoading = Handler(Looper.getMainLooper())
+        val timeOutDialogLoadingRunnable = Runnable {
+            isDialogLoadingDone = true
+            adsNeedToShow?.let {
+                showAds(it)
+            }
+        }
 
-        fun checkShowInter(){
-            if (!isTimeOut){
-                if (stateInter1 == StateLoadAd.SUCCESS){
-                    //show 1
-                    handler.removeCallbacks(timeOutRunnable)
-                    stateInter1 = StateLoadAd.HAS_BEEN_OPENED
-                    showLoadedInter(
-                        spaceNameConfig = spaceNameConfig,
-                        spaceName = spaceName1,
-                        timeOut = timeOut,
-                        destinationToShowAds = destinationToShowAds,
-                        navOrBack = navOrBack,
-                        onCloseAds = onCloseAds)
-                }else if (stateInter1 == StateLoadAd.LOAD_FAILED && stateInter2 == StateLoadAd.SUCCESS){
-                    //show 2
-                    handler.removeCallbacks(timeOutRunnable)
-                    stateInter2 = StateLoadAd.HAS_BEEN_OPENED
-                    showLoadedInter(
-                        spaceNameConfig = spaceNameConfig,
-                        spaceName = spaceName2,
-                        timeOut = timeOut,
-                        destinationToShowAds = destinationToShowAds,
-                        navOrBack = navOrBack,
-                        onCloseAds = onCloseAds)
-                }else if (stateInter1 == StateLoadAd.LOAD_FAILED && stateInter2 == StateLoadAd.LOAD_FAILED && stateInter3 == StateLoadAd.SUCCESS){
-                    //show 3
-                    handler.removeCallbacks(timeOutRunnable)
-                    stateInter3 = StateLoadAd.HAS_BEEN_OPENED
-                    showLoadedInter(
-                        spaceNameConfig = spaceNameConfig,
-                        spaceName = spaceName3,
-                        timeOut = timeOut,
-                        destinationToShowAds = destinationToShowAds,
-                        navOrBack = navOrBack,
-                        onCloseAds = onCloseAds)
-                }else if (stateInter1 == StateLoadAd.LOAD_FAILED && stateInter2 == StateLoadAd.LOAD_FAILED && stateInter3 == StateLoadAd.LOAD_FAILED){
-                    //ket thuc luong
-                    DialogLoadAdsUtils.getInstance().hideDialogLoadingAds(0)
-                    handler.removeCallbacks(timeOutRunnable)
+        fun checkShowAds(spaceName: String) {
+            if (isTimeOut) return
+            if (mapResult.any { it.value == StateLoadAd.HAS_BEEN_OPENED }) return
+            val isAllFailed = mapResult.values.all { it == StateLoadAd.LOAD_FAILED }
+            val isAllHigherAdsFailed = mapResult.isAllHigherAdsFailed(spaceName)
+            if (isAllFailed) {
+                //khong show
+                //thuc hien hanh dong tiep theo
+                handler.removeCallbacks(timeOutRunnable)
+                AdsController.isInterIsShowing = false
+                DialogLoadAdsUtils.getInstance().hideDialogLoadingAds(0)
+                navOrBack.invoke()
+                onAdsDone?.invoke(false)
+            } else if (isAllHigherAdsFailed && mapResult[spaceName] == StateLoadAd.SUCCESS) {
+                //show luon cai hien tai
+                handler.removeCallbacks(timeOutRunnable)
+                showAds(spaceName)
+            }
+        }
+
+        //load truoc quang cao
+        listSpaceName.forEach{spaceName ->
+            mapResult[spaceName] = StateLoadAd.NONE
+        }
+        listSpaceName.forEach { spaceName ->
+            mapResult[spaceName] = StateLoadAd.LOADING
+            safePreloadAds(
+                configName = configName,
+                spaceName = spaceName,
+                preloadCallback = object : PreloadCallback {
+                    override fun onLoadDone() {
+                        mapResult[spaceName] = StateLoadAd.SUCCESS
+                        checkShowAds(spaceName)
+                    }
+
+                    override fun onLoadFail(error: String) {
+                        super.onLoadFail(error)
+                        mapResult[spaceName] = StateLoadAd.LOAD_FAILED
+                        checkShowAds(spaceName)
+                    }
+                }
+            )
+        }
+
+        if (isShowLoadingView) {
+            //show dialog
+            DialogLoadAdsUtils.getInstance().showDialogLoadingAds(activity, isLoadingScreenType)
+            handlerDialogLoading.postDelayed(timeOutDialogLoadingRunnable, timeShowLoadingView)
+        }
+    } else {
+        navOrBack.invoke()
+        onAdsDone?.invoke(false)
+    }
+}
+
+
+fun Fragment.showAdsSplash(
+    configName: String,
+    listSpaceName: List<String>,
+    timeout: Long = 15000L,
+    destinationToShowAds: Int? = null,
+    navOrBack: () -> Unit,
+    onAdsDone: ((isSuccess: Boolean) -> Unit)?
+) {
+    if (checkConditionShowAds(context, configName)) {
+        AdsController.isInterIsShowing = true
+        AdsController.isOtherOpenAdsIsShowing = true
+        //theo doi lifecycle event
+        var fragmentEvent = Lifecycle.Event.ON_ANY
+        val callback = object : Application.ActivityLifecycleCallbacks {
+            override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+                Log.d("CHECKINTERLOGIC", "onActivityCreated: ")
+            }
+
+            override fun onActivityStarted(activity: Activity) {
+                Log.d("CHECKINTERLOGIC", "onActivityStarted: ")
+            }
+
+            override fun onActivityResumed(activity: Activity) {
+                Log.d("CHECKINTERLOGIC", "onActivityResumed: ")
+            }
+
+            override fun onActivityPaused(activity: Activity) {
+                Log.d("CHECKINTERLOGIC", "onActivityPaused: ")
+            }
+
+            override fun onActivityStopped(activity: Activity) {
+                fragmentEvent = Lifecycle.Event.ON_STOP
+                Log.d("CHECKINTERLOGIC", "onActivityStopped: ")
+            }
+
+            override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
+                Log.d("CHECKINTERLOGIC", "onActivitySaveInstanceState: ")
+            }
+
+            override fun onActivityDestroyed(activity: Activity) {
+                Log.d("CHECKINTERLOGIC", "onActivityDestroyed: ")
+            }
+        }
+        AdsController.getInstance().activity.application.registerActivityLifecycleCallbacks(callback)
+        val lifecycleObserver = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_STOP) {
+                fragmentEvent = event
+            }
+        }
+
+        val mapResult = LinkedHashMap<String, StateLoadAd>()
+        var isTimeOut = false
+
+        fun showInterstitial(spaceName: String) {
+            var isShowSuccess = false
+            AdsController.getInstance().showLoadedAds(
+                spaceName = spaceName,
+                destinationToShowAds = destinationToShowAds,
+                lifecycle = lifecycle,
+                timeout = timeout,
+                adCallback = object : AdCallback {
+                    override fun onAdShow() {
+                        isShowSuccess = true
+                        if (AdsConstant.listConfigAds[configName]?.isShowNativeAfterInter == true) {
+                            AdsController.getInstance().showNativeTrigger?.invoke()
+                        }
+                        DialogLoadAdsUtils.getInstance().hideDialogLoadingAds()
+                        AdsController.isInterIsShowing = true
+                        setLastTimeShowInter()
+                        navOrBack.invoke()
+                    }
+
+                    override fun onAdClose() {
+                        AdsController.isInterIsShowing = false
+                        AdsController.isBlockOpenAds = fragmentEvent == Lifecycle.Event.ON_STOP
+                        AdsController.getInstance().activity.application.unregisterActivityLifecycleCallbacks(
+                            callback
+                        )
+                        lifecycle.removeObserver(lifecycleObserver)
+                        setLastTimeShowInter()
+                        if (checkIsPreloadAfterShow(spaceNameConfig = configName)) {
+                            safePreloadAds(
+                                configName = spaceName,
+                                spaceName = configName
+                            )
+                        }
+                        navOrBack.invoke()
+                        onAdsDone?.invoke(isShowSuccess)
+                    }
+
+                    override fun onAdFailToLoad(messageError: String?) {
+                        DialogLoadAdsUtils.getInstance().hideDialogLoadingAds(0)
+                        AdsController.isInterIsShowing = false
+                        AdsController.isBlockOpenAds = fragmentEvent == Lifecycle.Event.ON_STOP
+                        AdsController.getInstance().activity.application.unregisterActivityLifecycleCallbacks(
+                            callback
+                        )
+                        lifecycle.removeObserver(lifecycleObserver)
+                        if (checkIsPreloadAfterShow(spaceNameConfig = configName)) {
+                            safePreloadAds(
+                                configName = spaceName,
+                                spaceName = configName
+                            )
+                        }
+                        navOrBack.invoke()
+                        onAdsDone?.invoke(false)
+                    }
+
+                    override fun onAdClick() {
+                        super.onAdClick()
+                        AdsController.isBlockOpenAds = true
+                        if (activity is AdsActivity) {
+                            (activity as AdsActivity).sendNotification()
+                        }
+                    }
+                }
+            )
+        }
+
+        fun showOpenApp(spaceName: String) {
+            var isShowSuccess = false
+            AdsController.getInstance().showLoadedAds(
+                spaceName = spaceName,
+                destinationToShowAds = destinationToShowAds,
+                lifecycle = lifecycle,
+                timeout = timeout,
+                adCallback = object : AdCallback {
+                    override fun onAdShow() {
+                        isShowSuccess = true
+                        AdsController.isOtherOpenAdsIsShowing = true
+                    }
+
+                    override fun onAdClose() {
+                        AdsController.isBlockOpenAds = fragmentEvent == Lifecycle.Event.ON_STOP
+                        AdsController.getInstance().activity.application.unregisterActivityLifecycleCallbacks(
+                            callback
+                        )
+                        lifecycle.removeObserver(lifecycleObserver)
+                        if (checkIsPreloadAfterShow(spaceNameConfig = configName)) {
+                            safePreloadAds(
+                                configName = spaceName,
+                                spaceName = configName
+                            )
+                        }
+                        AdsController.isOtherOpenAdsIsShowing = false
+                        setLastTimeShowInter()
+                        navOrBack.invoke()
+                        onAdsDone?.invoke(isShowSuccess)
+                    }
+
+                    override fun onAdFailToLoad(messageError: String?) {
+                        AdsController.isBlockOpenAds = fragmentEvent == Lifecycle.Event.ON_STOP
+                        AdsController.getInstance().activity.application.unregisterActivityLifecycleCallbacks(
+                            callback
+                        )
+                        lifecycle.removeObserver(lifecycleObserver)
+                        if (checkIsPreloadAfterShow(spaceNameConfig = configName)) {
+                            safePreloadAds(
+                                configName = spaceName,
+                                spaceName = configName
+                            )
+                        }
+                        AdsController.isOtherOpenAdsIsShowing = false
+                        navOrBack.invoke()
+                        onAdsDone?.invoke(false)
+                    }
+
+                    override fun onAdClick() {
+                        AdsController.isBlockOpenAds = true
+                        if (activity is AdsActivity){
+                            (activity as AdsActivity).sendNotification()
+                        }
+                    }
+
+                }
+            )
+        }
+
+        fun showAds(spaceName: String) {
+            mapResult[spaceName] = StateLoadAd.HAS_BEEN_OPENED
+            when (AdsController.getInstance().getAdsDetail(spaceName)?.adsType) {
+                AdDef.ADS_TYPE_ADMOB.INTERSTITIAL -> {
+                    AdsController.isInterIsShowing = true
+                    AdsController.isOtherOpenAdsIsShowing = false
+                    showInterstitial(spaceName)
+                }
+                AdDef.ADS_TYPE_ADMOB.OPEN_APP ->{
                     AdsController.isInterIsShowing = false
+                    AdsController.isOtherOpenAdsIsShowing = true
+                    showOpenApp(spaceName)
+                }
+                else -> {
+                    AdsController.isInterIsShowing = false
+                    AdsController.isOtherOpenAdsIsShowing = false
                     navOrBack.invoke()
-                    onCloseAds?.invoke()
+                    onAdsDone?.invoke(false)
                 }
             }
         }
 
-        safePreloadAds(spaceNameConfig = spaceNameConfig, spaceNameAds = spaceName1, preloadCallback = object : PreloadCallback{
-            override fun onLoadDone() {
-                stateInter1 = StateLoadAd.SUCCESS
-                checkShowInter()
+        fun showAnySuccess() {
+            for (result in mapResult) {
+                if (result.value == StateLoadAd.SUCCESS) {
+                    showAds(result.key)
+                    break
+                }
             }
+        }
 
-            override fun onLoadFail(error: String) {
-                stateInter1 = StateLoadAd.LOAD_FAILED
-                checkShowInter()
+        val timeOutRunnable = Runnable {
+            isTimeOut = true
+            if (mapResult.any { it.value == StateLoadAd.HAS_BEEN_OPENED }) return@Runnable
+            val isAnySuccess = mapResult.values.any { it == StateLoadAd.SUCCESS }
+            if (isAnySuccess) {
+                //thanh cong cai nao show cai do
+                showAnySuccess()
+            } else {
+                //co quang cao van dang duoc loading hoac load failed
+                //cho phep chuyen man, hoac thuc hien hanh dong
+                AdsController.isInterIsShowing = false
+                AdsController.isOtherOpenAdsIsShowing = false
+                DialogLoadAdsUtils.getInstance().hideDialogLoadingAds(0)
+                navOrBack.invoke()
+                onAdsDone?.invoke(false)
             }
+        }
 
-        })
-        safePreloadAds(spaceNameConfig = spaceNameConfig, spaceNameAds = spaceName2, preloadCallback = object : PreloadCallback{
-            override fun onLoadDone() {
-                stateInter2 = StateLoadAd.SUCCESS
-                checkShowInter()
+        val handler = Handler(Looper.getMainLooper())
+        handler.postDelayed(timeOutRunnable, timeout)
+
+        fun checkShowAds(spaceName: String) {
+            if (isTimeOut) return
+            if (mapResult.any { it.value == StateLoadAd.HAS_BEEN_OPENED }) return
+            val isAllFailed = mapResult.values.all { it == StateLoadAd.LOAD_FAILED }
+            val isAllHigherAdsFailed = mapResult.isAllHigherAdsFailed(spaceName)
+            if (isAllFailed) {
+                //khong show
+                //thuc hien hanh dong tiep theo
+                handler.removeCallbacks(timeOutRunnable)
+                AdsController.isInterIsShowing = false
+                AdsController.isOtherOpenAdsIsShowing = false
+                DialogLoadAdsUtils.getInstance().hideDialogLoadingAds(0)
+                navOrBack.invoke()
+                onAdsDone?.invoke(false)
+            } else if (isAllHigherAdsFailed && mapResult[spaceName] == StateLoadAd.SUCCESS) {
+                //show luon cai hien tai
+                handler.removeCallbacks(timeOutRunnable)
+                showAds(spaceName)
             }
+        }
 
-            override fun onLoadFail(error: String) {
-                stateInter2 = StateLoadAd.LOAD_FAILED
-                checkShowInter()
-            }
-        })
-        safePreloadAds(spaceNameConfig = spaceNameConfig, spaceNameAds = spaceName3, preloadCallback = object : PreloadCallback{
-            override fun onLoadDone() {
-                stateInter3 = StateLoadAd.SUCCESS
-                checkShowInter()
-            }
+        //load truoc quang cao
+        listSpaceName.forEach{spaceName ->
+            mapResult[spaceName] = StateLoadAd.NONE
+        }
+        listSpaceName.forEach { spaceName ->
+            mapResult[spaceName] = StateLoadAd.LOADING
+            safePreloadAds(
+                configName = configName,
+                spaceName = spaceName,
+                preloadCallback = object : PreloadCallback {
+                    override fun onLoadDone() {
+                        mapResult[spaceName] = StateLoadAd.SUCCESS
+                        checkShowAds(spaceName)
+                    }
 
-            override fun onLoadFail(error: String) {
-                stateInter3 = StateLoadAd.LOAD_FAILED
-                checkShowInter()
-            }
-        })
+                    override fun onLoadFail(error: String) {
+                        super.onLoadFail(error)
+                        mapResult[spaceName] = StateLoadAd.LOAD_FAILED
+                        checkShowAds(spaceName)
+                    }
+                }
+            )
+        }
 
-
-    }else{
+    } else {
         navOrBack.invoke()
-        onCloseAds?.invoke()
+        onAdsDone?.invoke(false)
     }
 }

@@ -5,8 +5,8 @@ import android.content.Intent
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
-import com.example.libiap.IAPConnector
 import pion.datlt.libads.AdsController
+import pion.datlt.libads.IAPConnector
 import pion.datlt.libads.utils.isNeedToShowConsent
 import pion.datlt.libads.utils.resetConsent
 import pion.datlt.libads.utils.showPolicyForm

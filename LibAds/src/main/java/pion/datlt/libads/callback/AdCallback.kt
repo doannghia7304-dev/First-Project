@@ -43,7 +43,10 @@ interface AdCallback {
         AdsController.isBlockOpenAds = true
     }
 
-    fun onClickCloseCollapsible() {
+    /**
+     * gọi khi đóng phần mở rộng của quảng cáo native collapsible.
+     */
+    fun onClickCloseNativeCollapsible() {
 
     }
 

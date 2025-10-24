@@ -3,12 +3,9 @@ package pion.datlt.libads.admob
 import android.app.Activity
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import okhttp3.internal.http2.Http2Reader
 import pion.datlt.libads.admob.ads.AdmobAds
 import pion.datlt.libads.admob.ads.AdmobBanner300x250Ads
 import pion.datlt.libads.admob.ads.AdmobBannerAdaptiveAds
@@ -24,7 +21,6 @@ import pion.datlt.libads.callback.AdCallback
 import pion.datlt.libads.callback.PreloadCallback
 import pion.datlt.libads.model.AdsChild
 import pion.datlt.libads.utils.AdDef
-import pion.datlt.libads.utils.AdsConstant
 import pion.datlt.libads.utils.CommonUtils
 import pion.datlt.libads.utils.StateLoadAd
 import java.util.*
@@ -42,8 +38,8 @@ class AdmobHolder {
         adCallback: AdCallback?,
         lifecycle: Lifecycle?,
         timeout: Long?,
-        layoutToAttachAds: ViewGroup?,
-        viewAdsInflateFromXml: View?,
+        viewGroupAds: ViewGroup?,
+        viewAds: View?,
         adChoice: Int?,
         positionCollapsibleBanner: String?,
         isOneTimeCollapsible: Boolean?,
@@ -70,8 +66,8 @@ class AdmobHolder {
                 adCallback = adCallback,
                 lifecycle = lifecycle,
                 timeout = timeout,
-                layoutToAttachAds = layoutToAttachAds,
-                viewAdsInflateFromXml = viewAdsInflateFromXml,
+                viewGroupAds = viewGroupAds,
+                viewAds = viewAds,
                 adChoice = adChoice,
                 positionCollapsibleBanner = positionCollapsibleBanner,
                 isOneTimeCollapsible = isOneTimeCollapsible,
@@ -89,8 +85,8 @@ class AdmobHolder {
         adCallback: AdCallback?,
         lifecycle: Lifecycle?,
         timeout: Long?,
-        layoutToAttachAds: ViewGroup?,
-        viewAdsInflateFromXml: View?,
+        viewGroupAds: ViewGroup?,
+        viewAds: View?,
         adChoice: Int?,
         positionCollapsibleBanner: String?,
         isOneTimeCollapsible: Boolean?,
@@ -110,8 +106,8 @@ class AdmobHolder {
                 adCallback = adCallback,
                 lifecycle = lifecycle,
                 timeout = timeout,
-                layoutToAttachAds = layoutToAttachAds,
-                viewAdsInflateFromXml = viewAdsInflateFromXml,
+                viewGroupAds = viewGroupAds,
+                viewAds = viewAds,
                 adChoice = adChoice,
                 positionCollapsibleBanner = positionCollapsibleBanner,
                 isOneTimeCollapsible = isOneTimeCollapsible,
@@ -121,8 +117,8 @@ class AdmobHolder {
         } else {
             hashMap[key] = ads
             if (
-                ads.getStateLoadAd() == StateLoadAd.SUCCESS || // quảng cáo đã được load thành công
-                (includeHasBeenOpened == true && ads.getStateLoadAd() == StateLoadAd.HAS_BEEN_OPENED)// hoặc quảng cáo đã load và mở(đối với native, banner)
+                ads.getStateLoadAds() == StateLoadAd.SUCCESS || // quảng cáo đã được load thành công
+                (includeHasBeenOpened == true && ads.getStateLoadAds() == StateLoadAd.HAS_BEEN_OPENED)// hoặc quảng cáo đã load và mở(đối với native, banner)
             ) {
 
                 //show luôn
@@ -132,11 +128,11 @@ class AdmobHolder {
                     destinationToShowAds = destinationToShowAds,
                     adCallback = adCallback,
                     lifecycle = lifecycle,
-                    layoutToAttachAds = layoutToAttachAds,
-                    viewAdsInflateFromXml = viewAdsInflateFromXml,
+                    viewGroupAds = viewGroupAds,
+                    viewAds = viewAds,
                     timeShowNativeCollapsibleAfterClose = timeShowNativeCollapsibleAfterClose
                 )
-            } else if (ads.getStateLoadAd() == StateLoadAd.LOADING) {
+            } else if (ads.getStateLoadAds() == StateLoadAd.LOADING) {
 
                 //set time out o day
                 var isTimeout = false
@@ -163,8 +159,8 @@ class AdmobHolder {
                                 destinationToShowAds = destinationToShowAds,
                                 adCallback = adCallback,
                                 lifecycle = lifecycle,
-                                layoutToAttachAds = layoutToAttachAds,
-                                viewAdsInflateFromXml = viewAdsInflateFromXml,
+                                viewGroupAds = viewGroupAds,
+                                viewAds = viewAds,
                                 timeShowNativeCollapsibleAfterClose = timeShowNativeCollapsibleAfterClose
                             )
                         }
@@ -187,8 +183,8 @@ class AdmobHolder {
                     adCallback = adCallback,
                     lifecycle = lifecycle,
                     timeout = timeout,
-                    layoutToAttachAds = layoutToAttachAds,
-                    viewAdsInflateFromXml = viewAdsInflateFromXml,
+                    viewGroupAds = viewGroupAds,
+                    viewAds = viewAds,
                     adChoice = adChoice,
                     positionCollapsibleBanner = positionCollapsibleBanner,
                     isOneTimeCollapsible = isOneTimeCollapsible,
@@ -212,14 +208,9 @@ class AdmobHolder {
     ) {
         var ads: AdmobAds? = null
 
-
         val key = adsChild.spaceName.lowercase(Locale.getDefault())
 
-
         ads = getAdsByType(adsChild)
-
-
-
 
         if (ads == null) {
             CommonUtils.showToastDebug(
@@ -229,11 +220,11 @@ class AdmobHolder {
             preloadCallback?.onLoadFail("not support adType ${adsChild.adsType} check file json")
         } else {
             hashMap[key] = ads
-            if (ads.getStateLoadAd() == StateLoadAd.SUCCESS) {
+            if (ads.getStateLoadAds() == StateLoadAd.SUCCESS) {
                 preloadCallback?.onLoadDone()
-            } else if (includeHasBeenOpened == true && ads.getStateLoadAd() == StateLoadAd.HAS_BEEN_OPENED) {
+            } else if (includeHasBeenOpened == true && ads.getStateLoadAds() == StateLoadAd.HAS_BEEN_OPENED) {
                 preloadCallback?.onLoadDone()
-            } else if (ads.getStateLoadAd() == StateLoadAd.LOADING) {
+            } else if (ads.getStateLoadAds() == StateLoadAd.LOADING) {
                 ads.setPreloadCallback(preloadCallback)
             } else {
                 ads.preload(
@@ -246,23 +237,18 @@ class AdmobHolder {
                 )
                 ads.setPreloadCallback(preloadCallback) //510cac
             }
-
-
-
         }
     }
 
     fun getStatusPreload(adChild: AdsChild): StateLoadAd {
         val key = adChild.spaceName.lowercase(Locale.getDefault())
-
-
         hashMap[key]?.let {
-            return it.getStateLoadAd()
+            return it.getStateLoadAds()
         }
         return StateLoadAd.NULL
     }
 
-    fun getAdsByType(adsChild: AdsChild): AdmobAds? {
+    private fun getAdsByType(adsChild: AdsChild): AdmobAds? {
         return when (adsChild.adsType.lowercase(Locale.getDefault())) {
             AdDef.ADS_TYPE_ADMOB.NATIVE -> {
                 AdmobNativeAds()
@@ -310,25 +296,9 @@ class AdmobHolder {
         }
     }
 
-    fun closeCollapsibleBanner(
-        adsChild: AdsChild,
-        lifecycleOwner: LifecycleOwner,
-        onDone: () -> Unit
-    ) {
-        val key = adsChild.spaceName.lowercase(Locale.getDefault())
-        hashMap[key]?.let {
-            (it as AdmobBannerCollapsibleAds).close(lifecycleOwner, onDone)
-        } ?: kotlin.run {
-            onDone.invoke()
-        }
-    }
-
     fun setPreloadCallback(adsChild: AdsChild, preloadCallback: PreloadCallback) {
         val key = adsChild.spaceName.lowercase(Locale.getDefault())
-        hashMap[key]?.let {
-            it.setPreloadCallback(preloadCallback)
-        }
+        hashMap[key]?.setPreloadCallback(preloadCallback)
     }
-
 
 }

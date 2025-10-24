@@ -1,0 +1,367 @@
+{
+  "network": "google",
+  "appId": "ca-app-pub-3940256099942544~3347511713",
+  "package": "pion.tech.demonewadsmodule",
+  "listAds": [
+    {
+      "spaceName": "afterinterstitial_native",
+      "adsType": "native_full_screen",
+      "id": "ca-app-pub-3940256099942544/1044960115"
+    },
+    {
+      "spaceName": "appresume_openad1",
+      "adsType": "open_app",
+      "id": "ca-app-pub-3940256099942544/9257395921"
+    },
+    {
+      "spaceName": "appresume_openad2",
+      "adsType": "open_app",
+      "id": "ca-app-pub-3940256099942544/9257395921"
+    },
+    {
+      "spaceName": "appresume_openad3",
+      "adsType": "open_app",
+      "id": "ca-app-pub-3940256099942544/9257395921"
+    },
+    {
+      "spaceName": "splash_intertitial1",
+      "adsType": "interstitial",
+      "id": "ca-app-pub-3940256099942544/1033173712"
+    },
+    {
+      "spaceName": "splash_intertitial2",
+      "adsType": "interstitial",
+      "id": "ca-app-pub-3940256099942544/1033173712"
+    },
+    {
+      "spaceName": "splash_openad3",
+      "adsType": "open_app",
+      "id": "ca-app-pub-3940256099942544/9257395921"
+    },
+    {
+      "spaceName": "language1_native",
+      "adsType": "native",
+      "id": "ca-app-pub-3940256099942544/2247696110"
+    },
+    {
+      "spaceName": "language2_native",
+      "adsType": "native",
+      "id": "ca-app-pub-3940256099942544/2247696110"
+    },
+    {
+      "spaceName": "language3_native",
+      "adsType": "native",
+      "id": "ca-app-pub-3940256099942544/2247696110"
+    },
+    {
+      "spaceName": "language4_native",
+      "adsType": "native",
+      "id": "ca-app-pub-3940256099942544/2247696110"
+    },
+    {
+      "spaceName": "language5_native",
+      "adsType": "native",
+      "id": "ca-app-pub-3940256099942544/2247696110"
+    },
+    {
+      "spaceName": "language6_native",
+      "adsType": "native",
+      "id": "ca-app-pub-3940256099942544/2247696110"
+    },
+    {
+      "spaceName": "language2.1_native",
+      "adsType": "native",
+      "id": "ca-app-pub-3940256099942544/2247696110"
+    },
+    {
+      "spaceName": "language2.2_native",
+      "adsType": "native",
+      "id": "ca-app-pub-3940256099942544/2247696110"
+    },
+    {
+      "spaceName": "onboard1-1_native1",
+      "adsType": "native",
+      "id": "ca-app-pub-3940256099942544/2247696110"
+    },
+    {
+      "spaceName": "onboard1-1_native2",
+      "adsType": "native",
+      "id": "ca-app-pub-3940256099942544/2247696110"
+    },
+    {
+      "spaceName": "onboard1-1_native3",
+      "adsType": "native",
+      "id": "ca-app-pub-3940256099942544/2247696110"
+    },
+    {
+      "spaceName": "onboard1-2_native1",
+      "adsType": "native",
+      "id": "ca-app-pub-3940256099942544/2247696110"
+    },
+    {
+      "spaceName": "onboard1-2_native2",
+      "adsType": "native",
+      "id": "ca-app-pub-3940256099942544/2247696110"
+    },
+    {
+      "spaceName": "onboard1-2_native3",
+      "adsType": "native",
+      "id": "ca-app-pub-3940256099942544/2247696110"
+    },
+    {
+      "spaceName": "onboard2_native",
+      "adsType": "native",
+      "id": "ca-app-pub-3940256099942544/2247696110"
+    },
+    {
+      "spaceName": "onboardfull_native1",
+      "adsType": "native_full_screen",
+      "id": "ca-app-pub-3940256099942544/1044960115"
+    },
+    {
+      "spaceName": "onboardfull_native2",
+      "adsType": "native_full_screen",
+      "id": "ca-app-pub-3940256099942544/1044960115"
+    },
+    {
+      "spaceName": "onboardfull_native3",
+      "adsType": "native_full_screen",
+      "id": "ca-app-pub-3940256099942544/1044960115"
+    },
+    {
+      "spaceName": "onboardfull_native4",
+      "adsType": "native_full_screen",
+      "id": "ca-app-pub-3940256099942544/1044960115"
+    },
+    {
+      "spaceName": "onboardfull_native5",
+      "adsType": "native_full_screen",
+      "id": "ca-app-pub-3940256099942544/1044960115"
+    },
+    {
+      "spaceName": "onboardfull_native6",
+      "adsType": "native_full_screen",
+      "id": "ca-app-pub-3940256099942544/1044960115"
+    },
+    {
+      "spaceName": "onboard3_native",
+      "adsType": "native",
+      "id": "ca-app-pub-3940256099942544/2247696110"
+    },
+    {
+      "spaceName": "onboardfull2_native1",
+      "adsType": "native_full_screen",
+      "id": "ca-app-pub-3940256099942544/1044960115"
+    },
+    {
+      "spaceName": "onboardfull2_native2",
+      "adsType": "native_full_screen",
+      "id": "ca-app-pub-3940256099942544/1044960115"
+    },
+    {
+      "spaceName": "onboardfull2_native3",
+      "adsType": "native_full_screen",
+      "id": "ca-app-pub-3940256099942544/1044960115"
+    },
+    {
+      "spaceName": "onboardfull2_native4",
+      "adsType": "native_full_screen",
+      "id": "ca-app-pub-3940256099942544/1044960115"
+    },
+    {
+      "spaceName": "onboardfull2_native5",
+      "adsType": "native_full_screen",
+      "id": "ca-app-pub-3940256099942544/1044960115"
+    },
+    {
+      "spaceName": "onboardfull2_native6",
+      "adsType": "native_full_screen",
+      "id": "ca-app-pub-3940256099942544/1044960115"
+    },
+    {
+      "spaceName": "onboard4_native",
+      "adsType": "native",
+      "id": "ca-app-pub-3940256099942544/2247696110"
+    },
+    {
+      "spaceName": "chooserversion_interstitial1",
+      "adsType": "interstitial",
+      "id": "ca-app-pub-3940256099942544/1033173712"
+    },
+    {
+      "spaceName": "chooserversion_interstitial2",
+      "adsType": "interstitial",
+      "id": "ca-app-pub-3940256099942544/1033173712"
+    },
+    {
+      "spaceName": "chooserversion_interstitial3",
+      "adsType": "interstitial",
+      "id": "ca-app-pub-3940256099942544/1033173712"
+    },
+    {
+      "spaceName": "exitapp_native1",
+      "adsType": "native",
+      "id": "ca-app-pub-3940256099942544/2247696110"
+    },
+    {
+      "spaceName": "exitapp_native2",
+      "adsType": "native",
+      "id": "ca-app-pub-3940256099942544/2247696110"
+    },
+    {
+      "spaceName": "exitapp_native3",
+      "adsType": "native",
+      "id": "ca-app-pub-3940256099942544/2247696110"
+    },
+    {
+      "spaceName": "demo_open_app_1",
+      "adsType": "open_app",
+      "id": "ca-app-pub-3940256099942544/9257395921"
+    },
+    {
+      "spaceName": "demo_open_app_2",
+      "adsType": "open_app",
+      "id": "ca-app-pub-3940256099942544/9257395921"
+    },
+    {
+      "spaceName": "demo_open_app_3",
+      "adsType": "open_app",
+      "id": "ca-app-pub-3940256099942544/9257395921"
+    },
+    {
+      "spaceName": "demo_interstitial_1",
+      "adsType": "interstitial",
+      "id": "ca-app-pub-3940256099942544/1033173712"
+    },
+    {
+      "spaceName": "demo_interstitial_2",
+      "adsType": "interstitial",
+      "id": "ca-app-pub-3940256099942544/1033173712"
+    },
+    {
+      "spaceName": "demo_interstitial_3",
+      "adsType": "interstitial",
+      "id": "ca-app-pub-3940256099942544/1033173712"
+    },
+    {
+      "spaceName": "demo_native_1",
+      "adsType": "native",
+      "id": "ca-app-pub-3940256099942544/2247696110"
+    },
+    {
+      "spaceName": "demo_native_2",
+      "adsType": "native",
+      "id": "ca-app-pub-3940256099942544/2247696110"
+    },
+    {
+      "spaceName": "demo_native_3",
+      "adsType": "native",
+      "id": "ca-app-pub-3940256099942544/2247696110"
+    },
+    {
+      "spaceName": "demo_native_full_screen_1",
+      "adsType": "native_full_screen",
+      "id": "ca-app-pub-3940256099942544/1044960115"
+    },
+    {
+      "spaceName": "demo_native_full_screen_2",
+      "adsType": "native_full_screen",
+      "id": "ca-app-pub-3940256099942544/1044960115"
+    },
+    {
+      "spaceName": "demo_native_full_screen_3",
+      "adsType": "native_full_screen",
+      "id": "ca-app-pub-3940256099942544/1044960115"
+    },
+    {
+      "spaceName": "demo_banner_adaptive_1",
+      "adsType": "banner_adaptive",
+      "id": "ca-app-pub-3940256099942544/9214589741"
+    },
+    {
+      "spaceName": "demo_banner_adaptive_2",
+      "adsType": "banner_adaptive",
+      "id": "ca-app-pub-3940256099942544/9214589741"
+    },
+    {
+      "spaceName": "demo_banner_adaptive_3",
+      "adsType": "banner_adaptive",
+      "id": "ca-app-pub-3940256099942544/9214589741"
+    },
+    {
+      "spaceName": "demo_banner_collapsible_1",
+      "adsType": "banner_collapsible",
+      "id": "ca-app-pub-3940256099942544/2014213617"
+    },
+    {
+      "spaceName": "demo_banner_collapsible_2",
+      "adsType": "banner_collapsible",
+      "id": "ca-app-pub-3940256099942544/2014213617"
+    },
+    {
+      "spaceName": "demo_banner_collapsible_3",
+      "adsType": "banner_collapsible",
+      "id": "ca-app-pub-3940256099942544/2014213617"
+    },
+    {
+      "spaceName": "demo_banner_1",
+      "adsType": "banner",
+      "id": "ca-app-pub-3940256099942544/6300978111"
+    },
+    {
+      "spaceName": "demo_banner_2",
+      "adsType": "banner",
+      "id": "ca-app-pub-3940256099942544/6300978111"
+    },
+    {
+      "spaceName": "demo_banner_3",
+      "adsType": "banner",
+      "id": "ca-app-pub-3940256099942544/6300978111"
+    },
+    {
+      "spaceName": "demo_banner_large_1",
+      "adsType": "banner_large",
+      "id": "ca-app-pub-3940256099942544/6300978111"
+    },
+    {
+      "spaceName": "demo_banner_large_2",
+      "adsType": "banner_large",
+      "id": "ca-app-pub-3940256099942544/6300978111"
+    },
+    {
+      "spaceName": "demo_banner_large_3",
+      "adsType": "banner_large",
+      "id": "ca-app-pub-3940256099942544/6300978111"
+    },
+    {
+      "spaceName": "demo_reward_video_1",
+      "adsType": "reward_video",
+      "id": "ca-app-pub-3940256099942544/5224354917"
+    },
+    {
+      "spaceName": "demo_reward_video_2",
+      "adsType": "reward_video",
+      "id": "ca-app-pub-3940256099942544/5224354917"
+    },
+    {
+      "spaceName": "demo_reward_video_3",
+      "adsType": "reward_video",
+      "id": "ca-app-pub-3940256099942544/5224354917"
+    },
+    {
+      "spaceName": "demo_reward_interstitial_1",
+      "adsType": "reward_video",
+      "id": "ca-app-pub-3940256099942544/5354046379"
+    },
+    {
+      "spaceName": "demo_reward_interstitial_2",
+      "adsType": "reward_video",
+      "id": "ca-app-pub-3940256099942544/5354046379"
+    },
+    {
+      "spaceName": "demo_reward_interstitial_3",
+      "adsType": "reward_video",
+      "id": "ca-app-pub-3940256099942544/5354046379"
+    }
+  ]
+}

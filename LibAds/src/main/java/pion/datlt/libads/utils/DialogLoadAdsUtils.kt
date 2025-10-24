@@ -35,18 +35,20 @@ class DialogLoadAdsUtils {
 
     private val timeOutCloseDialog = 7000L
 
-    fun showDialogLoadingAds(activity: Activity?, isScreenView : Boolean = true) {
-        if (dialog != null && dialog?.isShowing == true){
-            dialog?.dismiss()
-            dialog = null
+    fun showDialogLoadingAds(activity: Activity?, isScreenView: Boolean = true) {
+        if (dialog != null && dialog?.isShowing == true) {
+            kotlin.runCatching {
+                dialog?.dismiss()
+                dialog = null
+            }
         }
 
         activity?.let {
             dialog = Dialog(it)
 
-            val view: View = if (isScreenView){
+            val view: View = if (isScreenView) {
                 LayoutInflater.from(it).inflate(R.layout.screen_loading_inter_ads, null)
-            }else{
+            } else {
                 LayoutInflater.from(it).inflate(R.layout.dialog_loading_inter_ads, null)
             }
 
@@ -59,33 +61,42 @@ class DialogLoadAdsUtils {
             )
 
 
-            if (dialog!= null && !dialog!!.isShowing){
+            if (dialog != null && !dialog!!.isShowing) {
                 try {
                     Log.d("CHECKDIALOG", "showDialogLoadingAds: dialog!!.show()")
                     dialog!!.show()
                     handler.postDelayed(closeDialogRunnable, timeOutCloseDialog)
-                }catch (e : Exception){
+                } catch (e: Exception) {
 
                 }
             }
         }
     }
 
-
-    fun hideDialogLoadingAds(timeDelay : Long = 500L) {
+    fun hideDialogLoadingAds(timeDelay: Long = 500L) {
         handler.removeCallbacks(closeDialogRunnable)
-        Handler(Looper.getMainLooper()).postDelayed({
+        if (timeDelay <= 0L) {
             try {
-                if (dialog != null && dialog!!.isShowing){
+                if (dialog != null && dialog!!.isShowing) {
                     dialog!!.dismiss()
                 }
-            }catch (e :Exception){
+            } catch (e: Exception) {
 
             }
             dialog = null
-        } , timeDelay)
-    }
+        } else {
+            Handler(Looper.getMainLooper()).postDelayed({
+                try {
+                    if (dialog != null && dialog!!.isShowing) {
+                        dialog!!.dismiss()
+                    }
+                } catch (e: Exception) {
 
+                }
+                dialog = null
+            }, timeDelay)
+        }
+    }
 
 
 }

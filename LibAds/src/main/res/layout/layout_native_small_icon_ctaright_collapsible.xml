@@ -94,14 +94,15 @@
 
         <TextView
             android:id="@+id/ad_call_to_action"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_width="@dimen/_100dp"
+            android:layout_height="0dp"
             android:layout_marginVertical="@dimen/_13dp"
             android:layout_marginEnd="@dimen/_12dp"
             android:background="@drawable/bg_radius_10"
             android:backgroundTint="@color/cta_color"
             android:fontFamily="@font/font_700"
             android:gravity="center"
+            android:paddingVertical="@dimen/_12dp"
             android:text="OPEN"
             android:textColor="@color/cta_text_color"
             android:textSize="@dimen/_12sp"

@@ -8,12 +8,10 @@ import pion.tech.pionbase.base.BaseViewModel
 import pion.tech.pionbase.base.launchIO
 import pion.tech.pionbase.data.model.appCategory.AppCategoryUIModel
 import pion.tech.pionbase.data.model.appCategory.toPresentation
-import pion.tech.pionbase.data.model.remoteConfig.RemoteConfigDtoModel
 import pion.tech.pionbase.data.model.template.TemplateUIModel
 import pion.tech.pionbase.data.model.template.toPresentation
 import pion.tech.pionbase.data.repository.apiRepository.ApiRepository
 import pion.tech.pionbase.data.repository.dataStore.DataStoreRepository
-import pion.tech.pionbase.data.repository.remoteConfig.RemoteConfigRepository
 import pion.tech.pionbase.util.UiState
 import pion.tech.pionbase.util.handleApiCall
 import javax.inject.Inject
@@ -22,26 +20,9 @@ import javax.inject.Inject
 class CommonViewModel
     @Inject
     constructor(
-        private val remoteConfigRepository: RemoteConfigRepository,
         private val apiRepository: ApiRepository,
         private val dataStoreRepository: DataStoreRepository,
     ) : BaseViewModel() {
-        private val _remoteConfigUiState =
-            MutableStateFlow<UiState<RemoteConfigDtoModel>>(UiState.None)
-        val remoteConfigUiState = _remoteConfigUiState.asStateFlow()
-
-        init {
-            fetchRemoteConfig()
-            getAppId()
-        }
-
-        private fun fetchRemoteConfig() {
-            handleApiCall(
-                stateFlow = _remoteConfigUiState,
-                apiCall = { remoteConfigRepository.fetchRemoteConfig() },
-            )
-        }
-
         private val _getCategoryUiState =
             MutableStateFlow<UiState<List<AppCategoryUIModel>>>(UiState.None)
         val getCategoryUiState = _getCategoryUiState.asStateFlow()
@@ -66,22 +47,7 @@ class CommonViewModel
             )
         }
 
-        fun setPremium(isPremium: Boolean) {
-            launchIO {
-                dataStoreRepository.setIsPremium(isPremium).collect()
-            }
-        }
-
-        private val _checkGdprState = MutableStateFlow(GDPRState.NONE)
-        val checkGdprState = _checkGdprState.asStateFlow()
-
-        fun setGdprState(state: GDPRState) {
-            _checkGdprState.value = state
+        init {
+            getAppId()
         }
     }
-
-enum class GDPRState {
-    NONE,
-    LOADING,
-    DONE,
-}

@@ -16,7 +16,6 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.OnPaidEventListener
-import com.google.android.gms.ads.appopen.AppOpenAd
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import kotlinx.coroutines.CoroutineScope
@@ -29,18 +28,15 @@ import pion.datlt.libads.callback.PreloadCallback
 import pion.datlt.libads.model.AdsChild
 import pion.datlt.libads.utils.AdDef
 import pion.datlt.libads.utils.AdsConstant
-import pion.datlt.libads.utils.CommonUtils
 import pion.datlt.libads.utils.StateLoadAd
 import java.util.*
 
 class AdmobInterstitialAds : AdmobAds() {
 
-    private var stateLoadAd: StateLoadAd = StateLoadAd.NONE
     private var interstitialAd: InterstitialAd? = null
     private var isTimeOut: Boolean = false
 
     private var eventLifecycle: Lifecycle.Event = Lifecycle.Event.ON_RESUME
-    private var error = ""
 
     private var mActivity: Activity? = null
     private var mAdsChild: AdsChild? = null
@@ -49,11 +45,6 @@ class AdmobInterstitialAds : AdmobAds() {
 
     private var mPreloadCallback: PreloadCallback? = null
     private var mAdCallback: AdCallback? = null
-
-    //bundle
-    private var adSourceId = ""
-    private var adSourceName = ""
-    private var adUnitId = ""
 
     private val handler = Handler(Looper.getMainLooper())
 
@@ -67,15 +58,13 @@ class AdmobInterstitialAds : AdmobAds() {
         override fun onFinish() {
             interstitialAd = null
             stateLoadAd = StateLoadAd.SHOW_FAILED
-            error = "timeout show ads"
             if (eventLifecycle == Lifecycle.Event.ON_RESUME) {
-                mAdCallback?.onAdFailToLoad(error)
-                mLifecycle?.removeObserver(lifecycleObserver)
                 Log.d(
                     "TESTERADSEVENT",
-                    "show failed interstitial 1: ads name ${mAdsChild?.spaceName} id ${mAdsChild?.adsId} error : $error"
+                    "show failed interstitial: ads name ${mAdsChild?.spaceName} id ${mAdsChild?.adsId} error : timeout show ads"
                 )
-
+                mLifecycle?.removeObserver(lifecycleObserver)
+                mAdCallback?.onAdFailToLoad("timeout show ads")
             }
         }
 
@@ -90,12 +79,12 @@ class AdmobInterstitialAds : AdmobAds() {
             //none hoac loading
             isTimeOut = true
             if (eventLifecycle == Lifecycle.Event.ON_RESUME) {
-                mAdCallback?.onAdFailToLoad("TimeOut")
                 mLifecycle?.removeObserver(lifecycleObserver)
                 Log.d(
                     "TESTERADSEVENT",
-                    "show failed interstitial 2: ads name ${mAdsChild?.spaceName} id ${mAdsChild?.adsId} error : $error"
+                    "show failed interstitial: ads name ${mAdsChild?.spaceName} id ${mAdsChild?.adsId} error : time out load ads"
                 )
+                mAdCallback?.onAdFailToLoad("time out load ads")
             }
         }
     }
@@ -112,26 +101,25 @@ class AdmobInterstitialAds : AdmobAds() {
                             destinationToShowAds = mDestinationToShowAds,
                             adCallback = mAdCallback,
                             lifecycle = mLifecycle,
-                            layoutToAttachAds = null,
-                            viewAdsInflateFromXml = null,
+                            viewGroupAds = null,
+                            viewAds = null,
                             timeShowNativeCollapsibleAfterClose = 0
                         )
                     } else {
                         mLifecycle?.removeObserver(this)
-                        mAdCallback?.onAdFailToLoad("activity or adsChild must not null")
                         Log.d(
                             "TESTERADSEVENT",
-                            "show failed interstitial 4: ads name ${mAdsChild?.spaceName} id ${mAdsChild?.adsId} error : activity or adsChild must not null"
+                            "show failed interstitial: ads name ${mAdsChild?.spaceName} id ${mAdsChild?.adsId} error : activity or adsChild must not null"
                         )
+                        mAdCallback?.onAdFailToLoad("activity or adsChild must not null")
                     }
                 } else {
                     mLifecycle?.removeObserver(this)
-                    mAdCallback?.onAdFailToLoad(error)
                     Log.d(
                         "TESTERADSEVENT",
-                        "show failed interstitial 5: ads name ${mAdsChild?.spaceName} id ${mAdsChild?.adsId} error : $error"
+                        "show failed interstitial: ads name ${mAdsChild?.spaceName} id ${mAdsChild?.adsId} error : StateLoadAd not success when resume"
                     )
-
+                    mAdCallback?.onAdFailToLoad("StateLoadAd not success when resume")
                 }
             }
         }
@@ -145,8 +133,8 @@ class AdmobInterstitialAds : AdmobAds() {
         adCallback: AdCallback?,
         lifecycle: Lifecycle?,
         timeout: Long?,
-        layoutToAttachAds: ViewGroup?,
-        viewAdsInflateFromXml: View?,
+        viewGroupAds: ViewGroup?,
+        viewAds: View?,
         adChoice: Int?,
         positionCollapsibleBanner: String?,
         isOneTimeCollapsible: Boolean?,
@@ -157,24 +145,18 @@ class AdmobInterstitialAds : AdmobAds() {
 
         mAdCallback = adCallback
 
-        if (stateLoadAd == StateLoadAd.LOADING) {
-            //không load cái mới nữa
-            //chờ load xong rồi show
-            Log.d("CHECKNOTSHOWINTER", "loadAndShow: stateLoadAd == StateLoadAd.LOADING")
-        } else if (stateLoadAd == StateLoadAd.SUCCESS) {
-            //show luôn
+        if (stateLoadAd == StateLoadAd.SUCCESS) {
             show(
                 activity = activity,
                 adsChild = adsChild,
                 destinationToShowAds = destinationToShowAds,
                 adCallback = adCallback,
                 lifecycle = lifecycle,
-                layoutToAttachAds = layoutToAttachAds,
-                viewAdsInflateFromXml = viewAdsInflateFromXml,
+                viewGroupAds = viewGroupAds,
+                viewAds = viewAds,
                 timeShowNativeCollapsibleAfterClose = 0
             )
-        } else {
-            //load quảng cáo mới
+        } else if (stateLoadAd != StateLoadAd.LOADING) {
             load(
                 activity = activity,
                 adsChild = adsChild,
@@ -194,8 +176,8 @@ class AdmobInterstitialAds : AdmobAds() {
                                 destinationToShowAds = destinationToShowAds,
                                 adCallback = adCallback,
                                 lifecycle = lifecycle,
-                                layoutToAttachAds = layoutToAttachAds,
-                                viewAdsInflateFromXml = viewAdsInflateFromXml,
+                                viewGroupAds = viewGroupAds,
+                                viewAds = viewAds,
                                 timeShowNativeCollapsibleAfterClose = timeShowNativeCollapsibleAfterClose
                             )
                         }
@@ -231,18 +213,19 @@ class AdmobInterstitialAds : AdmobAds() {
         timeout: Long = AdsConstant.TIME_OUT_DEFAULT,
         loadCallback: PreloadCallback? = null
     ) {
-        Log.d(
-            "TESTERADSEVENT",
-            "start load interstitial : ads name ${adsChild.spaceName} id ${adsChild.adsId}"
-        )
-
         CoroutineScope(Dispatchers.IO).launch {
+            stateLoadAd = StateLoadAd.LOADING
+            Log.d(
+                "TESTERADSEVENT",
+                "start load interstitial : ads name ${adsChild.spaceName} id ${adsChild.adsId}"
+            )
+
             mActivity = activity
             mAdsChild = adsChild
-            stateLoadAd = StateLoadAd.LOADING
+            isTimeOut = false
+
             val id =
                 if (AdsConstant.isDebug) AdsConstant.ID_ADMOB_INTERSTITIAL_TEST else adsChild.adsId
-            isTimeOut = false
             if (!isPreload) {
                 handler.removeCallbacks(timeoutCallback)
                 handler.postDelayed(timeoutCallback, timeout)
@@ -252,14 +235,13 @@ class AdmobInterstitialAds : AdmobAds() {
             val interstitialCallback = object : InterstitialAdLoadCallback() {
                 override fun onAdLoaded(interAds: InterstitialAd) {
                     super.onAdLoaded(interAds)
+                    interstitialAd = interAds
+                    timeLoader = Date().time
+                    stateLoadAd = StateLoadAd.SUCCESS
                     Log.d(
                         "TESTERADSEVENT",
                         "load success interstitial : ads name ${adsChild.spaceName} id ${adsChild.adsId}"
                     )
-
-                    interstitialAd = interAds
-                    timeLoader = Date().time
-                    stateLoadAd = StateLoadAd.SUCCESS
                     loadCallback?.onLoadDone()
                     handler.removeCallbacks(timeoutCallback)
                     if (isPreload) {
@@ -280,20 +262,19 @@ class AdmobInterstitialAds : AdmobAds() {
                     }
                 }
 
-                override fun onAdFailedToLoad(loadError: LoadAdError) {
-                    super.onAdFailedToLoad(loadError)
+                override fun onAdFailedToLoad(error: LoadAdError) {
+                    super.onAdFailedToLoad(error)
+                    stateLoadAd = StateLoadAd.LOAD_FAILED
                     Log.d(
                         "TESTERADSEVENT",
-                        "load failed interstitial : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : ${loadError.message}"
+                        "load failed interstitial : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : ${error.message}"
                     )
-
-                    error = loadError.message
-                    stateLoadAd = StateLoadAd.LOAD_FAILED
-                    loadCallback?.onLoadFail(loadError.message)
+                    loadCallback?.onLoadFail(error.message)
                     handler.removeCallbacks(timeoutCallback)
                     if (isPreload) {
-                        mPreloadCallback?.onLoadFail(loadError.message)
+                        mPreloadCallback?.onLoadFail(error.message)
                     }
+                    destroyAds()
                 }
             }
             val request = AdRequest.Builder().build()
@@ -312,8 +293,8 @@ class AdmobInterstitialAds : AdmobAds() {
         destinationToShowAds: Int?,
         adCallback: AdCallback?,
         lifecycle: Lifecycle?,
-        layoutToAttachAds: ViewGroup?,
-        viewAdsInflateFromXml: View?,
+        viewGroupAds: ViewGroup?,
+        viewAds: View?,
         timeShowNativeCollapsibleAfterClose: Int?
     ) {
         mActivity = activity
@@ -328,55 +309,52 @@ class AdmobInterstitialAds : AdmobAds() {
                 super.onAdDismissedFullScreenContent()
                 countDownShowAds.cancel()
                 interstitialAd = null
-                adCallback?.onAdClose()
                 lifecycle?.removeObserver(lifecycleObserver)
                 Log.d(
                     "TESTERADSEVENT",
                     "close interstitial : ads name ${adsChild.spaceName} id ${adsChild.adsId}"
                 )
-
+                adCallback?.onAdClose()
+                destroyAds()
             }
 
             override fun onAdShowedFullScreenContent() {
                 super.onAdShowedFullScreenContent()
                 //goi khi quang cao duoc show len
+                lifecycle?.removeObserver(lifecycleObserver)
                 countDownShowAds.cancel()
                 interstitialAd = null
                 stateLoadAd = StateLoadAd.HAS_BEEN_OPENED
-                lifecycle?.removeObserver(lifecycleObserver)
-                CommonUtils.showToastDebug(activity, "Admob Interstitial id: ${adsChild.adsId}")
-                adCallback?.onAdShow()
                 Log.d(
                     "TESTERADSEVENT",
                     "show success interstitial : ads name ${adsChild.spaceName} id ${adsChild.adsId}"
                 )
-
+                adCallback?.onAdShow()
             }
 
-            override fun onAdFailedToShowFullScreenContent(adError: AdError) {
-                super.onAdFailedToShowFullScreenContent(adError)
+            override fun onAdFailedToShowFullScreenContent(error: AdError) {
+                super.onAdFailedToShowFullScreenContent(error)
                 countDownShowAds.cancel()
                 interstitialAd = null
                 stateLoadAd = StateLoadAd.SHOW_FAILED
-                error = adError.message
-                if (eventLifecycle == Lifecycle.Event.ON_RESUME) {
-                    adCallback?.onAdFailToLoad(adError.message)
-                    lifecycle?.removeObserver(lifecycleObserver)
-                }
                 Log.d(
                     "TESTERADSEVENT",
-                    "show failed interstitial 6: ads name ${adsChild.spaceName} id ${adsChild.adsId} error : $error"
+                    "show failed interstitial 6: ads name ${adsChild.spaceName} id ${adsChild.adsId} error : ${error.message}"
                 )
-
+                if (eventLifecycle == Lifecycle.Event.ON_RESUME) {
+                    lifecycle?.removeObserver(lifecycleObserver)
+                    adCallback?.onAdFailToLoad(error.message)
+                }
+                destroyAds()
             }
 
             override fun onAdClicked() {
                 super.onAdClicked()
-                adCallback?.onAdClick()
                 Log.d(
                     "TESTERADSEVENT",
                     "click interstitial : ads name ${adsChild.spaceName} id ${adsChild.adsId}"
                 )
+                adCallback?.onAdClick()
             }
 
 
@@ -407,30 +385,23 @@ class AdmobInterstitialAds : AdmobAds() {
                 eventLifecycle = Lifecycle.Event.ON_RESUME
             }
         }
-        Log.d(
-            "CHECKNOTSHOWINTER",
-            "loadAndShow: 1 ${eventLifecycle == Lifecycle.Event.ON_RESUME} ${!isTimeOut}"
-        )
+
 
         if (eventLifecycle == Lifecycle.Event.ON_RESUME) {
-            Log.d("CHECKNOTSHOWINTER", "loadAndShow: 2")
             if (mDestinationToShowAds != null && mDestinationToShowAds != AdsController.currentDestinationId) {
-                Log.d("CHECKNOTSHOWINTER", "loadAndShow: 3")
-                adCallback?.onAdFailToLoad("show in wrong destination")
                 Log.d(
                     "TESTERADSEVENT",
-                    "show failed interstitial 7: ads name ${adsChild.spaceName} id ${adsChild.adsId} error : show in wrong destination"
+                    "show failed interstitial: ads name ${adsChild.spaceName} id ${adsChild.adsId} error : show in wrong destination"
                 )
+                adCallback?.onAdFailToLoad("show in wrong destination")
             } else if (!wasLoadTimeLessThanNHoursAgo()) {
                 stateLoadAd = StateLoadAd.SHOW_FAILED
-                Log.d("CHECKNOTSHOWINTER", "loadAndShow: 4")
-                adCallback?.onAdFailToLoad("ads expired")
                 Log.d(
                     "TESTERADSEVENT",
-                    "show failed interstitial 8: ads name ${adsChild.spaceName} id ${adsChild.adsId} error : ads expired"
+                    "show failed interstitial: ads name ${adsChild.spaceName} id ${adsChild.adsId} error : ads expired"
                 )
+                adCallback?.onAdFailToLoad("ads expired")
             } else {
-                Log.d("CHECKNOTSHOWINTER", "loadAndShow: 5")
                 interstitialAd?.show(activity)
                 //bat dau dem nguoc
                 countDownShowAds.start()
@@ -446,7 +417,14 @@ class AdmobInterstitialAds : AdmobAds() {
         mPreloadCallback = null
     }
 
-    override fun getStateLoadAd(): StateLoadAd {
-        return stateLoadAd
+    override fun destroyAds() {
+        interstitialAd = null
+        mActivity = null
+        mAdsChild = null
+        mDestinationToShowAds = null
+        mPreloadCallback = null
+        mAdCallback = null
+        mLifecycle = null
+        stateLoadAd = StateLoadAd.NULL
     }
 }

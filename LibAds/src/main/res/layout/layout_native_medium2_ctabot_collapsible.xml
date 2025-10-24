@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:tag="collapsible">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/adViewHolder"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:background="@color/ads_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -90,6 +90,7 @@
             android:fontFamily="@font/font_700"
             android:gravity="center"
             android:text="OPEN"
+            android:paddingVertical="@dimen/_12dp"
             android:textColor="@color/cta_text_color"
             android:textSize="@dimen/_12sp"
             app:layout_constraintBottom_toBottomOf="parent"

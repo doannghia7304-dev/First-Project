@@ -17,7 +17,11 @@ import java.util.*
 abstract class AdmobAds {
 
     protected var timeLoader = 0L //thoi gian load success
-    protected var timeStartLoad = 0L
+    protected var stateLoadAd: StateLoadAd = StateLoadAd.NONE
+
+    protected var adSourceId = ""
+    protected var adSourceName = ""
+    protected var adUnitId = ""
 
 
     abstract fun loadAndShow(
@@ -27,13 +31,13 @@ abstract class AdmobAds {
         adCallback: AdCallback?,
         lifecycle: Lifecycle?,
         timeout: Long?,
-        layoutToAttachAds: ViewGroup?,
-        viewAdsInflateFromXml: View?,
+        viewGroupAds: ViewGroup?,
+        viewAds: View?,
         adChoice: Int?,
         positionCollapsibleBanner: String?,
         isOneTimeCollapsible: Boolean?,
         widthBannerAdaptiveAds: Int?,
-        timeShowNativeCollapsibleAfterClose : Int?
+        timeShowNativeCollapsibleAfterClose: Int?
     )
 
     abstract fun preload(
@@ -52,16 +56,19 @@ abstract class AdmobAds {
         adCallback: AdCallback?,
         lifecycle: Lifecycle?,
         //native
-        layoutToAttachAds: ViewGroup?,
-        viewAdsInflateFromXml: View?,
-        timeShowNativeCollapsibleAfterClose : Int?
+        viewGroupAds: ViewGroup?,
+        viewAds: View?,
+        timeShowNativeCollapsibleAfterClose: Int?
     )
 
     abstract fun setPreloadCallback(preloadCallback: PreloadCallback?)
 
     abstract fun removePreloadCallback()
 
-    abstract fun getStateLoadAd(): StateLoadAd
+    abstract fun destroyAds()
+
+    fun getStateLoadAds() = stateLoadAd
+
 
     fun wasLoadTimeLessThanNHoursAgo(numHours: Long = 1): Boolean {
         val dateDifference: Long = Date().time - timeLoader

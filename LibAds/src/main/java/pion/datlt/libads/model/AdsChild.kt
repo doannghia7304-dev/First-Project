@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 class AdsChild {
 
+    @SerializedName("network")
     var network: String = "google"
 
     @SerializedName("spaceName")

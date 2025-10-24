@@ -17,10 +17,9 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import com.example.libiap.IAPConnector
-import com.example.libiap.SubscribeInterface
-import com.example.libiap.model.ProductModel
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dagger.hilt.android.AndroidEntryPoint
+import pion.datlt.libads.AdsActivity
 import pion.datlt.libads.AdsController
 import pion.datlt.libads.utils.AdsConstant
 import pion.tech.pionbase.BuildConfig
@@ -30,7 +29,7 @@ import pion.tech.pionbase.util.Constant
 import kotlin.getValue
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : AdsActivity() {
     private val commonViewModel: CommonViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,72 +46,53 @@ class MainActivity : AppCompatActivity() {
             insets
         }
         initAds()
-        initPurchaseIap()
     }
 
-    private fun initAds() {
-        AdsController.Companion.init(
-            activity = this,
-            isDebug = BuildConfig.DEBUG,
-            listAppId =
-                arrayListOf(
-                    getString(R.string.admob_application_id),
-                ),
-            packageName = packageName,
-            navController = getNavHost(),
+    override fun getListAppId(): List<String> =
+        listOf(
+            getString(R.string.admob_application_id),
         )
-    }
 
-    fun initAppResumeAds() {
-        AdsController.Companion.getInstance().initResumeAds(
-            lifecycle = lifecycle,
-            listSpaceName = listOf("appresume_openad1", "appresume_openad2", "appresume_openad3"),
-            onShowOpenApp = {
-                findViewById<TextView>(R.id.viewShowOpenApp).isVisible = true
-            },
-            onStartToShowOpenAds = {
-                findViewById<TextView>(R.id.viewShowOpenApp).isVisible = true
-            },
-            onCloseOpenApp = {
-                findViewById<TextView>(R.id.viewShowOpenApp).isVisible = false
-            },
-            onPaidEvent = {
-                // do nothing
-            },
-        )
-    }
+    override fun isDebugAds() = BuildConfig.DEBUG
 
-    private fun initPurchaseIap() {
-        application?.let { IAPConnector.initIap(it, "iap_id.json", BuildConfig.DEBUG) }
-        IAPConnector.addIAPListener(
-            object : SubscribeInterface {
-                override fun subscribeSuccess(productModel: ProductModel) {
-                    // set lai cac bien check
-                    Constant.isPremium = true
-                    AdsConstant.isPremium = true
-                    commonViewModel.setPremium(true)
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        val intent =
-                            baseContext.packageManager.getLaunchIntentForPackage(
-                                baseContext.packageName,
-                            )
-                        intent!!.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                        startActivity(intent)
-                    }, 500)
-                }
-
-                override fun subscribeError(error: String) {
-                }
-            },
-        )
-    }
-
-    private fun getNavHost(): NavController {
+    override fun getNavHost(): NavController {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragmentContainerMain) as NavHostFragment
         return navHostFragment.navController
     }
+
+    override fun getNativeAfterInterInfo(): Pair<String, List<String>> {
+        // Trả về list id của quảng cáo native sau inter
+        return Pair(
+            "afterinterstitial",
+            listOf("afterinterstitial_native1", "afterinterstitial_native2"),
+        ) // k: configName || v: list id native
+    }
+
+    override fun getAppResumeInfo(): Pair<String, List<String>> {
+        // Trả về list id của quảng cáo app resume
+        return Pair(
+            "appresume",
+            listOf("appresume_openad1", "appresume_openad2"),
+        ) // k: configName || v: list id native
+    }
+
+    override fun getListNotShowAppResumeFragmentId(): List<Int> {
+        // Trả về list id của các fragment không hiển thị quảng cáo app resume
+        return listOf(
+            R.id.splashFragment,
+            R.id.onboardFragment,
+        )
+    }
+
+    override fun onRemoteConfigSuccess(isSuccess: Boolean) {
+        Constant.isRemoteConfigSuccess = isSuccess
+    }
+
+    override fun onGetRemoteConfigDone(remoteConfig: FirebaseRemoteConfig) {
+    }
+
+    override fun getAppFlyerKey() = "4Ti9yuyaVb6BJMoy25gWUP"
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         if (ev?.action == MotionEvent.ACTION_DOWN) {

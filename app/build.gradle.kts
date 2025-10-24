@@ -93,7 +93,6 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    implementation(project(":LibIAP"))
     implementation(project(":LibAds"))
 
     // Crash recovery

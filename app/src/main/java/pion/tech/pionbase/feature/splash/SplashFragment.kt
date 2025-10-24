@@ -3,8 +3,10 @@ package pion.tech.pionbase.feature.splash
 import android.animation.ValueAnimator
 import android.view.View
 import dagger.hilt.android.AndroidEntryPoint
+import pion.tech.pionbase.app.MainActivity
 import pion.tech.pionbase.base.BaseFragment
 import pion.tech.pionbase.databinding.FragmentSplashBinding
+import pion.tech.pionbase.util.collectFlowOnView
 
 @AndroidEntryPoint
 class SplashFragment :
@@ -16,16 +18,15 @@ class SplashFragment :
 
     override fun init(view: View) {
         initView()
-        if (isCameFromLanguage()) {
-            showAds()
-            return
-        }
         onBackEvent()
-        initGdpr()
     }
 
     override fun subscribeObserver(view: View) {
-        observerIapRemoteData()
+        (activity as? MainActivity)?.isAllInitDone?.collectFlowOnView(viewLifecycleOwner) {
+            if (it) {
+                showAds()
+            }
+        }
     }
 
     override fun onDestroyView() {

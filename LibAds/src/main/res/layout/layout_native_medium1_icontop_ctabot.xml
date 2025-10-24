@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:tag="normal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -72,6 +73,7 @@
             android:backgroundTint="@color/cta_color"
             android:gravity="center"
             android:maxLines="1"
+            android:paddingVertical="@dimen/_12dp"
             android:textColor="@color/cta_text_color"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="340:42"
@@ -83,7 +85,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_ad_tag"
+            android:background="@drawable/bg_ad_tag_top_right"
             android:backgroundTint="#FFA800"
             android:fontFamily="@font/font_500"
             android:paddingHorizontal="@dimen/_4dp"

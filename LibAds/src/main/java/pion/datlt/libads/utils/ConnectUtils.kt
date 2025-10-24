@@ -8,8 +8,7 @@ import android.net.NetworkRequest
 import android.os.Build
 import androidx.lifecycle.LiveData
 
-class ConnectUtils
-constructor(var context: Context) : LiveData<Boolean>() {
+class ConnectUtils constructor(var context: Context) : LiveData<Boolean>() {
 
     private var connectivityManager: ConnectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -43,13 +42,7 @@ constructor(var context: Context) : LiveData<Boolean>() {
         }
 
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                connectivityManager.registerDefaultNetworkCallback(networkCallback)
-            } else {
-                val request = NetworkRequest.Builder()
-                    .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).build()
-                connectivityManager.registerNetworkCallback(request, networkCallback)
-            }
+            connectivityManager.registerDefaultNetworkCallback(networkCallback)
         } catch (e: Exception) {
             postValue(true)
         }
@@ -57,9 +50,8 @@ constructor(var context: Context) : LiveData<Boolean>() {
 
     override fun onInactive() {
         super.onInactive()
-        try {
+        kotlin.runCatching {
             connectivityManager.unregisterNetworkCallback(connectivityManagerCallback)
-        } catch (e: Exception) {
         }
     }
 

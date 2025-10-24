@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.MutableLiveData
 import com.google.ads.mediation.admob.AdMobAdapter
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
@@ -28,7 +27,6 @@ import pion.datlt.libads.callback.PreloadCallback
 import pion.datlt.libads.model.AdsChild
 import pion.datlt.libads.utils.AdDef
 import pion.datlt.libads.utils.AdsConstant
-import pion.datlt.libads.utils.CommonUtils
 import pion.datlt.libads.utils.StateLoadAd
 import java.util.*
 
@@ -36,23 +34,12 @@ class AdmobBannerCollapsibleAds : AdmobAds() {
 
     private var adView: AdView? = null
     private var mAdCallback: AdCallback? = null
-    private var error = ""
-    private var stateLoadAd: StateLoadAd = StateLoadAd.NONE
     private var mPreloadCallback: PreloadCallback? = null
-
-    var adSourceId = ""
-    var adSourceName = ""
-    var adUnitId = ""
-
-    var closeBannerLiveData = MutableLiveData(false)
-
     private var mLifecycle: Lifecycle? = null
     private var mLayoutToAttachAds: ViewGroup? = null
-    private var mAdSize : AdSize? = null
+    private var mAdSize: AdSize? = null
     private var isAdsClose = false
 
-
-    private var closeBannerLiveDataObserver = androidx.lifecycle.Observer<Boolean>{}
 
     private val otherShowingObserver: androidx.lifecycle.Observer<String?> =
         object : androidx.lifecycle.Observer<String?> {
@@ -85,17 +72,17 @@ class AdmobBannerCollapsibleAds : AdmobAds() {
                 Lifecycle.Event.ON_DESTROY -> {
                     adView?.destroy()
                     mLayoutToAttachAds?.removeAllViews()
-                    closeBannerLiveData.removeObserver(closeBannerLiveDataObserver)
                     mLifecycle?.removeObserver(this)
-
                 }
+
                 Lifecycle.Event.ON_PAUSE -> {
                     adView?.destroy()
-//                    adView?.pause()
                 }
+
                 Lifecycle.Event.ON_RESUME -> {
                     adView?.resume()
                 }
+
                 else -> {}
             }
         }
@@ -108,8 +95,8 @@ class AdmobBannerCollapsibleAds : AdmobAds() {
         adCallback: AdCallback?,
         lifecycle: Lifecycle?,
         timeout: Long?,
-        layoutToAttachAds: ViewGroup?,
-        viewAdsInflateFromXml: View?,
+        viewGroupAds: ViewGroup?,
+        viewAds: View?,
         adChoice: Int?,
         positionCollapsibleBanner: String?,
         isOneTimeCollapsible: Boolean?,
@@ -117,28 +104,23 @@ class AdmobBannerCollapsibleAds : AdmobAds() {
         timeShowNativeCollapsibleAfterClose: Int?
     ) {
         mAdCallback = adCallback
-        mAdSize = layoutToAttachAds?.let { getAdsize(activity , it) }
+        mAdSize = viewGroupAds?.let { getAdsize(activity, it) }
 
-
-        if (stateLoadAd == StateLoadAd.LOADING){
-            //khong load cai moi nua
-            //doi cai cu load xong roi show
-        }else{
-            //load cai moi
+        if (stateLoadAd != StateLoadAd.LOADING) {
             load(
                 activity = activity,
                 adsChild = adsChild,
                 isPreload = false,
                 positionCollapsibleBanner = positionCollapsibleBanner,
                 isOneTimeCollapsible = isOneTimeCollapsible,
-                loadCallback = object : PreloadCallback{
+                loadCallback = object : PreloadCallback {
                     override fun onLoadDone() {
                         show(
                             activity = activity,
                             adsChild = adsChild,
                             destinationToShowAds = destinationToShowAds,
-                            layoutToAttachAds = layoutToAttachAds,
-                            viewAdsInflateFromXml = viewAdsInflateFromXml,
+                            viewGroupAds = viewGroupAds,
+                            viewAds = viewAds,
                             lifecycle = lifecycle,
                             adCallback = adCallback,
                             timeShowNativeCollapsibleAfterClose = timeShowNativeCollapsibleAfterClose
@@ -166,7 +148,6 @@ class AdmobBannerCollapsibleAds : AdmobAds() {
             activity = activity,
             adsChild = adsChild,
             positionCollapsibleBanner = positionCollapsibleBanner,
-            widthBannerAdaptiveAds = widthBannerAdaptiveAds,
             isOneTimeCollapsible = isOneTimeCollapsible,
             isPreload = true
         )
@@ -177,20 +158,15 @@ class AdmobBannerCollapsibleAds : AdmobAds() {
         adsChild: AdsChild,
         positionCollapsibleBanner: String?,
         isOneTimeCollapsible: Boolean?,
-        isPreload : Boolean,
-        loadCallback : PreloadCallback? = null,
-        widthBannerAdaptiveAds: Int? = null
-    ){
-        Log.d(
-            "TESTERADSEVENT",
-            "start load banner collapsible : ads name ${adsChild.spaceName} id ${adsChild.adsId}"
-        )
-
+        isPreload: Boolean,
+        loadCallback: PreloadCallback? = null
+    ) {
         CoroutineScope(Dispatchers.IO).launch {
             stateLoadAd = StateLoadAd.LOADING
+            Log.d("TESTERADSEVENT", "start load banner collapsible : ads name ${adsChild.spaceName} id ${adsChild.adsId}")
             val idAds = if (AdsConstant.isDebug) AdsConstant.ID_ADMOB_BANNER_COLLAPSIBLE_TEST else adsChild.adsId
 
-            if (mAdSize == null){
+            if (mAdSize == null) {
                 mAdSize = getAdsize(activity)
             }
 
@@ -209,11 +185,8 @@ class AdmobBannerCollapsibleAds : AdmobAds() {
 
                 override fun onAdClicked() {
                     super.onAdClicked()
+                    Log.d("TESTERADSEVENT", "click banner collapsible : ads name ${adsChild.spaceName} id ${adsChild.adsId}")
                     mAdCallback?.onAdClick()
-                    Log.d(
-                        "TESTERADSEVENT",
-                        "click banner collapsible : ads name ${adsChild.spaceName} id ${adsChild.adsId}"
-                    )
                 }
 
                 override fun onAdClosed() {
@@ -221,38 +194,35 @@ class AdmobBannerCollapsibleAds : AdmobAds() {
                     mAdCallback?.onAdClose()
                 }
 
-                override fun onAdFailedToLoad(adError: LoadAdError) {
-                    super.onAdFailedToLoad(adError)
-                    Log.d("TESTERADSEVENT", "load failed banner collapsible : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : $error")
-
-                    error = adError.message
+                override fun onAdFailedToLoad(error: LoadAdError) {
+                    super.onAdFailedToLoad(error)
                     stateLoadAd = StateLoadAd.LOAD_FAILED
-                    mAdCallback?.onAdFailToLoad(error)
-                    loadCallback?.onLoadFail(error)
+                    Log.d("TESTERADSEVENT", "load failed banner collapsible : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : ${error.message}")
+                    mAdCallback?.onAdFailToLoad(error.message)
+                    loadCallback?.onLoadFail(error.message)
                     if (isPreload) {
-                        mPreloadCallback?.onLoadFail(error)
+                        mPreloadCallback?.onLoadFail(error.message)
                     }
                 }
 
                 override fun onAdLoaded() {
                     super.onAdLoaded()
-                    Log.d("TESTERADSEVENT", "load success banner collapsible : ads name ${adsChild.spaceName} id ${adsChild.adsId}")
                     timeLoader = Date().time
-                    adView?.let{
-                        it.responseInfo?.adapterResponses?.forEach {responseInfo ->
-                            if (responseInfo.adSourceId.isNotEmpty()){
+                    adView?.let {
+                        it.responseInfo?.adapterResponses?.forEach { responseInfo ->
+                            if (responseInfo.adSourceId.isNotEmpty()) {
                                 adSourceId = responseInfo.adSourceId
                             }
-                            if (responseInfo.adSourceName.isNotEmpty()){
+                            if (responseInfo.adSourceName.isNotEmpty()) {
                                 adSourceName = responseInfo.adSourceName
                             }
                         }
                         adUnitId = it.adUnitId
                     }
-
                     stateLoadAd = StateLoadAd.SUCCESS
+                    Log.d("TESTERADSEVENT", "load success banner collapsible : ads name ${adsChild.spaceName} id ${adsChild.adsId}")
                     loadCallback?.onLoadDone()
-                    if (isPreload){
+                    if (isPreload) {
                         mPreloadCallback?.onLoadDone()
                     }
                 }
@@ -260,19 +230,19 @@ class AdmobBannerCollapsibleAds : AdmobAds() {
 
             adView?.onPaidEventListener = OnPaidEventListener { adValue ->
                 val bundle = Bundle().apply {
-                    putString("ad_unit_id" , adUnitId)
-                    putInt("precision_type" , adValue.precisionType)
-                    putLong("revenue_micros" , adValue.valueMicros)
-                    putString("ad_source_id" , adSourceId)
-                    putString("ad_source_name" , adSourceName)
-                    putString("ad_type" , AdDef.ADS_TYPE_ADMOB.BANNER_COLLAPSIBLE)
-                    putString("currency_code" , adValue.currencyCode)
+                    putString("ad_unit_id", adUnitId)
+                    putInt("precision_type", adValue.precisionType)
+                    putLong("revenue_micros", adValue.valueMicros)
+                    putString("ad_source_id", adSourceId)
+                    putString("ad_source_name", adSourceName)
+                    putString("ad_type", AdDef.ADS_TYPE_ADMOB.BANNER_COLLAPSIBLE)
+                    putString("currency_code", adValue.currencyCode)
                 }
                 mAdCallback?.onPaidEvent(bundle)
             }
 
             val adsBundle = Bundle().apply {
-                if (isOneTimeCollapsible == true){
+                if (isOneTimeCollapsible == true) {
                     putString("collapsible_request_id", UUID.randomUUID().toString());
                 }
                 putString("collapsible", positionCollapsibleBanner ?: "bottom")
@@ -283,7 +253,7 @@ class AdmobBannerCollapsibleAds : AdmobAds() {
                 .addNetworkExtrasBundle(AdMobAdapter::class.java, adsBundle)
                 .build()
 
-            withContext(Dispatchers.Main){
+            withContext(Dispatchers.Main) {
                 adView?.loadAd(request)
             }
 
@@ -297,17 +267,17 @@ class AdmobBannerCollapsibleAds : AdmobAds() {
         destinationToShowAds: Int?,
         adCallback: AdCallback?,
         lifecycle: Lifecycle?,
-        layoutToAttachAds: ViewGroup?,
-        viewAdsInflateFromXml: View?,
+        viewGroupAds: ViewGroup?,
+        viewAds: View?,
         timeShowNativeCollapsibleAfterClose: Int?
     ) {
         mLifecycle = lifecycle
         mAdCallback = adCallback
         mLifecycle?.removeObserver(lifecycleObserver)
-        mLayoutToAttachAds = layoutToAttachAds
+        mLayoutToAttachAds = viewGroupAds
 
         val adSize = getAdsize(activity)
-        layoutToAttachAds?.let { viewG ->
+        viewGroupAds?.let { viewG ->
             val lp = viewG.layoutParams
             lp.width = adSize.getWidthInPixels(viewG.context)
             lp.height = adSize.getHeightInPixels(viewG.context)
@@ -315,36 +285,31 @@ class AdmobBannerCollapsibleAds : AdmobAds() {
         }
 
 
-        if (AdsController.collapsibleShowing.value != null){
+        if (AdsController.collapsibleShowing.value != null) {
             AdsController.collapsibleShowing.observeForever(otherShowingObserver)
             Log.d("TESTERADSEVENT", "show failed banner collapsible : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : other banner collapsible showing")
-        }else{
+        } else {
             //neu thang khac khong show thi show luon
             try {
-                if (adView != null && layoutToAttachAds != null) {
-
-
+                if (adView != null && viewGroupAds != null) {
                     if (!wasLoadTimeLessThanNHoursAgo()) {
                         stateLoadAd = StateLoadAd.SHOW_FAILED
+                        Log.d("TESTERADSEVENT", "show failed banner collapsible : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : ads expired")
                         adCallback?.onAdFailToLoad("ads expired")
-                        Log.d(
-                            "TESTERADSEVENT",
-                            "show failed banner collapsible : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : ads expired"
-                        )
-                    }else{
+                    } else {
                         val viewGroup: ViewGroup? = adView?.parent as ViewGroup?
                         viewGroup?.removeView(adView)
-                        layoutToAttachAds.removeAllViews()
-                        layoutToAttachAds.addView(adView)
+                        viewGroupAds.removeAllViews()
+                        viewGroupAds.visibility = View.VISIBLE
+                        viewGroupAds.addView(adView)
                         mLifecycle?.addObserver(lifecycleObserver)
                         stateLoadAd = StateLoadAd.HAS_BEEN_OPENED
-                        mAdCallback?.onAdShow()
-                        CommonUtils.showToastDebug(activity, "Admob banner collapsible id: ${adsChild.adsId}")
                         Log.d("TESTERADSEVENT", "show success banner collapsible : ads name ${adsChild.spaceName} id ${adsChild.adsId}")
+                        mAdCallback?.onAdShow()
                     }
                 } else {
-                    mAdCallback?.onAdFailToLoad("layout null")
                     Log.d("TESTERADSEVENT", "show failed banner collapsible : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : layout null")
+                    mAdCallback?.onAdFailToLoad("layout null")
                 }
             } catch (ex: Exception) {
                 mAdCallback?.onAdFailToLoad(ex.toString())
@@ -358,10 +323,6 @@ class AdmobBannerCollapsibleAds : AdmobAds() {
 
     override fun removePreloadCallback() {
         mPreloadCallback = null
-    }
-
-    override fun getStateLoadAd(): StateLoadAd {
-        return stateLoadAd
     }
 
     private fun getAdsize(activity: Activity): AdSize {
@@ -389,26 +350,14 @@ class AdmobBannerCollapsibleAds : AdmobAds() {
         return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(mActivity, adWidth)
     }
 
-    fun close(
-        lifecycleOwner: LifecycleOwner,
-        closeDoneCallback: () -> Unit
-    ) {
-        if (adView == null) {
-            closeDoneCallback.invoke()
-        } else {
-            closeBannerLiveData.postValue(false)
-            adView!!.destroy()
-            if (isAdsClose) {
-                closeDoneCallback.invoke()
-            } else {
-                closeBannerLiveDataObserver = androidx.lifecycle.Observer<Boolean> {
-                    if (it) {
-                        closeBannerLiveData.removeObserver(closeBannerLiveDataObserver)
-                        closeDoneCallback.invoke()
-                    }
-                }
-                closeBannerLiveData.observe(lifecycleOwner, closeBannerLiveDataObserver)
-            }
-        }
+    override fun destroyAds() {
+        adView = null
+        mAdCallback = null
+        mPreloadCallback = null
+        mLifecycle = null
+        mLayoutToAttachAds = null
+        mAdSize = null
+        isAdsClose = false
+        stateLoadAd = StateLoadAd.NULL
     }
 }

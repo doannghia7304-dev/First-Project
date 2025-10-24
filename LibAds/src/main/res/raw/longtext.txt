@@ -1,0 +1,482 @@
+{
+  "timeDelayNative": 3000,
+  "positionCloseNativeAfterInter": 0,
+  "isNotificationOn": true,
+  "notificationTemplate": "notification_no_cta1",
+  "timeShowNotificationAfterLeftApp": 3000,
+  "timeDelayNotification": 10000,
+  "disableAllConfig": false,
+  "isOpenAppOn": true,
+  "isInterstitialOn": true,
+  "isNativeOn": true,
+  "isNativeFullScreenOn": true,
+  "isBannerOn": true,
+  "isBannerAdaptiveOn": true,
+  "isBannerLargeOn": true,
+  "isBannerInlineOn": true,
+  "isBannerCollapsibleOn": true,
+  "isRewardVideoOn": true,
+  "isRewardInter": true,
+  "listTemplateSmall": [
+    "small_icon_ctaright",
+    "small_ctaright"
+  ],
+  "listTemplateMedium": [
+    "Medium1_icontop_ctabot",
+    "medium3_icon_ctabot",
+    "medium3_ctabot",
+    "Medium2_icon_ctatop",
+    "Medium2_icon_ctabot",
+    "medium3_ctatop",
+    "medium_medialeft_iconright_ctabot",
+    "medium_medialeft_noiconright_ctabot",
+    "medium_medialeft_iconright_ctatop",
+    "medium_medialeft_noiconright_ctatop",
+    "medium_medialeft_iconright_ctaright",
+    "medium_medialeft_noiconright_ctaright",
+    "medium_mediaright_iconleft_ctaleft",
+    "medium_mediaright_noiconleft_ctaleft",
+    "medium_icontop_bodymidd_ctabot",
+    "medium_icontop_ctamidd",
+    "medium_medialeft_icontop_ctaright",
+    "medium_medialeft_noicontop_ctaright"
+  ],
+  "listTemplateLarge": [
+    "Larger_iconbot_cta_bot",
+    "Larger_icontop_ctabot",
+    "Larger_iconframe_cta_bot",
+    "lager_mediabot_iconleft_ctaright",
+    "lager_mediabot_noiconleft_ctaright",
+    "larger_iconmidd_ctabot",
+    "larger_noiconmidd_ctabot"
+  ],
+  "listTemplateCollapsible": [
+    "Medium1_icontop_ctabot_collapsible",
+    "medium2_icon_ctabot_collapsible",
+    "medium2_ctabot_collapsible",
+    "small_icon_ctaright_collapsible",
+    "medium_icontop_bodymidd_ctabot_collapsible",
+    "medium_icontop_ctamidd_collapsible"
+  ],
+  "listTemplateNativeFull": [
+    "nativefull_media_icon_cta",
+    "nativefull_media_iconframe_cta",
+    "nativefull_iconframe_media_cta",
+    "nativefull_media_iconmiddle_cta",
+    "nativefull_icon_media_cta",
+    "nativefull_noicon_media_cta",
+    "nativefull_media916_cta_icon",
+    "nativefull_media34_cta_icon",
+    "nativefull_media34_titleleft_ctaright",
+    "nativefull_media34__ctaleft_titleright"
+  ],
+  "listConfig": [
+    {
+      "configName": "demo",
+      "isOn": true,
+      "type": "native",
+      "network": "google",
+      "timeDelayShowInter": 10,
+      "isShowNativeAfterInter": false,
+      "ctaGradientListColor": [
+        "#2F8FE6",
+        "#304574"
+      ],
+      "textCTAColor": "#FFFFFF",
+      "ctaRatio": "100:40",
+      "ctaConnerRadius": 10,
+      "layoutTemplate": "small_icon_ctaright",
+      "backGroundColor": "#F5F5F5",
+      "textContentColor": "#2e2e2e",
+      "isPreloadAfterShow": false,
+      "isCloseWhenClick": false,
+      "isCloseWhenClickNativeCollapsible": false,
+      "ctaAnimationSpeed": 0,
+      "nativeStrokeWidth": 2,
+      "nativeStrokeColor": "#000000",
+      "mô tả kịch bản": "thêm vào nếu muốn mô tả kỹ hơn kịch bản"
+    },
+    {
+      "configName": "splash",
+      "isOn": true,
+      "type": "interstitial"
+    },
+    {
+      "configName": "appresume",
+      "isOn": true,
+      "type": "open_app"
+    },
+    {
+      "configName": "afterinterstitial",
+      "isOn": true,
+      "type": "native_full_screen",
+      "ctaGradientListColor": [
+        "#2F8FE6",
+        "#304574"
+      ],
+      "textCTAColor": "#FFFFFF",
+      "ctaRatio": "328:48",
+      "ctaConnerRadius": 10,
+      "layoutTemplate": "nativefull_iconframe_media_cta",
+      "backGroundColor": "#F5F5F5",
+      "textContentColor": "#2e2e2e",
+      "isPreloadAfterShow": false,
+      "isCloseWhenClick": false,
+      "isCloseWhenClickNativeCollapsible": false,
+      "ctaAnimationSpeed": 2000,
+      "mô tả kịch bản": "thêm vào nếu muốn mô tả kỹ hơn kịch bản"
+    },
+    {
+      "configName": "Language1.1",
+      "isOn": true,
+      "type": "native",
+      "ctaGradientListColor": [
+        "#2F8FE6",
+        "#304574"
+      ],
+      "textCTAColor": "#FFFFFF",
+      "ctaRatio": "345:42",
+      "ctaConnerRadius": 10,
+      "layoutTemplate": "medium_medialeft_iconright_ctabot",
+      "backGroundColor": "#F5F5F5",
+      "textContentColor": "#2e2e2e",
+      "isPreloadAfterShow": false,
+      "isCloseWhenClick": false,
+      "isCloseWhenClickNativeCollapsible": false,
+      "ctaAnimationSpeed": 2000,
+      "nativeStrokeWidth": 1.5,
+      "nativeStrokeColor": "#FF0000"
+    },
+    {
+      "configName": "Language1.2",
+      "isOn": true,
+      "type": "native",
+      "ctaGradientListColor": [
+        "#2F8FE6",
+        "#304574"
+      ],
+      "textCTAColor": "#FFFFFF",
+      "ctaRatio": "345:42",
+      "ctaConnerRadius": 10,
+      "layoutTemplate": "medium_medialeft_iconright_ctabot",
+      "backGroundColor": "#F5F5F5",
+      "textContentColor": "#2e2e2e",
+      "isPreloadAfterShow": false,
+      "isCloseWhenClick": false,
+      "isCloseWhenClickNativeCollapsible": false
+    },
+    {
+      "configName": "Language2.1",
+      "isOn": true,
+      "type": "native",
+      "ctaGradientListColor": [
+        "#2F8FE6",
+        "#304574"
+      ],
+      "textCTAColor": "#FFFFFF",
+      "ctaRatio": "100:40",
+      "ctaConnerRadius": 10,
+      "layoutTemplate": "small_icon_ctaright",
+      "backGroundColor": "#F5F5F5",
+      "textContentColor": "#2e2e2e",
+      "isPreloadAfterShow": false,
+      "isCloseWhenClick": false,
+      "isCloseWhenClickNativeCollapsible": false,
+      "ctaAnimationSpeed": 0
+    },
+    {
+      "configName": "Language2.2",
+      "isOn": true,
+      "type": "native",
+      "ctaGradientListColor": [
+        "#2F8FE6",
+        "#304574"
+      ],
+      "textCTAColor": "#FFFFFF",
+      "ctaRatio": "100:40",
+      "ctaConnerRadius": 10,
+      "layoutTemplate": "small_icon_ctaright",
+      "backGroundColor": "#F5F5F5",
+      "textContentColor": "#2e2e2e",
+      "isPreloadAfterShow": false,
+      "isCloseWhenClick": false,
+      "isCloseWhenClickNativeCollapsible": false
+    },
+    {
+      "configName": "onboard1.1",
+      "isOn": true,
+      "type": "native",
+      "ctaGradientListColor": [
+        "#2F8FE6",
+        "#304574"
+      ],
+      "textCTAColor": "#FFFFFF",
+      "ctaRatio": "340:42",
+      "ctaConnerRadius": 10,
+      "layoutTemplate": "medium_icontop_ctamidd_collapsible",
+      "backGroundColor": "#F5F5F5",
+      "textContentColor": "#2e2e2e",
+      "isPreloadAfterShow": false,
+      "isCloseWhenClick": false,
+      "isCloseWhenClickNativeCollapsible": false
+    },
+    {
+      "configName": "onboard1.2",
+      "isOn": true,
+      "type": "native",
+      "ctaGradientListColor": [
+        "#2F8FE6",
+        "#304574"
+      ],
+      "textCTAColor": "#FFFFFF",
+      "ctaRatio": "100:40",
+      "ctaConnerRadius": 10,
+      "layoutTemplate": "small_icon_ctaright",
+      "backGroundColor": "#F5F5F5",
+      "textContentColor": "#2e2e2e",
+      "isPreloadAfterShow": false,
+      "isCloseWhenClick": false,
+      "isCloseWhenClickNativeCollapsible": false
+    },
+    {
+      "configName": "onboard2",
+      "isOn": true,
+      "type": "native",
+      "ctaGradientListColor": [
+        "#2F8FE6",
+        "#304574"
+      ],
+      "textCTAColor": "#FFFFFF",
+      "ctaRatio": "342:42",
+      "ctaConnerRadius": 10,
+      "layoutTemplate": "medium2_icon_ctabot_collapsible",
+      "backGroundColor": "#F5F5F5",
+      "textContentColor": "#2e2e2e",
+      "isPreloadAfterShow": false,
+      "isCloseWhenClick": false,
+      "isCloseWhenClickNativeCollapsible": false
+    },
+    {
+      "configName": "onboardfull1.1",
+      "isOn": true,
+      "type": "native_full_screen",
+      "ctaGradientListColor": [
+        "#2F8FE6",
+        "#304574"
+      ],
+      "textCTAColor": "#FFFFFF",
+      "ctaRatio": "100:46",
+      "ctaConnerRadius": 10,
+      "layoutTemplate": "nativefull_media34__ctaleft_titleright",
+      "backGroundColor": "#F5F5F5",
+      "textContentColor": "#2e2e2e",
+      "isPreloadAfterShow": false,
+      "isCloseWhenClick": false,
+      "isCloseWhenClickNativeCollapsible": false
+    },
+    {
+      "configName": "onboardfull1.2",
+      "isOn": true,
+      "type": "native_full_screen",
+      "ctaGradientListColor": [
+        "#2F8FE6",
+        "#304574"
+      ],
+      "textCTAColor": "#FFFFFF",
+      "ctaRatio": "360:70",
+      "ctaConnerRadius": 10,
+      "layoutTemplate": "small_icon_ctaright",
+      "backGroundColor": "#F5F5F5",
+      "textContentColor": "#2e2e2e",
+      "isPreloadAfterShow": false,
+      "isCloseWhenClick": false,
+      "isCloseWhenClickNativeCollapsible": false
+    },
+    {
+      "configName": "onboard3",
+      "isOn": true,
+      "type": "native",
+      "ctaGradientListColor": [
+        "#2F8FE6",
+        "#304574"
+      ],
+      "textCTAColor": "#FFFFFF",
+      "ctaRatio": "328:38",
+      "ctaConnerRadius": 10,
+      "layoutTemplate": "medium2_ctabot_collapsible",
+      "backGroundColor": "#F5F5F5",
+      "textContentColor": "#2e2e2e",
+      "isPreloadAfterShow": false,
+      "isCloseWhenClick": false,
+      "isCloseWhenClickNativeCollapsible": false
+    },
+    {
+      "configName": "onboardfull2.1",
+      "isOn": true,
+      "type": "native_full_screen",
+      "ctaGradientListColor": [
+        "#2F8FE6",
+        "#304574"
+      ],
+      "textCTAColor": "#FFFFFF",
+      "ctaRatio": "360:70",
+      "ctaConnerRadius": 10,
+      "layoutTemplate": "small_icon_ctaright",
+      "backGroundColor": "#F5F5F5",
+      "textContentColor": "#2e2e2e",
+      "isPreloadAfterShow": false,
+      "isCloseWhenClick": false,
+      "isCloseWhenClickNativeCollapsible": false
+    },
+    {
+      "configName": "onboardfull2.2",
+      "isOn": true,
+      "type": "native_full_screen",
+      "ctaGradientListColor": [
+        "#2F8FE6",
+        "#304574"
+      ],
+      "textCTAColor": "#FFFFFF",
+      "ctaRatio": "360:70",
+      "ctaConnerRadius": 10,
+      "layoutTemplate": "small_icon_ctaright",
+      "backGroundColor": "#F5F5F5",
+      "textContentColor": "#2e2e2e",
+      "isPreloadAfterShow": false,
+      "isCloseWhenClick": false,
+      "isCloseWhenClickNativeCollapsible": false
+    },
+    {
+      "configName": "onboard4",
+      "isOn": true,
+      "type": "native",
+      "ctaGradientListColor": [
+        "#2F8FE6",
+        "#304574"
+      ],
+      "textCTAColor": "#FFFFFF",
+      "ctaRatio": "340:42",
+      "ctaConnerRadius": 10,
+      "layoutTemplate": "medium_icontop_bodymidd_ctabot_collapsible",
+      "backGroundColor": "#F5F5F5",
+      "textContentColor": "#2e2e2e",
+      "isPreloadAfterShow": false,
+      "isCloseWhenClick": false,
+      "isCloseWhenClickNativeCollapsible": false
+    },
+    {
+      "configName": "onboardiap",
+      "isOn": true,
+      "type": "interstitial",
+      "timeDelayShowInter": 5,
+      "isShowNativeAfterInter": true
+    },
+    {
+      "configName": "demo_open_app",
+      "isOn": true,
+      "type": "open_app",
+      "isPreloadAfterShow": false
+    },
+    {
+      "configName": "demo_interstitial",
+      "isOn": true,
+      "type": "interstitial",
+      "timeDelayShowInter": 5,
+      "isShowNativeAfterInter": true,
+      "isPreloadAfterShow": false
+    },
+    {
+      "configName": "demo_native",
+      "isOn": true,
+      "type": "native",
+      "ctaGradientListColor": [
+        "#2F8FE6",
+        "#304574"
+      ],
+      "textCTAColor": "#FFFFFF",
+      "ctaRatio": "100:40",
+      "ctaConnerRadius": 10,
+      "layoutTemplate": "small_icon_ctaright",
+      "backGroundColor": "#F5F5F5",
+      "textContentColor": "#2e2e2e",
+      "isPreloadAfterShow": false,
+      "isCloseWhenClick": false,
+      "isCloseWhenClickNativeCollapsible": false,
+      "mô tả kịch bản": "thêm vào nếu muốn mô tả kỹ hơn kịch bản"
+    },
+    {
+      "configName": "demo_native_collapsible",
+      "isOn": true,
+      "type": "native",
+      "ctaGradientListColor": [
+        "#2F8FE6",
+        "#304574"
+      ],
+      "textCTAColor": "#FFFFFF",
+      "ctaRatio": "100:38",
+      "ctaConnerRadius": 10,
+      "layoutTemplate": "small_icon_ctaright_collapsible",
+      "backGroundColor": "#F5F5F5",
+      "textContentColor": "#2e2e2e",
+      "isPreloadAfterShow": false,
+      "isCloseWhenClick": false,
+      "isCloseWhenClickNativeCollapsible": false,
+      "mô tả kịch bản": "thêm vào nếu muốn mô tả kỹ hơn kịch bản"
+    },
+    {
+      "configName": "demo_native_full_screen",
+      "isOn": true,
+      "type": "native_full_screen",
+      "ctaGradientListColor": [
+        "#2F8FE6",
+        "#304574"
+      ],
+      "textCTAColor": "#FFFFFF",
+      "ctaRatio": "360:70",
+      "ctaConnerRadius": 10,
+      "layoutTemplate": "small_icon_ctaright",
+      "backGroundColor": "#F5F5F5",
+      "textContentColor": "#2e2e2e",
+      "isPreloadAfterShow": false,
+      "isCloseWhenClick": false,
+      "isCloseWhenClickNativeCollapsible": false,
+      "mô tả kịch bản": "thêm vào nếu muốn mô tả kỹ hơn kịch bản"
+    },
+    {
+      "configName": "demo_banner_adaptive",
+      "isOn": true,
+      "type": "banner_adaptive",
+      "isPreloadAfterShow": false
+    },
+    {
+      "configName": "demo_banner_collapsible",
+      "isOn": true,
+      "type": "banner_collapsible",
+      "isPreloadAfterShow": false
+    },
+    {
+      "configName": "demo_banner",
+      "isOn": true,
+      "type": "banner",
+      "isPreloadAfterShow": false
+    },
+    {
+      "configName": "demo_banner_large",
+      "isOn": true,
+      "type": "banner_large",
+      "isPreloadAfterShow": false
+    },
+    {
+      "configName": "demo_reward_video",
+      "isOn": true,
+      "type": "reward_video",
+      "isPreloadAfterShow": false
+    },
+    {
+      "configName": "demo_reward_interstitial",
+      "isOn": true,
+      "type": "reward_interstitial",
+      "isPreloadAfterShow": false
+    }
+  ]
+}

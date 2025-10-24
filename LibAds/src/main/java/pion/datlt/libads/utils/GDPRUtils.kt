@@ -35,19 +35,19 @@ fun AdsController.requestConsentInfoUpdate(
             //OnConsentInfoUpdateSuccessListener
             val status = when (consentInformation.consentStatus) {
                 ConsentInformation.ConsentStatus.NOT_REQUIRED -> {
-                    "NOT_REQUIRED không cần user phải cấp quyền"
+                    "NOT_REQUIRED no need user consent"
                 }
 
                 ConsentInformation.ConsentStatus.OBTAINED -> {
-                    "OBTAINED đã có sự đồng ý của người dùng"
+                    "OBTAINED had consent from user"
                 }
 
                 ConsentInformation.ConsentStatus.REQUIRED -> {
-                    "REQUIRED cần người dùng cho phép"
+                    "REQUIRED neeed user consent"
                 }
 
                 ConsentInformation.ConsentStatus.UNKNOWN -> {
-                    "UNKNOWN status không xác định"
+                    "UNKNOWN status not determined"
                 }
 
                 else -> {
@@ -128,22 +128,22 @@ fun AdsController.resetConsent() {
 fun AdsController.isNeedToShowConsent() : Boolean{
     return when (consentInformation.consentStatus) {
         ConsentInformation.ConsentStatus.NOT_REQUIRED -> {
-            "NOT_REQUIRED không cần user phải cấp quyền"
+            "NOT_REQUIRED no need user consent"
             false
         }
 
         ConsentInformation.ConsentStatus.OBTAINED -> {
-            "OBTAINED đã có sự đồng ý của người dùng"
+            "OBTAINED had consent from user"
             true
         }
 
         ConsentInformation.ConsentStatus.REQUIRED -> {
-            "REQUIRED cần người dùng cho phép"
+            "REQUIRED neeed user consent"
             true
         }
 
         ConsentInformation.ConsentStatus.UNKNOWN -> {
-            "UNKNOWN status không xác định"
+            "UNKNOWN status not determined"
             false
         }
 

@@ -1,9 +1,10 @@
 package pion.datlt.libads.admob.ads
 
 import android.app.Activity
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -24,7 +25,6 @@ import com.google.android.gms.ads.nativead.NativeAdView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import pion.datlt.libads.AdsController
 import pion.datlt.libads.R
 import pion.datlt.libads.callback.AdCallback
@@ -32,25 +32,15 @@ import pion.datlt.libads.callback.PreloadCallback
 import pion.datlt.libads.model.AdsChild
 import pion.datlt.libads.utils.AdDef
 import pion.datlt.libads.utils.AdsConstant
-import pion.datlt.libads.utils.CommonUtils
 import pion.datlt.libads.utils.StateLoadAd
 import java.util.*
 
-class AdmobNativeFullScreenAds : AdmobAds(){
+class AdmobNativeFullScreenAds : AdmobAds() {
 
     private var nativeAds: NativeAd? = null
-
     private var mPreloadCallback: PreloadCallback? = null
     private var mAdCallback: AdCallback? = null
-    private var error = ""
-    private var stateLoadAd = StateLoadAd.NONE
     private var mAdsChild: AdsChild? = null
-
-    private var mDestinationToShowAds: Int? = null
-
-    var adSourceId = ""
-    var adSourceName = ""
-    var adUnitId = ""
 
     override fun loadAndShow(
         activity: Activity,
@@ -59,8 +49,8 @@ class AdmobNativeFullScreenAds : AdmobAds(){
         adCallback: AdCallback?,
         lifecycle: Lifecycle?,
         timeout: Long?,
-        layoutToAttachAds: ViewGroup?,
-        viewAdsInflateFromXml: View?,
+        viewGroupAds: ViewGroup?,
+        viewAds: View?,
         adChoice: Int?,
         positionCollapsibleBanner: String?,
         isOneTimeCollapsible: Boolean?,
@@ -68,13 +58,7 @@ class AdmobNativeFullScreenAds : AdmobAds(){
         timeShowNativeCollapsibleAfterClose: Int?
     ) {
         mAdCallback = adCallback
-        mDestinationToShowAds = destinationToShowAds
-
-        if (stateLoadAd == StateLoadAd.LOADING) {
-            //khong load cai moi nua
-            //doi cai cu load xong roi show
-        } else {
-            //load cai moi
+        if (stateLoadAd != StateLoadAd.LOADING) {
             load(
                 activity = activity,
                 adsChild = adsChild,
@@ -86,8 +70,8 @@ class AdmobNativeFullScreenAds : AdmobAds(){
                             activity = activity,
                             adsChild = adsChild,
                             destinationToShowAds = destinationToShowAds,
-                            layoutToAttachAds = layoutToAttachAds,
-                            viewAdsInflateFromXml = viewAdsInflateFromXml,
+                            viewGroupAds = viewGroupAds,
+                            viewAds = viewAds,
                             lifecycle = lifecycle,
                             adCallback = adCallback,
                             timeShowNativeCollapsibleAfterClose = timeShowNativeCollapsibleAfterClose
@@ -127,34 +111,40 @@ class AdmobNativeFullScreenAds : AdmobAds(){
         adChoice: Int? = null,
         loadCallback: PreloadCallback? = null
     ) {
-
-        Log.d(
-            "TESTERADSEVENT",
-            "start load native full screen : ads name ${adsChild.spaceName} id ${adsChild.adsId}"
-        )
-
         CoroutineScope(Dispatchers.IO).launch {
             stateLoadAd = StateLoadAd.LOADING
-            val id = if (AdsConstant.isDebug) AdsConstant.ID_ADMOB_NATIVE_VIDEO_TEST else adsChild.adsId
+            Log.d(
+                "TESTERADSEVENT",
+                "start load native full screen : ads name ${adsChild.spaceName} id ${adsChild.adsId}"
+            )
+            val id =
+                if (AdsConstant.isDebug) AdsConstant.ID_ADMOB_NATIVE_VIDEO_TEST else adsChild.adsId
             mAdsChild = adsChild
-            error = ""
-
-
             val videoOptions = VideoOptions.Builder().setStartMuted(true).build()
             val adOptions = NativeAdOptions.Builder()
                 .setVideoOptions(videoOptions)
-                .setAdChoicesPlacement(adChoice ?: NativeAdOptions.ADCHOICES_TOP_RIGHT) //set vị trí của ADCHOICES button
+                .setAdChoicesPlacement(
+                    adChoice ?: NativeAdOptions.ADCHOICES_TOP_RIGHT
+                ) //set vị trí của ADCHOICES button
                 .setMediaAspectRatio(MediaAspectRatio.ANY)
                 .build()
 
             val adLoader = AdLoader.Builder(activity.applicationContext, id)
                 .forNativeAd { adNative ->
                     //đã load xong view, hiển thị lên nếu cần
+                    timeLoader = Date().time
                     nativeAds?.destroy()
                     nativeAds = null
                     nativeAds = adNative
                     stateLoadAd = StateLoadAd.SUCCESS
+                    Log.d(
+                        "TESTERADSEVENT",
+                        "load success native full screen : ads name ${adsChild.spaceName} id ${adsChild.adsId}"
+                    )
                     loadCallback?.onLoadDone()
+                    if (isPreload) {
+                        mPreloadCallback?.onLoadDone()
+                    }
                     adNative.responseInfo?.adapterResponses?.forEach { responseInfo ->
                         if (responseInfo.adSourceId.isNotEmpty()) {
                             adSourceId = responseInfo.adSourceId
@@ -167,13 +157,13 @@ class AdmobNativeFullScreenAds : AdmobAds(){
 
                     adNative.setOnPaidEventListener { adValue ->
                         val bundle = Bundle().apply {
-                            putString("ad_unit_id" , adUnitId)
-                            putInt("precision_type" , adValue.precisionType)
-                            putLong("revenue_micros" , adValue.valueMicros)
-                            putString("ad_source_id" , adSourceId)
-                            putString("ad_source_name" , adSourceName)
-                            putString("ad_type" , AdDef.ADS_TYPE_ADMOB.NATIVE_FULL_SCREEN)
-                            putString("currency_code" , adValue.currencyCode)
+                            putString("ad_unit_id", adUnitId)
+                            putInt("precision_type", adValue.precisionType)
+                            putLong("revenue_micros", adValue.valueMicros)
+                            putString("ad_source_id", adSourceId)
+                            putString("ad_source_name", adSourceName)
+                            putString("ad_type", AdDef.ADS_TYPE_ADMOB.NATIVE_FULL_SCREEN)
+                            putString("currency_code", adValue.currencyCode)
                         }
                         mAdCallback?.onPaidEvent(bundle)
                     }
@@ -183,21 +173,15 @@ class AdmobNativeFullScreenAds : AdmobAds(){
 
                     override fun onAdLoaded() {
                         super.onAdLoaded()
-                        Log.d("TESTERADSEVENT", "load success native full screen : ads name ${adsChild.spaceName} id ${adsChild.adsId}")
-
-                        timeLoader = Date().time
-
-                        if (isPreload) {
-                            mPreloadCallback?.onLoadDone()
-                        }
                     }
 
                     override fun onAdFailedToLoad(adError: LoadAdError) {
                         //gọi khi ad load failed
-                        Log.d("TESTERADSEVENT", "load failed native full screen  : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : ${adError.message}")
-
-                        error = adError.message
                         stateLoadAd = StateLoadAd.LOAD_FAILED
+                        Log.d(
+                            "TESTERADSEVENT",
+                            "load failed native full screen  : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : ${adError.message}"
+                        )
                         mAdCallback?.onAdFailToLoad(adError.message)
                         loadCallback?.onLoadFail(adError.message)
                         if (isPreload) {
@@ -216,11 +200,11 @@ class AdmobNativeFullScreenAds : AdmobAds(){
 
                     override fun onAdClicked() {
                         super.onAdClicked()
-                        mAdCallback?.onAdClick()
                         Log.d(
                             "TESTERADSEVENT",
                             "click native full screen  : ads name ${adsChild.spaceName} id ${adsChild.adsId}"
                         )
+                        mAdCallback?.onAdClick()
                     }
 
                 })
@@ -229,9 +213,8 @@ class AdmobNativeFullScreenAds : AdmobAds(){
 
             val request = AdRequest.Builder().build()
 
-            withContext(Dispatchers.Main){
-                adLoader.loadAd(request)
-            }
+            adLoader.loadAd(request)
+
 
         }
 
@@ -244,18 +227,15 @@ class AdmobNativeFullScreenAds : AdmobAds(){
         destinationToShowAds: Int?,
         adCallback: AdCallback?,
         lifecycle: Lifecycle?,
-        layoutToAttachAds: ViewGroup?,
-        viewAdsInflateFromXml: View?,
+        viewGroupAds: ViewGroup?,
+        viewAds: View?,
         timeShowNativeCollapsibleAfterClose: Int?
     ) {
         mAdCallback = adCallback // show
-        mDestinationToShowAds = destinationToShowAds
-
-
-        if (layoutToAttachAds != null) {
-            layoutToAttachAds.visibility = View.VISIBLE
-            if (viewAdsInflateFromXml != null) {
-                viewAdsInflateFromXml.visibility = View.VISIBLE
+        if (viewGroupAds != null) {
+            viewGroupAds.visibility = View.VISIBLE
+            if (viewAds != null) {
+                viewAds.visibility = View.VISIBLE
                 val nativeAdView = NativeAdView(activity)
                 nativeAdView.layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
@@ -265,37 +245,43 @@ class AdmobNativeFullScreenAds : AdmobAds(){
                 //layout ads là lớp ngoài cùng, sẽ là layout chứa toàn bộ khu vực qc
                 //adsviewgroup là lớp trong được chứa bới layout ads, sẽ là phần chứa native view
                 //clear các view con nằm trong adsview
-                viewAdsInflateFromXml.parent?.let {
-                    (it as ViewGroup).removeView(viewAdsInflateFromXml)
+                viewAds.parent?.let {
+                    (it as ViewGroup).removeView(viewAds)
                 }
 
-                nativeAdView.addView(viewAdsInflateFromXml)
+                nativeAdView.addView(viewAds)
 
-                if (mDestinationToShowAds != null && mDestinationToShowAds != AdsController.currentDestinationId) {
+                if (destinationToShowAds != null && destinationToShowAds != AdsController.currentDestinationId) {
+                    Log.d(
+                        "TESTERADSEVENT",
+                        "show failed native full screen  : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : show in wrong destination"
+                    )
                     adCallback?.onAdFailToLoad("show in wrong destination")
-                    Log.d("TESTERADSEVENT", "show failed native full screen  : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : show in wrong destination")
-
                 } else {
                     nativeAds?.let {
                         populateUnifiedNativeAdView(it, nativeAdView)
                         //clear các view con nằm trong adsViewGroup
-                        layoutToAttachAds.removeAllViews()
-                        layoutToAttachAds.addView(nativeAdView)
+                        viewGroupAds.removeAllViews()
+                        viewGroupAds.addView(nativeAdView)
                         stateLoadAd = StateLoadAd.HAS_BEEN_OPENED
-                        CommonUtils.showToastDebug(activity, "Admob Native id: ${adsChild.adsId}")
+                        Log.d(
+                            "TESTERADSEVENT",
+                            "show success native full screen  : ads name ${adsChild.spaceName} id ${adsChild.adsId}"
+                        )
                         mAdCallback?.onAdShow()
                     }
-                    Log.d("TESTERADSEVENT", "show success native full screen  : ads name ${adsChild.spaceName} id ${adsChild.adsId}")
-
                 }
             } else {
-                CommonUtils.showToastDebug(activity, "viewAdsInflateFromXml native not null")
-                Log.d("TESTERADSEVENT", "show failed native full screen  : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : viewAdsInflateFromXml native not null")
-
+                Log.d(
+                    "TESTERADSEVENT",
+                    "show failed native full screen  : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : viewAdsInflateFromXml native not null"
+                )
             }
         } else {
-            CommonUtils.showToastDebug(activity, "layoutToAttachAds native not null")
-            Log.d("TESTERADSEVENT", "show failed native full screen  : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : layoutToAttachAds native not null")
+            Log.d(
+                "TESTERADSEVENT",
+                "show failed native full screen  : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : layoutToAttachAds native not null"
+            )
 
         }
     }
@@ -306,10 +292,6 @@ class AdmobNativeFullScreenAds : AdmobAds(){
 
     override fun removePreloadCallback() {
         mPreloadCallback = null
-    }
-
-    override fun getStateLoadAd(): StateLoadAd {
-        return stateLoadAd
     }
 
     private fun populateUnifiedNativeAdView(nativeAd: NativeAd, adView: NativeAdView) {
@@ -361,7 +343,26 @@ class AdmobNativeFullScreenAds : AdmobAds(){
         // Set các thành phần khác
         adView.headlineView = adView.findViewById(R.id.ad_headline)
         adView.bodyView = adView.findViewById(R.id.ad_body)
+
+
+
+
+
         adView.callToActionView = adView.findViewById(R.id.ad_call_to_action)
+        if (adView.callToActionView is TextView) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                (adView.callToActionView as TextView).setAutoSizeTextTypeUniformWithConfiguration(
+                    10,     // min size in sp
+                    40,   // max size in sp
+                    2,     // step size in sp
+                    TypedValue.COMPLEX_UNIT_SP
+                )
+            }
+        }
+
+
+
+
         adView.priceView = adView.findViewById(R.id.ad_price)
         adView.starRatingView = adView.findViewById(R.id.ad_stars)
         adView.storeView = adView.findViewById(R.id.ad_store)
@@ -454,5 +455,13 @@ class AdmobNativeFullScreenAds : AdmobAds(){
         }
 
         adView.setNativeAd(nativeAd)
+    }
+
+    override fun destroyAds() {
+        nativeAds = null
+        mPreloadCallback = null
+        mAdCallback = null
+        mAdsChild = null
+        stateLoadAd = StateLoadAd.NULL
     }
 }

@@ -24,7 +24,6 @@ import pion.datlt.libads.callback.PreloadCallback
 import pion.datlt.libads.model.AdsChild
 import pion.datlt.libads.utils.AdDef
 import pion.datlt.libads.utils.AdsConstant
-import pion.datlt.libads.utils.CommonUtils
 import pion.datlt.libads.utils.StateLoadAd
 import java.util.*
 
@@ -32,18 +31,8 @@ class AdmobBannerAdaptiveAds : AdmobAds() {
 
     private var adView: AdView? = null
     private var mAdCallback: AdCallback? = null
-    private var error = ""
-    private var stateLoadAd: StateLoadAd = StateLoadAd.NONE
     private var mPreloadCallback: PreloadCallback? = null
-
-    private var mDestinationToShowAds: Int? = null
-
     private var adSize: AdSize? = null
-
-
-    var adSourceId = ""
-    var adSourceName = ""
-    var adUnitId = ""
 
     override fun loadAndShow(
         activity: Activity,
@@ -52,8 +41,8 @@ class AdmobBannerAdaptiveAds : AdmobAds() {
         adCallback: AdCallback?,
         lifecycle: Lifecycle?,
         timeout: Long?,
-        layoutToAttachAds: ViewGroup?,
-        viewAdsInflateFromXml: View?,
+        viewGroupAds: ViewGroup?,
+        viewAds: View?,
         adChoice: Int?,
         positionCollapsibleBanner: String?,
         isOneTimeCollapsible: Boolean?,
@@ -61,13 +50,7 @@ class AdmobBannerAdaptiveAds : AdmobAds() {
         timeShowNativeCollapsibleAfterClose: Int?
     ) {
         mAdCallback = adCallback
-        mDestinationToShowAds = destinationToShowAds
-
-        if (stateLoadAd == StateLoadAd.LOADING) {
-            //khong load cai moi nua
-            //doi cai cu load xong roi show
-        } else {
-            //load cai moi
+        if (stateLoadAd != StateLoadAd.LOADING) {
             load(
                 activity = activity,
                 adsChild = adsChild,
@@ -79,8 +62,8 @@ class AdmobBannerAdaptiveAds : AdmobAds() {
                             activity = activity,
                             adsChild = adsChild,
                             destinationToShowAds = destinationToShowAds,
-                            layoutToAttachAds = layoutToAttachAds,
-                            viewAdsInflateFromXml = viewAdsInflateFromXml,
+                            viewGroupAds = viewGroupAds,
+                            viewAds = viewAds,
                             lifecycle = lifecycle,
                             adCallback = adCallback,
                             timeShowNativeCollapsibleAfterClose = timeShowNativeCollapsibleAfterClose
@@ -119,17 +102,14 @@ class AdmobBannerAdaptiveAds : AdmobAds() {
         loadCallback: PreloadCallback? = null,
         widthBannerAdaptiveAds: Int? = null
     ) {
-        Log.d(
-            "TESTERADSEVENT",
-            "start load banner adaptive : ads name ${adsChild.spaceName} id ${adsChild.adsId}"
-        )
-
         CoroutineScope(Dispatchers.IO).launch {
             stateLoadAd = StateLoadAd.LOADING
+            Log.d(
+                "TESTERADSEVENT",
+                "start load banner adaptive : ads name ${adsChild.spaceName} id ${adsChild.adsId}"
+            )
             val idAds =
                 if (AdsConstant.isDebug) AdsConstant.ID_ADMOB_BANNER_ADAPTIVE_TEST else adsChild.adsId
-
-
             adView = AdView(activity.applicationContext)
             adView?.setBackgroundColor(Color.WHITE)
             adView?.adUnitId = idAds
@@ -144,12 +124,11 @@ class AdmobBannerAdaptiveAds : AdmobAds() {
 
                 override fun onAdClicked() {
                     super.onAdClicked()
-                    mAdCallback?.onAdClick()
                     Log.d(
                         "TESTERADSEVENT",
                         "click banner adaptive : ads name ${adsChild.spaceName} id ${adsChild.adsId}"
                     )
-
+                    mAdCallback?.onAdClick()
                 }
 
                 override fun onAdClosed() {
@@ -157,21 +136,22 @@ class AdmobBannerAdaptiveAds : AdmobAds() {
                     mAdCallback?.onAdClose()
                 }
 
-                override fun onAdFailedToLoad(adError: LoadAdError) {
-                    super.onAdFailedToLoad(adError)
-                    Log.d("TESTERADSEVENT", "load failed banner adaptive : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : $error")
-                    error = adError.message
+                override fun onAdFailedToLoad(error: LoadAdError) {
+                    super.onAdFailedToLoad(error)
                     stateLoadAd = StateLoadAd.LOAD_FAILED
-                    mAdCallback?.onAdFailToLoad(error)
-                    loadCallback?.onLoadFail(error)
+                    Log.d(
+                        "TESTERADSEVENT",
+                        "load failed banner adaptive : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : ${error.message}"
+                    )
+                    mAdCallback?.onAdFailToLoad(error.message)
+                    loadCallback?.onLoadFail(error.message)
                     if (isPreload) {
-                        mPreloadCallback?.onLoadFail(error)
+                        mPreloadCallback?.onLoadFail(error.message)
                     }
                 }
 
                 override fun onAdLoaded() {
                     super.onAdLoaded()
-                    Log.d("TESTERADSEVENT", "load success banner adaptive : ads name ${adsChild.spaceName} id ${adsChild.adsId}")
                     timeLoader = Date().time
                     adView?.let {
                         it.responseInfo?.adapterResponses?.forEach { responseInfo ->
@@ -184,8 +164,11 @@ class AdmobBannerAdaptiveAds : AdmobAds() {
                         }
                         adUnitId = it.adUnitId
                     }
-
                     stateLoadAd = StateLoadAd.SUCCESS
+                    Log.d(
+                        "TESTERADSEVENT",
+                        "load success banner adaptive : ads name ${adsChild.spaceName} id ${adsChild.adsId}"
+                    )
                     loadCallback?.onLoadDone()
                     if (isPreload) {
                         mPreloadCallback?.onLoadDone()
@@ -220,45 +203,53 @@ class AdmobBannerAdaptiveAds : AdmobAds() {
         destinationToShowAds: Int?,
         adCallback: AdCallback?,
         lifecycle: Lifecycle?,
-        layoutToAttachAds: ViewGroup?,
-        viewAdsInflateFromXml: View?,
+        viewGroupAds: ViewGroup?,
+        viewAds: View?,
         timeShowNativeCollapsibleAfterClose: Int?
     ) {
         mAdCallback = adCallback
-        mDestinationToShowAds = destinationToShowAds
 
-        layoutToAttachAds?.let { viewG ->
+        viewGroupAds?.let { viewG ->
             val lp = viewG.layoutParams
             lp.width = adSize?.getWidthInPixels(viewG.context) ?: 0
             lp.height = adSize?.getHeightInPixels(viewG.context) ?: 0
             viewG.layoutParams = lp
         }
 
-        if (adView != null && layoutToAttachAds != null) {
-            if (mDestinationToShowAds != null && mDestinationToShowAds != AdsController.currentDestinationId) {
+        if (adView != null && viewGroupAds != null) {
+            if (destinationToShowAds != null && destinationToShowAds != AdsController.currentDestinationId) {
+                Log.d(
+                    "TESTERADSEVENT",
+                    "show failed banner adaptive : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : show in wrong destination"
+                )
                 adCallback?.onAdFailToLoad("show in wrong destination")
-                Log.d("TESTERADSEVENT", "show failed banner adaptive : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : show in wrong destination")
-            }else if (!wasLoadTimeLessThanNHoursAgo()) {
+            } else if (!wasLoadTimeLessThanNHoursAgo()) {
                 stateLoadAd = StateLoadAd.SHOW_FAILED
-                adCallback?.onAdFailToLoad("ads expired")
                 Log.d(
                     "TESTERADSEVENT",
                     "show failed banner adaptive : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : ads expired"
                 )
+                adCallback?.onAdFailToLoad("ads expired")
             } else {
-                layoutToAttachAds.removeAllViews()
+                viewGroupAds.removeAllViews()
                 if (adView!!.parent != null) {
                     (adView!!.parent as ViewGroup).removeView(adView)
                 }
-                layoutToAttachAds.addView(adView)
+                viewGroupAds.visibility = View.VISIBLE
+                viewGroupAds.addView(adView)
                 stateLoadAd = StateLoadAd.HAS_BEEN_OPENED
-                CommonUtils.showToastDebug(activity, "Admob banner adaptive id: ${adsChild.adsId}")
+                Log.d(
+                    "TESTERADSEVENT",
+                    "show success banner adaptive : ads name ${adsChild.spaceName} id ${adsChild.adsId}"
+                )
                 mAdCallback?.onAdShow()
-                Log.d("TESTERADSEVENT", "show success banner adaptive : ads name ${adsChild.spaceName} id ${adsChild.adsId}")
             }
         } else {
+            Log.d(
+                "TESTERADSEVENT",
+                "show failed banner adaptive : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : layout null"
+            )
             adCallback?.onAdFailToLoad("layout null")
-            Log.d("TESTERADSEVENT", "show failed banner adaptive : ads name ${adsChild.spaceName} id ${adsChild.adsId} error : layout null")
         }
     }
 
@@ -268,10 +259,6 @@ class AdmobBannerAdaptiveAds : AdmobAds() {
 
     override fun removePreloadCallback() {
         mPreloadCallback = null
-    }
-
-    override fun getStateLoadAd(): StateLoadAd {
-        return stateLoadAd
     }
 
 
@@ -291,5 +278,13 @@ class AdmobBannerAdaptiveAds : AdmobAds() {
             activity,
             adWidth
         )
+    }
+
+    override fun destroyAds() {
+        adView = null
+        mAdCallback = null
+        mPreloadCallback = null
+        adSize = null
+        stateLoadAd = StateLoadAd.NULL
     }
 }

@@ -7,10 +7,14 @@ import kotlin.math.truncate
 
 object AdsConstant {
 
-    var listConfigAds : HashMap<String , ConfigAds> = hashMapOf()
+    var listConfigAds: HashMap<String, ConfigAds> = hashMapOf()
     var timeDelayNative = 4000L
-    var disableAllConfig = false
+
+    //native after inter close position
+    var positionCloseNativeAfterInter = NativeInterClosePosition.LEFT
+
     //config cho tung dinh dang quang cao
+    var disableAllConfig = false
     var isOpenAppOn = true
     var isInterstitialOn = true
     var isNativeOn = true
@@ -23,6 +27,11 @@ object AdsConstant {
     var isRewardVideoOn = true
     var isRewardInterOn = true
 
+    //config cho notification
+    var isNotificationOn = false
+    var notificationTemplate : String? = "notification_no_cta1"
+    var timeShowNotificationAfterLeftApp = 5000L
+    var timeDelayNotification = 15000L
 
     var isShowToastDebug = false
     var isDebug = false
@@ -34,6 +43,13 @@ object AdsConstant {
     const val TOP_RIGHT = NativeAdOptions.ADCHOICES_TOP_RIGHT
     const val BOTTOM_LEFT = NativeAdOptions.ADCHOICES_BOTTOM_LEFT
     const val BOTTOM_RIGHT = NativeAdOptions.ADCHOICES_BOTTOM_RIGHT
+
+    //native after inter close position
+    object NativeInterClosePosition {
+        val LEFT = 0
+        val CENTER = 1
+        val RIGHT = 2
+    }
 
     const val COLLAPSIBLE_BOTTOM = "bottom"
     const val COLLAPSIBLE_TOP = "top"
@@ -60,21 +76,27 @@ object AdsConstant {
     //mintergral id test
     const val ID_MINTEGRAL_APP_KEY_TEST = "7c22942b749fe6a6e361b675e96b3ee9"
     const val ID_MINTEGRAL_APP_ID_TEST = "144002"
+
     //banner
     const val ID_MINTEGRAL_BANNER_PLACEMENT_TEST = "1010694"
     const val ID_MINTEGRAL_BANNER_TEST = "2677203"
+
     //native
     const val ID_MINTEGRAL_NATIVE_PLACEMENT_TEST = "290656"
     const val ID_MINTEGRAL_NATIVE_TEST = "1542107"
+
     //reward video
     const val ID_MINTEGRAL_REWARD_PLACEMENT_TEST = "290651"
     const val ID_MINTEGRAL_REWARD_TEST = "1542101"
+
     //interstitial
     const val ID_MINTEGRAL_INTERSTITIAL_PLACEMENT_TEST = "290653"
     const val ID_MINTEGRAL_INTERSTITIAL_TEST = "1542103"
+
     //open app
     const val ID_MINTEGRAL_OPEN_PLACEMENT_TEST = "328916"
     const val ID_MINTEGRAL_OPEN_TEST = "1566319"
+
     //auto native
     const val ID_MINTEGRAL_AUTO_NATIVE_PLACEMENT_TEST = "328917"
     const val ID_MINTEGRAL_AUTO_NATIVE_TEST = "1592613"

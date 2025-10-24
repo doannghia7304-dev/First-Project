@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingHorizontal="@dimen/_10dp"
+    android:paddingVertical="@dimen/_12dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/imvIconApp"
+            android:layout_width="@dimen/_20dp"
+            android:layout_height="@dimen/_20dp"
+            android:layout_gravity="start|center_vertical"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_phone_ads" />
+
+        <TextView
+            android:id="@+id/txvAppName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/_6dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/font_600"
+            android:maxLines="1"
+            android:textColor="#3D3D3D"
+            android:textSize="@dimen/_14sp"
+            tools:text="Slideshow" />
+
+
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/txvBody"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_8dp"
+        android:ellipsize="end"
+        android:fontFamily="@font/font_500"
+        android:maxLines="2"
+        android:text="@string/you_have_not_done_your_journey_click_the_noti_to_return"
+        android:textColor="#6A6A6A"
+        android:textSize="@dimen/_12sp" />
+
+
+</LinearLayout>

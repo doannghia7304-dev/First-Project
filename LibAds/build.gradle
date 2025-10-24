@@ -11,8 +11,8 @@ android {
         minSdk 24
 
 
-        versionCode 3
-        versionName "1.0.2"
+        versionCode 4
+        versionName "1.0.3"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -34,18 +34,18 @@ android {
 
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.13.1'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.core:core-ktx:1.16.0'
+    implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation 'com.google.android.material:material:1.12.0'
-    implementation 'androidx.navigation:navigation-runtime-ktx:2.7.7'
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
+    implementation 'androidx.navigation:navigation-runtime-ktx:2.9.2'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.8.5'
+
 
     // Auto dimen
     def auto_dimen_version = "1.0.8"
@@ -59,25 +59,39 @@ dependencies {
     implementation 'com.airbnb.android:lottie:5.2.0'
 
     //ads
-    implementation 'com.google.android.gms:play-services-ads:23.1.0'
+    implementation 'com.google.android.gms:play-services-ads:24.6.0'
     //gdpr
-    implementation("com.google.android.ump:user-messaging-platform:2.2.0")
+    implementation("com.google.android.ump:user-messaging-platform:3.2.0")
 
     //appflyer mmp
-    implementation 'com.appsflyer:af-android-sdk:6.15.0'
+    implementation 'com.appsflyer:af-android-sdk:6.17.3'
     implementation "com.android.installreferrer:installreferrer:2.2"
 
 
-    implementation  'com.google.ads.mediation:ironsource:8.7.0.0'
-    implementation  'com.google.ads.mediation:vungle:7.4.3.0'
-    implementation  'com.google.ads.mediation:facebook:6.18.0.0'
-    implementation  'com.google.ads.mediation:mintegral:16.9.41.0'
-    implementation  'com.google.ads.mediation:pangle:6.5.0.3.0'
-    implementation  'com.unity3d.ads:unity-ads:4.13.1'
-    implementation  'com.google.ads.mediation:unity:4.13.1.0'
+    implementation  'com.google.ads.mediation:ironsource:8.11.1.0'
+    implementation  'com.google.ads.mediation:vungle:7.5.1.0'
+    implementation  'com.google.ads.mediation:facebook:6.20.0.1'
+    implementation  'com.google.ads.mediation:mintegral:16.9.91.1'
+    implementation  'com.google.ads.mediation:pangle:7.6.0.2.0'
+    implementation  'com.unity3d.ads:unity-ads:4.16.1'
+    implementation  'com.google.ads.mediation:unity:4.16.1.0'
+    implementation  'com.google.ads.mediation:applovin:13.4.0.0'
+    implementation  'com.google.ads.mediation:inmobi:10.8.7.0'
+    implementation 'com.tapjoy:tapjoy-android-sdk:14.4.0'
 
 
+    //firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics.ktx)
+    implementation(libs.firebase.config.ktx)
 
+    //iap
+    implementation "com.android.billingclient:billing-ktx:8.0.0"
+
+    implementation "com.facebook.android:facebook-android-sdk:latest.release"
+
+    //animation
+    implementation("com.daimajia.androidanimations:library:2.4@aar")
 
 
 }

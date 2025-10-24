@@ -19,12 +19,15 @@ import com.google.android.gms.ads.AdInspectorError
 import com.google.android.gms.ads.MobileAds
 import com.google.android.ump.UserMessagingPlatform
 import com.google.gson.Gson
+import com.tapjoy.TJConnectListener
+import com.tapjoy.TJLogLevel
+import com.tapjoy.Tapjoy
+import com.tapjoy.TapjoyConnectFlag
 import pion.datlt.libads.admob.AdmobHolder
 import pion.datlt.libads.callback.AdCallback
 import pion.datlt.libads.callback.PreloadCallback
 import pion.datlt.libads.model.Ads
 import pion.datlt.libads.model.AdsChild
-import pion.datlt.libads.model.ConfigResult
 import pion.datlt.libads.utils.AdDef
 import pion.datlt.libads.utils.AdsConstant
 import pion.datlt.libads.utils.CommonUtils
@@ -33,11 +36,10 @@ import pion.datlt.libads.utils.DialogNative
 import pion.datlt.libads.utils.NativeInterListener
 import pion.datlt.libads.utils.StateLoadAd
 import pion.datlt.libads.utils.adsuntils.checkAdsByType
+import pion.datlt.libads.utils.adsuntils.checkConditionShowAds
 import pion.datlt.libads.utils.adsuntils.safePreloadAds
-import pion.datlt.libads.utils.adsuntils.setLastTimeShowInter
-import java.io.DataInput
 import java.util.*
-import kotlin.collections.ArrayList
+
 
 /**
  * Object quản lý các hành động liên quan đến load và show quảng cáo.
@@ -45,12 +47,10 @@ import kotlin.collections.ArrayList
  * @param activity: activity đang hiển thị trên màn hình.
  * @param packageName: packageName của ứng dụng.
  * @param listAppId: danh sách các app id của ứng dung(dùng trong trường hợp gắn nhiều mạng quảng cáo).
- * @param listPathJson: danh sách các file json chứa id của quảng cáo(dùng trong trường hợp gắn nhiều mạng quảng cáo).
- * @param lifecycleActivity: lifecycle của activity đang hiển thị.
  */
 class AdsController private constructor(
     var activity: Activity,
-    var listAppId: ArrayList<String>,
+    var listAppId: List<String>,
     var packageName: String
 ) {
 
@@ -82,8 +82,6 @@ class AdsController private constructor(
      * value : ArrayList các quảng cáo có cùng ID
      */
     private val hashMapAds: HashMap<String, ArrayList<AdsChild>> = hashMapOf()
-    private var connectionLiveData: ConnectUtils = ConnectUtils(activity)
-
 
     private val admobHolder = AdmobHolder()
 
@@ -128,19 +126,16 @@ class AdsController private constructor(
         fun init(
             activity: Activity,
             isDebug: Boolean,
-            listAppId: ArrayList<String>,
+            listAppId: List<String>,
             packageName: String,
+            appFlyerKey: String?,
+            tapjoyKey: String?,
             navController: NavController
         ) {
-            Log.d("CHECTHREAD", "init: call from function 1")
-
             AdsConstant.isDebug = isDebug
             AdsConstant.isShowToastDebug = isDebug
-
-            initAppFlyer(activity)
-
-            Log.d("CHECTHREAD", "init: call from function 2")
-
+            initAppFlyer(activity, appFlyerKey)
+            initTapjoy(activity, tapjoyKey)
             if (checkInit()) {
                 adsController.activity = activity
                 adsController.listAppId = listAppId
@@ -152,33 +147,62 @@ class AdsController private constructor(
                     packageName = packageName
                 )
             }
-            Log.d("CHECTHREAD", "init: call from function 3")
-
-
             navController.apply {
                 currentDestinationId = currentDestination?.id ?: -1
                 runCatching { removeOnDestinationChangedListener(adsController.destinationChangeListener) }
                 addOnDestinationChangedListener(adsController.destinationChangeListener)
             }
 
+            //theo doi ket noi mang
+            ConnectUtils(activity).observe(activity as LifecycleOwner) {
+                AdsConstant.isInternetConnected = it
+            }
         }
 
-        private fun initAppFlyer(activity: Activity) {
+        private fun initAppFlyer(activity: Activity, appFlyerKey: String?) {
             try {
-                AppsFlyerLib.getInstance().init("4Ti9yuyaVb6BJMoy25gWUP", null, activity)
-                AppsFlyerLib.getInstance().start(activity, "4Ti9yuyaVb6BJMoy25gWUP", object :
-                    AppsFlyerRequestListener {
-                    override fun onSuccess() {
+                if (!appFlyerKey.isNullOrEmpty()) {
+                    AppsFlyerLib.getInstance().init(appFlyerKey, null, activity)
+                    AppsFlyerLib.getInstance().start(activity, appFlyerKey, object :
+                        AppsFlyerRequestListener {
+                        override fun onSuccess() {
 
+                        }
+
+                        override fun onError(errorCode: Int, errorDesc: String) {
+
+                        }
+                    })
+                    AppsFlyerLib.getInstance().setDebugLog(AdsConstant.isDebug)
+                }
+            } catch (e: Exception) {
+
+            }
+        }
+
+        private fun initTapjoy(activity: Activity, tapjoyKey: String?) {
+            try {
+                if (!tapjoyKey.isNullOrEmpty()) {
+                    val connectFlags = Hashtable<String, Any>()
+                    if (AdsConstant.isDebug) {
+                        connectFlags[TapjoyConnectFlag.TJC_OPTION_LOGGING_LEVEL] =
+                            TJLogLevel.DEBUG // Disable this in production builds
                     }
+                    Tapjoy.connect(
+                        activity.applicationContext,
+                        tapjoyKey,
+                        connectFlags,
+                        object : TJConnectListener() {
+                            override fun onConnectSuccess() {
+                            }
 
-                    override fun onError(errorCode: Int, errorDesc: String) {
+                            override fun onConnectWarning(code: Int, message: String?) {
+                            }
 
-                    }
-                })
-
-                AppsFlyerLib.getInstance().setDebugLog(AdsConstant.isDebug)
-
+                            override fun onConnectFailure(code: Int, message: String?) {
+                            }
+                        })
+                }
             } catch (e: Exception) {
 
             }
@@ -193,46 +217,6 @@ class AdsController private constructor(
 
         fun checkInit() = ::adsController.isInitialized
 
-
-        fun setConfigAds(dataJson: String) {
-            if (dataJson.isNotEmpty()) {
-                val gson = Gson()
-                val objectResult = gson.fromJson(dataJson, ConfigResult::class.java)
-
-
-                //remote cho tung vi tri
-                AdsConstant.apply {
-                    timeDelayNative = objectResult.timeDelayNative
-                    disableAllConfig = objectResult.disableAllConfig
-                    isOpenAppOn = objectResult.isOpenAppOn
-                    isInterstitialOn = objectResult.isInterstitialOn
-                    isNativeOn = objectResult.isNativeOn
-                    isNativeFullScreenOn = objectResult.isNativeFullScreenOn
-                    isBannerOn = objectResult.isBannerOn
-                    isBannerAdaptiveOn = objectResult.isBannerAdaptiveOn
-                    isBannerLargeOn = objectResult.isBannerLargeOn
-                    isBannerInlineOn = objectResult.isBannerInlineOn
-                    isBannerCollapsibleOn = objectResult.isBannerCollapsibleOn
-                    isRewardVideoOn = objectResult.isRewardVideoOn
-                    isRewardInterOn = objectResult.isRewardInter
-                }
-
-
-                for (config in objectResult.listConfig) {
-                    AdsConstant.listConfigAds[config.nameConfig] = config
-                    Log.d("CHECKADSCONFIG", "setConfigAds: ${config.nameConfig} ${config.isOn}")
-                }
-            }
-        }
-    }
-
-    init {
-        Log.d("CHECTHREAD", "init: by default")
-
-        //theo doi ket noi mang
-        connectionLiveData.observe(activity as LifecycleOwner) {
-            AdsConstant.isInternetConnected = it
-        }
     }
 
     fun setListAdsData(listJsonData: ArrayList<String>) {
@@ -260,7 +244,7 @@ class AdsController private constructor(
                 if (adsChild.priority == -1) adsChild.priority = ads.priority
                 var listItem = hashMapAds[adsChild.spaceName.lowercase()]
                 if (listItem == null) {
-                    listItem = java.util.ArrayList()
+                    listItem = ArrayList()
                     hashMapAds[adsChild.spaceName.lowercase()] = listItem
                 }
                 listItem.add(adsChild)
@@ -332,111 +316,111 @@ class AdsController private constructor(
     }
 
 
-    fun loadAndShow(
-        spaceName: String,
-        destinationToShowAds: Int? = null,
-        lifecycle: Lifecycle? = null,
-        timeout: Long? = null,
-        layoutToAttachAds: ViewGroup? = null,
-        viewAdsInflateFromXml: View? = null,
-        adChoice: Int? = null,
-        positionCollapsibleBanner: String? = null,
-        isOneTimeCollapsible: Boolean? = null,
-        adCallback: AdCallback? = null,
-        widthBannerAdaptiveAds: Int? = null,
-        timeShowNativeCollapsibleAfterClose: Int? = null
-    ) {
-        if (AdsConstant.isPremium) {
-            layoutToAttachAds?.visibility = View.GONE
-            adCallback?.onAdFailToLoad(AdsConstant.ERROR_PREMIUM)
-            return
-        }
-        if (!AdsConstant.isInternetConnected) {
-            adCallback?.onAdFailToLoad(AdsConstant.ERROR_NO_INTERNET)
-            return
-        }
-        if (!checkAdsByType(spaceName)) {
-            adCallback?.onAdFailToLoad(AdsConstant.ERROR_OFF_BY_TYPE)
-            return
-        }
-
-
-        val contextUse = this.activity
-        val listItem = hashMapAds[spaceName.lowercase()]
-        if (listItem == null || listItem.size == 0) {
-            CommonUtils.showToastDebug(contextUse, "no data check spaceName or file json 1")
-            adCallback?.onAdFailToLoad("no data check spaceName or file json")
-        } else {
-            val adsChild = getHighestChildPriority(listItem)
-            if (adsChild != null) {
-                loadAndShowAdsByMediation(
-                    adsChild = adsChild,
-                    destinationToShowAds = destinationToShowAds,
-                    adCallback = adCallback,
-                    lifecycle = lifecycle,
-                    timeout = timeout,
-                    layoutToAttachAds = layoutToAttachAds,
-                    viewAdsInflateFromXml = viewAdsInflateFromXml,
-                    adChoice = adChoice,
-                    positionCollapsibleBanner = positionCollapsibleBanner,
-                    isOneTimeCollapsible = isOneTimeCollapsible,
-                    widthBannerAdaptiveAds = widthBannerAdaptiveAds,
-                    timeShowNativeCollapsibleAfterClose = timeShowNativeCollapsibleAfterClose
-                )
-            } else {
-                CommonUtils.showToastDebug(contextUse, "no data check priority file json")
-                adCallback?.onAdFailToLoad("")
-            }
-        }
-    }
-
-    private fun loadAndShowAdsByMediation(
-        adsChild: AdsChild,
-        destinationToShowAds: Int?,
-        adCallback: AdCallback?,
-        lifecycle: Lifecycle?,
-        timeout: Long?,
-        layoutToAttachAds: ViewGroup?,
-        viewAdsInflateFromXml: View?,
-        adChoice: Int?,
-        positionCollapsibleBanner: String?,
-        isOneTimeCollapsible: Boolean?,
-        widthBannerAdaptiveAds: Int?,
-        timeShowNativeCollapsibleAfterClose: Int?
-    ) {
-        when (adsChild.network.lowercase(Locale.getDefault())) {
-            AdDef.NETWORK.GOOGLE -> {
-                admobHolder.loadAndShow(
-                    activity = activity,
-                    adsChild = adsChild,
-                    destinationToShowAds = destinationToShowAds,
-                    adCallback = adCallback,
-                    lifecycle = lifecycle,
-                    timeout = timeout,
-                    layoutToAttachAds = layoutToAttachAds,
-                    viewAdsInflateFromXml = viewAdsInflateFromXml,
-                    adChoice = adChoice,
-                    positionCollapsibleBanner = positionCollapsibleBanner,
-                    isOneTimeCollapsible = isOneTimeCollapsible,
-                    widthBannerAdaptiveAds = widthBannerAdaptiveAds,
-                    timeShowNativeCollapsibleAfterClose = timeShowNativeCollapsibleAfterClose
-                )
-            }
-
-            AdDef.NETWORK.MINTEGRAL -> {
-
-            }
-
-            AdDef.NETWORK.PANGLE -> {
-
-            }
-
-            else -> {
-
-            }
-        }
-
-    }
+//    fun loadAndShow(
+//        spaceName: String,
+//        destinationToShowAds: Int? = null,
+//        lifecycle: Lifecycle? = null,
+//        timeout: Long? = null,
+//        viewGroupAds: ViewGroup? = null,
+//        viewAds: View? = null,
+//        adChoice: Int? = null,
+//        positionCollapsibleBanner: String? = null,
+//        isOneTimeCollapsible: Boolean? = null,
+//        adCallback: AdCallback? = null,
+//        widthBannerAdaptiveAds: Int? = null,
+//        timeShowNativeCollapsibleAfterClose: Int? = null
+//    ) {
+//        if (AdsConstant.isPremium) {
+//            viewGroupAds?.visibility = View.GONE
+//            adCallback?.onAdFailToLoad(AdsConstant.ERROR_PREMIUM)
+//            return
+//        }
+//        if (!AdsConstant.isInternetConnected) {
+//            adCallback?.onAdFailToLoad(AdsConstant.ERROR_NO_INTERNET)
+//            return
+//        }
+//        if (!checkAdsByType(spaceName)) {
+//            adCallback?.onAdFailToLoad(AdsConstant.ERROR_OFF_BY_TYPE)
+//            return
+//        }
+//
+//
+//        val contextUse = this.activity
+//        val listItem = hashMapAds[spaceName.lowercase()]
+//        if (listItem == null || listItem.size == 0) {
+//            CommonUtils.showToastDebug(contextUse, "no data check spaceName or file json 1")
+//            adCallback?.onAdFailToLoad("no data check spaceName or file json")
+//        } else {
+//            val adsChild = getHighestChildPriority(listItem)
+//            if (adsChild != null) {
+//                loadAndShowAdsByMediation(
+//                    adsChild = adsChild,
+//                    destinationToShowAds = destinationToShowAds,
+//                    adCallback = adCallback,
+//                    lifecycle = lifecycle,
+//                    timeout = timeout,
+//                    viewGroupAds = viewGroupAds,
+//                    viewAds = viewAds,
+//                    adChoice = adChoice,
+//                    positionCollapsibleBanner = positionCollapsibleBanner,
+//                    isOneTimeCollapsible = isOneTimeCollapsible,
+//                    widthBannerAdaptiveAds = widthBannerAdaptiveAds,
+//                    timeShowNativeCollapsibleAfterClose = timeShowNativeCollapsibleAfterClose
+//                )
+//            } else {
+//                CommonUtils.showToastDebug(contextUse, "no data check priority file json")
+//                adCallback?.onAdFailToLoad("")
+//            }
+//        }
+//    }
+//
+//    private fun loadAndShowAdsByMediation(
+//        adsChild: AdsChild,
+//        destinationToShowAds: Int?,
+//        adCallback: AdCallback?,
+//        lifecycle: Lifecycle?,
+//        timeout: Long?,
+//        viewGroupAds: ViewGroup?,
+//        viewAds: View?,
+//        adChoice: Int?,
+//        positionCollapsibleBanner: String?,
+//        isOneTimeCollapsible: Boolean?,
+//        widthBannerAdaptiveAds: Int?,
+//        timeShowNativeCollapsibleAfterClose: Int?
+//    ) {
+//        when (adsChild.network.lowercase(Locale.getDefault())) {
+//            AdDef.NETWORK.GOOGLE -> {
+//                admobHolder.loadAndShow(
+//                    activity = activity,
+//                    adsChild = adsChild,
+//                    destinationToShowAds = destinationToShowAds,
+//                    adCallback = adCallback,
+//                    lifecycle = lifecycle,
+//                    timeout = timeout,
+//                    viewGroupAds = viewGroupAds,
+//                    viewAds = viewAds,
+//                    adChoice = adChoice,
+//                    positionCollapsibleBanner = positionCollapsibleBanner,
+//                    isOneTimeCollapsible = isOneTimeCollapsible,
+//                    widthBannerAdaptiveAds = widthBannerAdaptiveAds,
+//                    timeShowNativeCollapsibleAfterClose = timeShowNativeCollapsibleAfterClose
+//                )
+//            }
+//
+//            AdDef.NETWORK.MINTEGRAL -> {
+//
+//            }
+//
+//            AdDef.NETWORK.PANGLE -> {
+//
+//            }
+//
+//            else -> {
+//
+//            }
+//        }
+//
+//    }
 
     fun showLoadedAds(
         spaceName: String,
@@ -444,8 +428,8 @@ class AdsController private constructor(
         destinationToShowAds: Int? = null,
         lifecycle: Lifecycle? = null,
         timeout: Long? = null,
-        layoutToAttachAds: ViewGroup? = null,
-        viewAdsInflateFromXml: View? = null,
+        viewGroupAds: ViewGroup? = null,
+        viewAds: View? = null,
         adChoice: Int? = null,
         positionCollapsibleBanner: String? = null,
         isOneTimeCollapsible: Boolean? = null,
@@ -454,7 +438,7 @@ class AdsController private constructor(
         timeShowNativeCollapsibleAfterClose: Int? = null
     ) {
         if (AdsConstant.isPremium) {
-            layoutToAttachAds?.visibility = View.GONE
+            viewGroupAds?.visibility = View.GONE
             adCallback?.onAdFailToLoad(AdsConstant.ERROR_PREMIUM)
             return
         }
@@ -478,8 +462,8 @@ class AdsController private constructor(
                     adsChild = adsChild,
                     includeHasBeenOpened = includeHasBeenOpened,
                     destinationToShowAds = destinationToShowAds,
-                    layoutToAttachAds = layoutToAttachAds,
-                    viewAdsInflateFromXml = viewAdsInflateFromXml,
+                    viewGroupAds = viewGroupAds,
+                    viewAds = viewAds,
                     positionCollapsibleBanner = positionCollapsibleBanner,
                     adChoice = adChoice,
                     lifecycle = lifecycle,
@@ -503,8 +487,8 @@ class AdsController private constructor(
         adCallback: AdCallback?,
         lifecycle: Lifecycle?,
         timeout: Long?,
-        layoutToAttachAds: ViewGroup?,
-        viewAdsInflateFromXml: View?,
+        viewGroupAds: ViewGroup?,
+        viewAds: View?,
         adChoice: Int?,
         positionCollapsibleBanner: String?,
         isOneTimeCollapsible: Boolean?,
@@ -521,8 +505,8 @@ class AdsController private constructor(
                     adCallback = adCallback,
                     lifecycle = lifecycle,
                     timeout = timeout,
-                    layoutToAttachAds = layoutToAttachAds,
-                    viewAdsInflateFromXml = viewAdsInflateFromXml,
+                    viewGroupAds = viewGroupAds,
+                    viewAds = viewAds,
                     adChoice = adChoice,
                     positionCollapsibleBanner = positionCollapsibleBanner,
                     isOneTimeCollapsible = isOneTimeCollapsible,
@@ -705,37 +689,10 @@ class AdsController private constructor(
         return null
     }
 
-    fun closeCollapsibleBanner(
-        spaceName: String,
-        lifecycleOwner: LifecycleOwner,
-        onDone: () -> Unit
-    ) {
-        hashMapAds[spaceName.lowercase(Locale.getDefault())]?.let { listAdChild ->
-            if (listAdChild.isNotEmpty()) {
-                getHighestChildPriority(listAdChild)?.let { adChild ->
-                    when (adChild.network.lowercase(Locale.getDefault())) {
-                        AdDef.NETWORK.GOOGLE -> {
-                            if (adChild.adsType == AdDef.ADS_TYPE_ADMOB.BANNER_COLLAPSIBLE) {
-                                admobHolder.closeCollapsibleBanner(adChild, lifecycleOwner, onDone)
-                            } else {
-                                onDone.invoke()
-                            }
-                        }
-
-                        else -> {
-                            onDone.invoke()
-                        }
-                    }
-                }
-            }
-        } ?: kotlin.run {
-            onDone.invoke()
-        }
-    }
-
 
     fun initResumeAds(
         lifecycle: Lifecycle,
+        configName: String,
         listSpaceName: List<String>,
         onShowOpenApp: () -> Unit,
         onStartToShowOpenAds: () -> Unit,
@@ -746,7 +703,8 @@ class AdsController private constructor(
         lifecycle.addObserver(LifecycleEventObserver { _, event ->
             when (event) {
                 Lifecycle.Event.ON_START -> {
-                    var isAnyAdShowed = false
+                    if (!checkConditionShowAds(activity, configName)
+                    ) return@LifecycleEventObserver
                     listSpaceName.forEach { currentResumeAppSpaceName ->
                         Log.d(
                             "CHECKRESUMEAPP",
@@ -755,7 +713,6 @@ class AdsController private constructor(
                         if (checkAdsState(currentResumeAppSpaceName) == StateLoadAd.SUCCESS) {
                             if (!isBlockOpenAds && !isInterIsShowing && !isOtherOpenAdsIsShowing && !DialogNative.isShowing()) {
                                 isOtherOpenAdsIsShowing = true
-                                isAnyAdShowed = true
                                 //show
                                 DialogNative.dismiss()
                                 onStartToShowOpenAds.invoke()
@@ -882,8 +839,8 @@ class AdsController private constructor(
             if (AdsConstant.listConfigAds[configName]?.isOn == true) {
                 listSpaceName.forEach { spaceNameAds ->
                     activity.safePreloadAds(
-                        spaceNameConfig = configName,
-                        spaceNameAds = spaceNameAds,
+                        configName = configName,
+                        spaceName = spaceNameAds,
                         includeHasBeenOpened = false,
                         adChoice = AdsConstant.BOTTOM_LEFT,
                         preloadCallback = object : PreloadCallback {
@@ -904,34 +861,33 @@ class AdsController private constructor(
         preloadAds()
 
         showNativeTrigger = {
-            for (spaceName in listSpaceName) {
-                if (checkAdsState(spaceName) == StateLoadAd.SUCCESS) {
-                    //show qc dau tien thanh cong
-                    if (AdsConstant.listConfigAds[configName]?.isOn == true) {
-                        DialogNative.show(
-                            activity,
-                            configName,
-                            spaceName,
-                            object : NativeInterListener {
-                                override fun onShowNative() {
+            if (checkConditionShowAds(activity, configName)) {
+                for (spaceName in listSpaceName) {
+                    if (checkAdsState(spaceName) == StateLoadAd.SUCCESS) {
+                        //show qc dau tien thanh cong
+                        if (AdsConstant.listConfigAds[configName]?.isOn == true) {
+                            DialogNative.show(
+                                activity,
+                                configName,
+                                spaceName,
+                                false,
+                                object : NativeInterListener {
+                                    override fun onShowNative() {
 
-                                }
+                                    }
 
-                                override fun onCloseNative() {
-                                    preloadAds()
-                                }
-
-                                override fun onClickNative() {
-                                }
-                            })
+                                    override fun onCloseNative() {
+                                        preloadAds()
+                                    }
+                                })
+                        }
+                        break
+                    } else {
+                        //load lai
+                        preloadAds()
                     }
-                    break
-                } else {
-                    //load lai
-                    preloadAds()
                 }
             }
         }
     }
-
 }

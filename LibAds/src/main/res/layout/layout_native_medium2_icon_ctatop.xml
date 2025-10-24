@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:tag="normal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -75,7 +76,7 @@
             android:id="@+id/txv_ads"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_ad_tag"
+            android:background="@drawable/bg_ad_tag_top_right"
             android:backgroundTint="#FFA800"
             android:fontFamily="@font/font_500"
             android:paddingHorizontal="@dimen/_4dp"
@@ -96,6 +97,7 @@
             android:backgroundTint="@color/cta_color"
             android:fontFamily="@font/font_700"
             android:gravity="center"
+            android:paddingVertical="@dimen/_12dp"
             android:textColor="@color/cta_text_color"
             app:layout_constraintDimensionRatio="318:42"
             app:layout_constraintEnd_toEndOf="parent"

@@ -22,6 +22,8 @@ dependencyResolutionManagement {
         maven { setUrl("https://artifact.bytedance.com/repository/pangle/") }
         maven { setUrl("https://dl-maven-android.mintegral.com/repository/mbridge_android_sdk_oversea") }
         maven { setUrl("https://android-sdk.is.com/") }
+        maven { setUrl("https://sdk.tapjoy.com/") }
+        maven { setUrl("https://maven.google.com/") }
         gradlePluginPortal()
     }
 }
@@ -29,5 +31,4 @@ dependencyResolutionManagement {
 
 include(":app")
 rootProject.name = "PionBase"
-include(":LibIAP")
 include(":LibAds")

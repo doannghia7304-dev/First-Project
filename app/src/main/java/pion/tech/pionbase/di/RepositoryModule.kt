@@ -18,8 +18,6 @@ import pion.tech.pionbase.data.repository.installedAppRepository.InstalledAppsRe
 import pion.tech.pionbase.data.repository.installedAppRepository.InstalledAppsRepositoryImpl
 import pion.tech.pionbase.data.repository.languageRepository.LanguageRepository
 import pion.tech.pionbase.data.repository.languageRepository.LanguageRepositoryImpl
-import pion.tech.pionbase.data.repository.remoteConfig.RemoteConfigRepository
-import pion.tech.pionbase.data.repository.remoteConfig.RemoteConfigRepositoryImpl
 import javax.inject.Singleton
 
 @Module
@@ -32,10 +30,6 @@ class RepositoryModule {
     @Provides
     @Singleton
     fun provideLanguageRepository(): LanguageRepository = LanguageRepositoryImpl()
-
-    @Provides
-    @Singleton
-    fun provideRemoteConfigRepository(remoteConfig: FirebaseRemoteConfig): RemoteConfigRepository = RemoteConfigRepositoryImpl(remoteConfig)
 
     @Provides
     @Singleton
