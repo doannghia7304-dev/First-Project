@@ -1,15 +1,9 @@
 package pion.tech.pionbase.di
 
-import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import pion.tech.pionbase.data.remote.ApiInterface
 import pion.tech.pionbase.data.repository.apiRepository.ApiRepository
 import pion.tech.pionbase.data.repository.apiRepository.ApiRepositoryImpl
 import pion.tech.pionbase.data.repository.dataStore.DataStoreRepository
@@ -22,22 +16,20 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class RepositoryModule {
-    @Provides
+abstract class RepositoryModule {
+    @Binds
     @Singleton
-    fun providePreferencesRepository(dataStore: DataStore<Preferences>): DataStoreRepository = DataStoreRepositoryImpl(dataStore)
+    abstract fun bindDataStoreRepository(impl: DataStoreRepositoryImpl): DataStoreRepository
 
-    @Provides
+    @Binds
     @Singleton
-    fun provideLanguageRepository(): LanguageRepository = LanguageRepositoryImpl()
+    abstract fun bindLanguageRepository(impl: LanguageRepositoryImpl): LanguageRepository
 
-    @Provides
+    @Binds
     @Singleton
-    fun provideApiRepository(apiInterface: ApiInterface): ApiRepository = ApiRepositoryImpl(apiInterface)
+    abstract fun bindApiRepository(impl: ApiRepositoryImpl): ApiRepository
 
-    @Provides
+    @Binds
     @Singleton
-    fun provideInstalledAppsRepository(
-        @ApplicationContext context: Context,
-    ): InstalledAppsRepository = InstalledAppsRepositoryImpl(context)
+    abstract fun bindInstalledAppsRepository(impl: InstalledAppsRepositoryImpl): InstalledAppsRepository
 }
