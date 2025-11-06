@@ -113,50 +113,6 @@ abstract class BaseFragment<Binding : ViewBinding, VM : ViewModel>(
 
     abstract fun subscribeObserver(view: View)
 
-    private var jobSetBlockAds: Job? = null
-
-    override fun onResume() {
-        super.onResume()
-        handleAppResumeAds()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        jobSetBlockAds?.cancel()
-    }
-
-    /**
-     * Handle app resume ads logic
-     * Blocks ads for premium users or specific screens
-     */
-    private fun handleAppResumeAds() {
-        val config: Boolean = AdsConstant.listConfigAds["appresume"]?.isOn ?: false
-        launchIO {
-            if (shouldBlockAds(config)) {
-                AdsController.Companion.isBlockOpenAds = true
-            } else {
-                jobSetBlockAds =
-                    launchIO {
-                        delay(1000L)
-                        if (viewLifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED) {
-                            AdsController.Companion.isBlockOpenAds = false
-                        }
-                    }
-            }
-        }
-    }
-
-    /**
-     * Check if ads should be blocked
-     */
-    private suspend fun shouldBlockAds(config: Boolean): Boolean {
-        val currentDestination = navigator.getCurrentDestinationId()
-        return isPremiumValue() ||
-            currentDestination == R.id.splashFragment ||
-            currentDestination == R.id.onboardFragment ||
-            !config
-    }
-
     override fun onDestroyView() {
         hideLoading()
         _binding = null
