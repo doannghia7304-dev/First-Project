@@ -5,6 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import pion.tech.pionbase.R
 import pion.tech.pionbase.base.launchIO
+import pion.tech.pionbase.util.Constant
 
 fun SplashFragment.onBackEvent() {
     onSystemBack {
@@ -43,7 +44,7 @@ fun SplashFragment.initView() {
 fun SplashFragment.goToNextScreen() {
     launchIO {
         val destination =
-            if (isPremiumValue() || isCameFromLanguage()) {
+            if (Constant.isPremiumValue(dataStoreRepository) || isCameFromLanguage()) {
                 R.id.action_splashFragment_to_homeFragment
             } else {
                 R.id.action_splashFragment_to_languageFragment

@@ -15,22 +15,32 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import pion.datlt.libads.AdsActivity
 import pion.datlt.libads.AdsController
+import pion.datlt.libads.IAPConnector
 import pion.datlt.libads.utils.AdsConstant
 import pion.tech.pionbase.BuildConfig
 import pion.tech.pionbase.R
 import pion.tech.pionbase.base.lifecycleCallback.FragmentLifecycleCallbacksImpl
+import pion.tech.pionbase.data.repository.dataStore.DataStoreRepository
 import pion.tech.pionbase.util.Constant
+import timber.log.Timber
+import javax.inject.Inject
 import kotlin.getValue
 
 @AndroidEntryPoint
 class MainActivity : AdsActivity() {
     private val commonViewModel: CommonViewModel by viewModels()
+
+    @Inject
+    lateinit var dataStoreRepository: DataStoreRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,6 +103,47 @@ class MainActivity : AdsActivity() {
     }
 
     override fun getAppFlyerKey() = "4Ti9yuyaVb6BJMoy25gWUP"
+
+    override fun onGetIapDone(isSuccess: Boolean) {
+        super.onGetIapDone(isSuccess)
+        val tag = "onGetIapDone"
+        if (isSuccess) {
+            // Ví dụ: cập nhật giao diện hoặc trạng thái ứng dụng
+            val productModel =
+                IAPConnector
+                    .getAllProductModel()
+                    .find { it.isPurchase }
+            Timber.tag(tag).d("onGetIapDone: $productModel")
+            if (productModel != null) {
+                Constant.isPremium = productModel.isPurchase
+                AdsConstant.isPremium = productModel.isPurchase
+                lifecycleScope.launch(Dispatchers.IO) {
+                    Constant.setPremium(
+                        isPremium = productModel.isPurchase,
+                        dataStoreRepository = dataStoreRepository,
+                    )
+                }
+            } else {
+                Constant.isPremium = false
+                AdsConstant.isPremium = false
+                lifecycleScope.launch(Dispatchers.IO) {
+                    Constant.setPremium(
+                        isPremium = false,
+                        dataStoreRepository = dataStoreRepository,
+                    )
+                }
+            }
+        } else {
+            Constant.isPremium = false
+            AdsConstant.isPremium = false
+            lifecycleScope.launch(Dispatchers.IO) {
+                Constant.setPremium(
+                    isPremium = false,
+                    dataStoreRepository = dataStoreRepository,
+                )
+            }
+        }
+    }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         if (ev?.action == MotionEvent.ACTION_DOWN) {
