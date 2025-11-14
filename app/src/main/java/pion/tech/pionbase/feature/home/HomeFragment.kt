@@ -10,7 +10,8 @@ import pion.tech.pionbase.feature.home.adapter.InstallAppAdapter
 import pion.tech.pionbase.feature.home.dialog.DemoDialog
 import pion.tech.pionbase.util.collectFlowOnView
 import pion.tech.pionbase.util.displayToast
-import pion.tech.pionbase.util.handleUiState
+
+// removed duplicate imports
 
 @AndroidEntryPoint
 class HomeFragment :
@@ -27,6 +28,9 @@ class HomeFragment :
         settingEvent()
         showDemoDialogEvent()
         onBackEvent()
+
+        // Try to load templates for Template category when Home is initialized
+        commonViewModel.loadTemplateFromTemplateCategoryName()
     }
 
     override fun subscribeObserver(view: View) {
@@ -56,27 +60,15 @@ class HomeFragment :
                 }
             }
 
-        commonViewModel.getCategoryUiState.collectFlowOnView(viewLifecycleOwner) {
-            it.handleUiState(
-                onLoading = { showHideLoading(true) },
-                onSuccess = { listAppCategory ->
-                    val templateCategoryId =
-                        listAppCategory.firstOrNull { item -> item.name == "Template" }?.id
-                    if (templateCategoryId != null) {
-                        commonViewModel.getTemplate(templateCategoryId)
-                    }
-                },
-                onError = { showHideLoading(false) },
-            )
-        }
-
-        commonViewModel.getTemplateUiState.collectFlowOnView(viewLifecycleOwner) {
-            it.handleUiState(
-                onLoading = { showHideLoading(true) },
-                onSuccess = { showHideLoading(false) },
-                onError = { showHideLoading(false) },
-            )
-        }
+        // Observe CommonViewModel state for template loading if needed
+        commonViewModel.uiState
+            .map { it.templateState.isLoading }
+            .distinctUntilChanged()
+            .collectFlowOnView(viewLifecycleOwner) { isLoadingTemplate ->
+                if (isLoadingTemplate) {
+                    showHideLoading(true)
+                }
+            }
     }
 
     override fun onDialogPositiveClick() {
