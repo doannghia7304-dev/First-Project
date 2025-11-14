@@ -49,8 +49,9 @@ constructor(
     }
 
     fun selectLanguage(item: LanguageUIModel) {
+        val current = _uiState.value.languages ?: return
         val updatedList =
-            _uiState.value.languages.map { language ->
+            current.map { language ->
                 language.copy(isSelected = language.localeCode == item.localeCode)
             }
 
@@ -66,7 +67,7 @@ constructor(
 
 data class LanguageUiState(
     val isLoading: Boolean = false,
-    val languages: List<LanguageUIModel> = emptyList(),
+    val languages: List<LanguageUIModel>? = null,
     val selectedLanguage: LanguageUIModel? = null,
     val error: Throwable? = null,
 )

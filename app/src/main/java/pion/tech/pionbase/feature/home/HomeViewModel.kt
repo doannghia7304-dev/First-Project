@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import pion.tech.pionbase.base.BaseViewModel
 import pion.tech.pionbase.data.model.installedApp.InstalledAppUIModel
 import pion.tech.pionbase.data.model.installedApp.toPresentation
-import pion.tech.pionbase.data.repository.dataStore.DataStoreRepository
 import pion.tech.pionbase.data.repository.installedAppRepository.InstalledAppsRepository
 import pion.tech.pionbase.util.handleApiCall
 import javax.inject.Inject
@@ -15,7 +14,6 @@ import javax.inject.Inject
 class HomeViewModel
 @Inject
 constructor(
-    private val dataStoreRepository: DataStoreRepository,
     private val installedAppsRepository: InstalledAppsRepository,
 ) : BaseViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -53,6 +51,6 @@ constructor(
 
 data class HomeUiState(
     val isLoading: Boolean = false,
-    val installedApps: List<InstalledAppUIModel> = emptyList(),
+    val installedApps: List<InstalledAppUIModel>? = null,
     val error: Throwable? = null,
 )

@@ -100,12 +100,10 @@ constructor(
     fun loadTemplateFromTemplateCategoryName(name: String = "Template") {
         val categories = _uiState.value.categoryState.categories
 
-        if (categories.isNotEmpty()) {
-            val templateCategoryId =
-                categories.firstOrNull { item -> item.name == name }?.id
-            if (templateCategoryId != null) {
-                getTemplate(templateCategoryId)
-            }
+        val templateCategoryId =
+            categories?.firstOrNull { item -> item.name == name }?.id
+        if (templateCategoryId != null) {
+            getTemplate(templateCategoryId)
         }
     }
 
@@ -116,13 +114,13 @@ constructor(
 
 data class CategoryUiState(
     val isLoading: Boolean = false,
-    val categories: List<AppCategoryUIModel> = emptyList(),
+    val categories: List<AppCategoryUIModel>? = null,
     val error: Throwable? = null,
 )
 
 data class TemplateUiState(
     val isLoading: Boolean = false,
-    val templates: List<TemplateUIModel> = emptyList(),
+    val templates: List<TemplateUIModel>? = null,
     val error: Throwable? = null,
 )
 
