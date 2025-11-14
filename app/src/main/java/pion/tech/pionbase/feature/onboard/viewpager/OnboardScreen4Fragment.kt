@@ -7,6 +7,7 @@ import pion.tech.pionbase.databinding.FragmentOnboardScreen4Binding
 import pion.tech.pionbase.feature.onboard.OnboardFragment
 import pion.tech.pionbase.feature.onboard.OnboardViewModel
 import pion.tech.pionbase.feature.onboard.goToHomeEvent
+import pion.tech.pionbase.feature.onboard.nextPage
 import pion.tech.pionbase.util.setPreventDoubleClick
 
 @AndroidEntryPoint
@@ -21,7 +22,7 @@ class OnboardScreen4Fragment :
 
     private fun nextEvent() {
         binding.btnNext.setPreventDoubleClick {
-            (parentFragment as? OnboardFragment)?.goToHomeEvent()
+            (parentFragment as? OnboardFragment)?.nextPage()
         }
     }
 
