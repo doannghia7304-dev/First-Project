@@ -91,7 +91,7 @@ Các lớp cơ sở cho dialog và bottom sheet dialog, cung cấp các chức n
 Mỗi màn hình trong ứng dụng bao gồm 3 thành phần chính:
 
 ### 1. Fragment
-Định nghĩa cấu trúc UI và vòng đời của màn hình. Ví dụ:
+Định nghĩa cấu trúc UI và vòng đời của màn hình. Ví dụ (đã cập nhật theo pattern mới: tách luồng theo từng thuộc tính qua `map + distinctUntilChanged`):
 
 ```kotlin
 @AndroidEntryPoint
@@ -101,7 +101,7 @@ class HomeFragment :
         HomeViewModel::class.java,
     ),
     DemoDialog.Listener {
-    
+
     val adapter = InstallAppAdapter()
 
     override fun init(view: View) {
@@ -109,23 +109,43 @@ class HomeFragment :
         settingEvent()
         showDemoDialogEvent()
         onBackEvent()
+
+        // Yêu cầu CommonViewModel load template theo category "Template" nếu đã có categories
+        commonViewModel.loadTemplateFromTemplateCategoryName()
     }
 
     override fun subscribeObserver(view: View) {
-        // Observe installed apps state
-        viewModel.installedAppsUiState.collectFlowOnView(viewLifecycleOwner) {
-            it.handleUiState(
-                onLoading = { showHideLoading(true) },
-                onSuccess = { installedApps -> 
-                    showHideLoading(false)
-                    adapter.submitList(installedApps) 
-                },
-                onError = { 
-                    showHideLoading(false)
-                    displayToast("Failed to load installed apps") 
-                }
-            )
-        }
+        // Chỉ cập nhật list khi danh sách app thay đổi
+        viewModel.uiState
+            .map { it.installedApps }
+            .distinctUntilChanged()
+            .collectFlowOnView(viewLifecycleOwner) { installedApps ->
+                adapter.submitList(installedApps)
+            }
+
+        // Chỉ cập nhật loading khi giá trị thay đổi
+        viewModel.uiState
+            .map { it.isLoading }
+            .distinctUntilChanged()
+            .collectFlowOnView(viewLifecycleOwner) { isLoading ->
+                showHideLoading(isLoading)
+            }
+
+        // Chỉ hiển thị lỗi khi thay đổi
+        viewModel.uiState
+            .map { it.error }
+            .distinctUntilChanged()
+            .collectFlowOnView(viewLifecycleOwner) { error ->
+                if (error != null) displayToast("Failed to load installed apps")
+            }
+
+        // Theo dõi loading của Template từ CommonViewModel nếu cần
+        commonViewModel.uiState
+            .map { it.templateState.isLoading }
+            .distinctUntilChanged()
+            .collectFlowOnView(viewLifecycleOwner) { isLoadingTemplate ->
+                if (isLoadingTemplate) showHideLoading(true)
+            }
     }
 }
 ```
@@ -135,7 +155,7 @@ Chứa các extension function cho Fragment, xử lý logic tách biệt như s�
 
 ```kotlin
 fun HomeFragment.initView() {
-    commonViewModel.getApiData()
+    // Khởi tạo view, gắn adapter... (minh họa)
 }
 
 fun HomeFragment.plusEvent() {
@@ -145,14 +165,46 @@ fun HomeFragment.plusEvent() {
 ```
 
 ### 3. ViewModel
-Quản lý trạng thái UI và xử lý logic nghiệp vụ. Ví dụ:
+Quản lý trạng thái UI và xử lý logic nghiệp vụ. Ví dụ (đã cập nhật dùng `UiState` dạng data class theo màn hình):
 
 ```kotlin
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val dataStoreRepository: DataStoreRepository,
     private val installedAppsRepository: InstalledAppsRepository,
-) : BaseViewModel()
+) : BaseViewModel() {
+    private val _uiState = MutableStateFlow(HomeUiState())
+    val uiState = _uiState.asStateFlow()
+
+    init { getInstalledApps() }
+
+    fun getInstalledApps() {
+        _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+        handleApiCall(
+            apiCall = { installedAppsRepository.getInstalledApps() },
+            onSuccess = { dtoList ->
+                val installedApps = dtoList.map { it.toPresentation() }
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    installedApps = installedApps,
+                    error = null,
+                )
+            },
+            onError = { throwable ->
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    error = throwable,
+                )
+            },
+        )
+    }
+}
+
+data class HomeUiState(
+    val isLoading: Boolean = false,
+    val installedApps: List<InstalledAppUIModel> = emptyList(),
+    val error: Throwable? = null,
+)
 ```
 
 ## Phân Tách Model Theo Lớp
@@ -238,49 +290,123 @@ class InstalledAppsRepositoryImpl(
 
 ## Quản Lý Trạng Thái UI
 
-Ứng dụng sử dụng `UiState` để quản lý trạng thái UI một cách nhất quán:
+Từ phiên bản mới, mỗi màn hình sử dụng một `UiState` dạng `data class` tổng hợp, rồi tách luồng theo từng thuộc tính trong `Fragment` bằng `map + distinctUntilChanged` để tối ưu re-render.
+
+### Mẫu dùng cho màn hình (khuyến nghị)
+
+Ví dụ với màn Home:
 
 ```kotlin
-sealed interface UiState<out T> {
-    data object None : UiState<Nothing>
-    data object Loading : UiState<Nothing>
-    data class Success<T>(val data: T) : UiState<T>
-    data class Error(val exception: Throwable) : UiState<Nothing>
+data class HomeUiState(
+    val isLoading: Boolean = false,
+    val installedApps: List<InstalledAppUIModel> = emptyList(),
+    val error: Throwable? = null,
+)
+
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+    private val installedAppsRepository: InstalledAppsRepository,
+) : BaseViewModel() {
+    private val _uiState = MutableStateFlow(HomeUiState())
+    val uiState = _uiState.asStateFlow()
+
+    init { getInstalledApps() }
+
+    fun getInstalledApps() {
+        _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+        handleApiCall(
+            apiCall = { installedAppsRepository.getInstalledApps() },
+            onSuccess = { dtoList ->
+                val installed = dtoList.map { it.toPresentation() }
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    installedApps = installed,
+                    error = null,
+                )
+            },
+            onError = { t ->
+                _uiState.value = _uiState.value.copy(isLoading = false, error = t)
+            },
+        )
+    }
 }
 ```
 
-### Trong ViewModel:
-```kotlin
-private val _installedAppsUiState = MutableStateFlow<UiState<List<InstalledAppUIModel>>>(UiState.None)
-val installedAppsUiState = _installedAppsUiState.asStateFlow()
+Trong `Fragment`:
 
-fun getInstalledApps() {
-    handleApiCall(
-        stateFlow = _installedAppsUiState,
-        apiCall = { installedAppsRepository.getInstalledApps() },
-        transform = { dtoList: List<InstalledAppDtoModel> -> 
-            dtoList.map { it.toPresentation() } 
-        }
-    )
+```kotlin
+// List
+viewModel.uiState
+    .map { it.installedApps }
+    .distinctUntilChanged()
+    .collectFlowOnView(viewLifecycleOwner) { adapter.submitList(it) }
+
+// Loading
+viewModel.uiState
+    .map { it.isLoading }
+    .distinctUntilChanged()
+    .collectFlowOnView(viewLifecycleOwner) { showHideLoading(it) }
+
+// Error
+viewModel.uiState
+    .map { it.error }
+    .distinctUntilChanged()
+    .collectFlowOnView(viewLifecycleOwner) { if (it != null) displayToast("Load failed") }
+```
+
+Ví dụ với màn Language:
+
+```kotlin
+data class LanguageUiState(
+    val isLoading: Boolean = false,
+    val languages: List<LanguageUIModel> = emptyList(),
+    val selectedLanguage: LanguageUIModel? = null,
+    val error: Throwable? = null,
+)
+```
+
+Trong `ViewModel`, `loadLanguages()` chỉ cập nhật danh sách, không tự động chọn ngôn ngữ; chọn ngôn ngữ được xử lý riêng với `selectLanguage()`.
+
+### CommonViewModel & CommonUiState (đã tách nhỏ)
+
+`CommonViewModel` quản lý dữ liệu dùng chung với một `CommonUiState` chứa 2 state con:
+
+```kotlin
+data class CategoryUiState(
+    val isLoading: Boolean = false,
+    val categories: List<AppCategoryUIModel> = emptyList(),
+    val error: Throwable? = null,
+)
+
+data class TemplateUiState(
+    val isLoading: Boolean = false,
+    val templates: List<TemplateUIModel> = emptyList(),
+    val error: Throwable? = null,
+)
+
+data class CommonUiState(
+    val categoryState: CategoryUiState = CategoryUiState(),
+    val templateState: TemplateUiState = TemplateUiState(),
+)
+```
+
+Hàm tiện ích:
+
+```kotlin
+fun loadTemplateFromTemplateCategoryName(name: String = "Template") {
+    val categories = _uiState.value.categoryState.categories
+    if (categories.isNotEmpty()) {
+        val id = categories.firstOrNull { it.name == name }?.id
+        if (id != null) getTemplate(id)
+    }
 }
 ```
 
-### Trong Fragment:
-```kotlin
-viewModel.installedAppsUiState.collectFlowOnView(viewLifecycleOwner) {
-    it.handleUiState(
-        onLoading = { showHideLoading(true) },
-        onSuccess = { installedApps -> 
-            showHideLoading(false)
-            // Xử lý dữ liệu
-        },
-        onError = { exception ->
-            showHideLoading(false)
-            // Xử lý lỗi
-        },
-    )
-}
-```
+Trong `HomeFragment`, chỉ cần gọi `commonViewModel.loadTemplateFromTemplateCategoryName()` ở `init()` nếu cần.
+
+### Về `UiState<T>` (sealed interface) trong `ApiExtensions.kt`
+
+`UiState<T>` (None/Loading/Success/Error) vẫn tồn tại để tái sử dụng cho một số dòng dữ liệu độc lập khi cần, và các helper như `handleApiCall(...)`, `handleUiState(...)` vẫn khả dụng. Tuy nhiên, mặc định với màn hình, khuyến nghị dùng một `data class UiState` tổng cho dễ đọc và dễ bảo trì.
 
 ## Các Tính Năng Được Triển Khai
 
