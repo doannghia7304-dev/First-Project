@@ -2,6 +2,8 @@ package pion.tech.pionbase.feature.home
 
 import android.view.View
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import pion.tech.pionbase.base.BaseFragment
 import pion.tech.pionbase.databinding.FragmentHomeBinding
 import pion.tech.pionbase.feature.home.adapter.InstallAppAdapter
@@ -28,22 +30,31 @@ class HomeFragment :
     }
 
     override fun subscribeObserver(view: View) {
-        // Observe installed apps state
-        viewModel.installedAppsUiState.collectFlowOnView(viewLifecycleOwner) {
-            it.handleUiState(
-                onLoading = {
-                    showHideLoading(true)
-                },
-                onSuccess = { installedApps ->
-                    showHideLoading(false)
-                    adapter.submitList(installedApps)
-                },
-                onError = {
-                    showHideLoading(false)
+        // Observe installed apps list
+        viewModel.uiState
+            .map { it.installedApps }
+            .distinctUntilChanged()
+            .collectFlowOnView(viewLifecycleOwner) { installedApps ->
+                adapter.submitList(installedApps)
+            }
+
+        // Observe loading state
+        viewModel.uiState
+            .map { it.isLoading }
+            .distinctUntilChanged()
+            .collectFlowOnView(viewLifecycleOwner) { isLoading ->
+                showHideLoading(isLoading)
+            }
+
+        // Observe error state
+        viewModel.uiState
+            .map { it.error }
+            .distinctUntilChanged()
+            .collectFlowOnView(viewLifecycleOwner) { error ->
+                if (error != null) {
                     displayToast("Failed to load installed apps")
-                },
-            )
-        }
+                }
+            }
 
         commonViewModel.getCategoryUiState.collectFlowOnView(viewLifecycleOwner) {
             it.handleUiState(

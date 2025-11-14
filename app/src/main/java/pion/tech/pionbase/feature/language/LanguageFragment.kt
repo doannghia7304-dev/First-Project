@@ -2,13 +2,14 @@ package pion.tech.pionbase.feature.language
 
 import android.view.View
 import androidx.core.view.isVisible
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import dagger.hilt.android.AndroidEntryPoint
 import pion.tech.pionbase.base.BaseFragment
 import pion.tech.pionbase.data.model.language.LanguageUIModel
 import pion.tech.pionbase.databinding.FragmentLanguageBinding
 import pion.tech.pionbase.feature.language.adapter.LanguageAdapter
 import pion.tech.pionbase.util.collectFlowOnView
-import pion.tech.pionbase.util.handleUiState
 
 @AndroidEntryPoint
 class LanguageFragment :
@@ -26,11 +27,19 @@ class LanguageFragment :
     }
 
     override fun subscribeObserver(view: View) {
-        viewModel.languageData.collectFlowOnView(viewLifecycleOwner) {
-            it.handleUiState(onSuccess = { languages ->
+        viewModel.uiState
+            .map { it.languages }
+            .distinctUntilChanged()
+            .collectFlowOnView(viewLifecycleOwner) { languages ->
                 adapter.submitList(languages)
-            })
-        }
+            }
+
+        viewModel.uiState
+            .map { it.selectedLanguage }
+            .distinctUntilChanged()
+            .collectFlowOnView(viewLifecycleOwner) { selectedLanguage ->
+                binding.ivDone.isVisible = selectedLanguage != null
+            }
     }
 
     override fun onClickLanguage(
