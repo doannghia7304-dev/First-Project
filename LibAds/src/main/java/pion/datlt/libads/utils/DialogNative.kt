@@ -224,7 +224,9 @@ object DialogNative {
     }
 
     fun isShowing(): Boolean {
-        return dialog?.isShowing == true
+        val isActuallyShowing =
+            dialog?.let { it.isShowing && it.window?.decorView?.isShown == true } ?: false
+        return isActuallyShowing
     }
 
     private fun drawButtonClose(context: Activity, frameLayout: FrameLayout): ImageView {
