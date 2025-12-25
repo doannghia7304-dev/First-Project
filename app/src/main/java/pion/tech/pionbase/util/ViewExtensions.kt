@@ -5,7 +5,9 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
+import android.graphics.LinearGradient
 import android.graphics.Rect
+import android.graphics.Shader
 import android.graphics.drawable.Drawable
 import android.net.ConnectivityManager
 import android.net.Uri
@@ -23,6 +25,7 @@ import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.toColorInt
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
@@ -296,4 +299,26 @@ fun ImageView.loadWithCallback(
                 }
             },
         ).into(this)
+}
+
+fun TextView.setTextGradient(vararg colors: String) {
+    if (colors.isNotEmpty()) {
+        // Set the text color with the first gradient color as fallback
+        setTextColor(colors[0].toColorInt())
+    }
+    post {
+        val colorInts = colors.map { it.toColorInt() }.toIntArray()
+        val shader =
+            LinearGradient(
+                0f,
+                0f,
+                width.toFloat(),
+                0f,
+                colorInts,
+                null,
+                Shader.TileMode.CLAMP,
+            )
+        paint.shader = shader
+        postInvalidate()
+    }
 }
