@@ -84,6 +84,28 @@ inline fun <R> BaseViewModel.handleApiCall(
 }
 
 /**
+ * Extension function for API calls with data transformation
+ * Useful when you need to transform the data before processing it
+ */
+inline fun <R, T> BaseViewModel.handleApiCall(
+    crossinline apiCall: suspend () -> Flow<Result<R>>,
+    crossinline transform: (R) -> T,
+    crossinline onSuccess: (T) -> Unit = {},
+    crossinline onError: (Throwable) -> Unit = {},
+) {
+    launchIO {
+        apiCall().collect { result ->
+            result
+                .onSuccess { data ->
+                    onSuccess(transform(data))
+                }.onError { exception ->
+                    onError(exception)
+                }
+        }
+    }
+}
+
+/**
  * Extension function for handling local data operations (non-API)
  */
 inline fun <T> BaseViewModel.handleLocalDataCall(
