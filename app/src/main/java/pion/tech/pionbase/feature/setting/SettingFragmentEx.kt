@@ -5,7 +5,7 @@ import android.content.Intent
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
-import com.example.libiap.IapController
+import pion.datlt.libads.iap.IapController
 import pion.datlt.libads.AdsController
 import pion.datlt.libads.utils.isNeedToShowConsent
 import pion.datlt.libads.utils.resetConsent

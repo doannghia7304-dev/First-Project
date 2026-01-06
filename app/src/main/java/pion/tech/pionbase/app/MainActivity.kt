@@ -1,36 +1,28 @@
 package pion.tech.pionbase.app
 
-import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.util.Log
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.isVisible
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import pion.datlt.libads.iap.IapController
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import pion.datlt.libads.AdsActivity
-import pion.datlt.libads.AdsController
-import pion.datlt.libads.utils.AdsConstant
+import pion.datlt.libads.iap.SubscribeInterface
+import pion.datlt.libads.iap.model.ProductModel
 import pion.tech.pionbase.BuildConfig
 import pion.tech.pionbase.R
 import pion.tech.pionbase.base.lifecycleCallback.FragmentLifecycleCallbacksImpl
 import pion.tech.pionbase.data.repository.dataStore.DataStoreRepository
 import pion.tech.pionbase.util.Constant
-import timber.log.Timber
 import javax.inject.Inject
 import kotlin.getValue
 
@@ -55,6 +47,7 @@ class MainActivity : AdsActivity() {
             insets
         }
         initAds()
+        initPurchaseIap()
     }
 
     override fun getListAppId(): List<String> =
@@ -142,6 +135,18 @@ class MainActivity : AdsActivity() {
 //                )
 //            }
 //        }
+    }
+
+    private fun initPurchaseIap() {
+        IapController.setIAPListener(
+            object : SubscribeInterface {
+                override fun subscribeSuccess(productModel: ProductModel) {
+                }
+
+                override fun subscribeError(error: String) {
+                }
+            },
+        )
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {

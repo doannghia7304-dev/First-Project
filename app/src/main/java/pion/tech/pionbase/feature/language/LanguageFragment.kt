@@ -1,10 +1,12 @@
 package pion.tech.pionbase.feature.language
 
+import android.util.Log
 import android.view.View
 import androidx.core.view.isVisible
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
-import dagger.hilt.android.AndroidEntryPoint
+import pion.datlt.libads.iap.IapController
 import pion.tech.pionbase.base.BaseFragment
 import pion.tech.pionbase.data.model.language.LanguageUIModel
 import pion.tech.pionbase.databinding.FragmentLanguageBinding
@@ -24,6 +26,10 @@ class LanguageFragment :
         initView()
         applyEvent()
         onBackEvent()
+        val listDto =
+            IapController
+                .getListAllProduct()
+        Log.d("asgawgwgawa", "init: $listDto")
     }
 
     override fun subscribeObserver(view: View) {
