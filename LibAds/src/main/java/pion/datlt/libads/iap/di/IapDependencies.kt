@@ -6,7 +6,7 @@ import pion.datlt.libads.iap.repository.purchaseRepository.PurchaseRepository
 
 /**
  * Container for all IAP dependencies.
- * Used by the factory to pass dependencies to IapController and IapProvider.
+ * Used by the factory to pass dependencies to IapController.
  */
 data class IapDependencies(
     val billingClientManager: BillingClientManager,

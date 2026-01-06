@@ -1,7 +1,6 @@
 package pion.datlt.libads.iap.di
 
 import android.app.Application
-import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.PurchasesUpdatedListener
 import pion.datlt.libads.iap.repository.billingRepository.BillingClientManagerImpl
 import pion.datlt.libads.iap.repository.billingRepository.BillingClientManager
@@ -17,6 +16,7 @@ import pion.datlt.libads.iap.repository.purchaseRepository.PurchaseRepositoryImp
 object IapControllerFactory {
     /**
      * Creates all IAP dependencies.
+     * Repositories receive BillingClientManager to always get current BillingClient instance.
      * @param application Application context
      * @param purchasesUpdatedListener Listener for purchase updates
      * @return IapDependencies container with all initialized dependencies
@@ -25,19 +25,12 @@ object IapControllerFactory {
         application: Application,
         purchasesUpdatedListener: PurchasesUpdatedListener,
     ): IapDependencies {
-        val billingClientManager =
-            createBillingClientManager(
-                application,
-                purchasesUpdatedListener,
-            )
+        val billingClientManager = createBillingClientManager(application, purchasesUpdatedListener)
 
-        // Force BillingClient creation before creating repositories
-        val billingClient =
-            billingClientManager.client
-                ?: throw IllegalStateException("BillingClient was not initialized properly")
-
-        val productRepository = createProductRepository(billingClient)
-        val purchaseRepository = createPurchaseRepository(billingClient)
+        // Repositories receive BillingClientManager instead of BillingClient
+        // This ensures they always use the current BillingClient after reconnection
+        val productRepository = createProductRepository(billingClientManager)
+        val purchaseRepository = createPurchaseRepository(billingClientManager)
 
         return IapDependencies(
             billingClientManager = billingClientManager,
@@ -50,24 +43,26 @@ object IapControllerFactory {
      * Creates BillingClientManager instance.
      * @param application Application context
      * @param listener Listener for purchase updates
-     * @return IBillingClientManager instance
+     * @return BillingClientManager instance
      */
-    fun createBillingClientManager(
+    private fun createBillingClientManager(
         application: Application,
         listener: PurchasesUpdatedListener,
     ): BillingClientManager = BillingClientManagerImpl(application, listener)
 
     /**
-     * Creates ProductRepository with injected BillingClient.
-     * @param billingClient The billing client
+     * Creates ProductRepository with injected BillingClientManager.
+     * @param billingClientManager The billing client manager
      * @return ProductRepository instance
      */
-    fun createProductRepository(billingClient: BillingClient): ProductRepository = ProductRepositoryImpl(billingClient)
+    private fun createProductRepository(billingClientManager: BillingClientManager): ProductRepository =
+        ProductRepositoryImpl(billingClientManager)
 
     /**
-     * Creates PurchaseRepository with injected BillingClient.
-     * @param billingClient The billing client
+     * Creates PurchaseRepository with injected BillingClientManager.
+     * @param billingClientManager The billing client manager
      * @return PurchaseRepository instance
      */
-    fun createPurchaseRepository(billingClient: BillingClient): PurchaseRepository = PurchaseRepositoryImpl(billingClient)
+    private fun createPurchaseRepository(billingClientManager: BillingClientManager): PurchaseRepository =
+        PurchaseRepositoryImpl(billingClientManager)
 }

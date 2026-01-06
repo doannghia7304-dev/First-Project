@@ -39,46 +39,26 @@ class BillingClientManagerImpl(
      * Starts connection to BillingClient without timeout.
      * @return true if connection successful, false otherwise
      */
-    @OptIn(ExperimentalCoroutinesApi::class)
-    override suspend fun startConnection(): Boolean {
-        return try {
-            if (isReady) return true
-
-            suspendCancellableCoroutine { cont ->
-                ensureBillingClientCreated()
-
-                billingClient?.startConnection(
-                    object : BillingClientStateListener {
-                        override fun onBillingSetupFinished(billingResult: BillingResult) {
-                            if (!cont.isActive) return
-                            cont.resume(
-                                BillingResponseCode.isSuccess(billingResult.responseCode),
-                                null
-                            )
-                        }
-
-                        override fun onBillingServiceDisconnected() {
-                            // Connection will be retried on next request
-                        }
-                    },
-                )
-            }
-        } catch (e: Exception) {
-            false
-        }
-    }
+    override suspend fun startConnection(): Boolean = connectInternal(timeoutMs = null)
 
     /**
      * Starts connection to BillingClient with timeout.
      * @param timeoutMs Maximum time to wait for connection in milliseconds
      * @return true if connection successful within timeout, false otherwise
      */
-    @OptIn(ExperimentalCoroutinesApi::class)
-    override suspend fun startConnectionWithTimeout(timeoutMs: Long): Boolean {
-        return try {
-            if (isReady) return true
+    override suspend fun startConnectionWithTimeout(timeoutMs: Long): Boolean = connectInternal(timeoutMs)
 
-            withTimeout(timeoutMs) {
+    /**
+     * Internal connection logic with optional timeout.
+     * @param timeoutMs Timeout in milliseconds, or null for no timeout
+     * @return true if connection successful, false otherwise
+     */
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private suspend fun connectInternal(timeoutMs: Long?): Boolean {
+        if (isReady) return true
+
+        return try {
+            val connectionBlock: suspend () -> Boolean = {
                 suspendCancellableCoroutine { cont ->
                     ensureBillingClientCreated()
 
@@ -98,6 +78,12 @@ class BillingClientManagerImpl(
                         },
                     )
                 }
+            }
+
+            if (timeoutMs != null) {
+                withTimeout(timeoutMs) { connectionBlock() }
+            } else {
+                connectionBlock()
             }
         } catch (e: Exception) {
             false

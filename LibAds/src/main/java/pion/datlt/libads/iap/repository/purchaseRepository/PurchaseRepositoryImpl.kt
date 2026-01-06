@@ -1,12 +1,9 @@
 package pion.datlt.libads.iap.repository.purchaseRepository
 
 import android.app.Activity
-import android.widget.Toast
 import com.android.billingclient.api.AcknowledgePurchaseParams
-import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClient.ProductType
 import com.android.billingclient.api.BillingFlowParams
-import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.ConsumeParams
 import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.Purchase
@@ -20,13 +17,21 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import pion.datlt.libads.iap.utils.BillingResponseCode
+import pion.datlt.libads.iap.repository.billingRepository.BillingClientManager
 
 /**
  * Repository for handling purchases, acknowledgements, and billing flows.
+ * Uses BillingClientManager to always get the current BillingClient instance.
  */
 class PurchaseRepositoryImpl(
-    private val billingClient: BillingClient,
+    private val billingClientManager: BillingClientManager,
 ) : PurchaseRepository {
+
+    /** Gets current BillingClient from manager, throws if not available */
+    private val billingClient
+        get() = billingClientManager.client
+            ?: throw IllegalStateException("BillingClient not connected. Call startConnection() first.")
+
     /**
      * Queries all active purchases (both INAPP and SUBS).
      * @return List of active Purchase objects
@@ -76,7 +81,7 @@ class PurchaseRepositoryImpl(
                 .setPurchaseToken(purchase.purchaseToken)
                 .build()
 
-        billingClient?.acknowledgePurchase(params) { billingResult ->
+        billingClient.acknowledgePurchase(params) { billingResult ->
             if (BillingResponseCode.isSuccess(billingResult.responseCode)) {
                 onSuccess()
             }
@@ -102,7 +107,7 @@ class PurchaseRepositoryImpl(
                 .setProductDetailsParamsList(listOf(params))
                 .build()
 
-        billingClient?.launchBillingFlow(activity, billingFlowParams)
+        billingClient.launchBillingFlow(activity, billingFlowParams)
     }
 
     /**
@@ -142,38 +147,34 @@ class PurchaseRepositoryImpl(
             billingFlowParamsBuilder.setSubscriptionUpdateParams(subscriptionUpdateParams)
         }
 
-        billingClient?.launchBillingFlow(activity, billingFlowParamsBuilder.build())
+        billingClient.launchBillingFlow(activity, billingFlowParamsBuilder.build())
     }
 
     /**
      * Consumes all in-app purchases (for debug/testing only).
+     * @param onComplete Callback when all purchases are consumed
      */
-    override fun consumeAllInAppPurchases(
-        activity: Activity,
-        onComplete: () -> Unit,
-    ) {
+    override fun consumeAllInAppPurchases(onComplete: () -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
-            billingClient
-                ?.queryPurchasesAsync(
-                    QueryPurchasesParams
-                        .newBuilder()
-                        .setProductType(ProductType.INAPP)
-                        .build(),
-                )?.let { purchasesResult ->
-                    if (BillingResponseCode.isSuccess(purchasesResult.billingResult.responseCode)) {
-                        purchasesResult.purchasesList.forEach { purchase ->
-                            val consumeParams =
-                                ConsumeParams
-                                    .newBuilder()
-                                    .setPurchaseToken(purchase.purchaseToken)
-                                    .build()
-                            billingClient?.consumePurchase(consumeParams)
-                        }
-                        withContext(Dispatchers.Main) {
-                            onComplete()
-                        }
-                    }
+            val purchasesResult = billingClient.queryPurchasesAsync(
+                QueryPurchasesParams
+                    .newBuilder()
+                    .setProductType(ProductType.INAPP)
+                    .build(),
+            )
+            if (BillingResponseCode.isSuccess(purchasesResult.billingResult.responseCode)) {
+                purchasesResult.purchasesList.forEach { purchase ->
+                    val consumeParams =
+                        ConsumeParams
+                            .newBuilder()
+                            .setPurchaseToken(purchase.purchaseToken)
+                            .build()
+                    billingClient.consumePurchase(consumeParams)
                 }
+                withContext(Dispatchers.Main) {
+                    onComplete()
+                }
+            }
         }
     }
 }

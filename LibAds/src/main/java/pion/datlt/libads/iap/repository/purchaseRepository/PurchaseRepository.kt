@@ -18,5 +18,9 @@ interface PurchaseRepository {
         offerToken: String,
         oldPurchaseToken: String? = null
     )
-    fun consumeAllInAppPurchases(activity: Activity, onComplete: () -> Unit)
+    /**
+     * Consumes all in-app purchases (for debug/testing only).
+     * @param onComplete Callback when all purchases are consumed
+     */
+    fun consumeAllInAppPurchases(onComplete: () -> Unit)
 }

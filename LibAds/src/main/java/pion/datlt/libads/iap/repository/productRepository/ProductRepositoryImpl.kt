@@ -1,6 +1,5 @@
 package pion.datlt.libads.iap.repository.productRepository
 
-import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClient.ProductType
 import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.QueryProductDetailsParams
@@ -10,13 +9,20 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import pion.datlt.libads.iap.utils.BillingResponseCode
 import pion.datlt.libads.iap.model.IapIdModel
+import pion.datlt.libads.iap.repository.billingRepository.BillingClientManager
 
 /**
  * Repository for querying product details from Google Play Billing.
+ * Uses BillingClientManager to always get the current BillingClient instance.
  */
 class ProductRepositoryImpl(
-    private val billingClient: BillingClient,
+    private val billingClientManager: BillingClientManager,
 ) : ProductRepository {
+
+    /** Gets current BillingClient from manager, throws if not available */
+    private val billingClient
+        get() = billingClientManager.client
+            ?: throw IllegalStateException("BillingClient not connected. Call startConnection() first.")
 
     /**
      * Queries all product details (both INAPP and SUBS) based on configured IDs.
