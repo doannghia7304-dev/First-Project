@@ -16,7 +16,7 @@ android {
             .get()
             .toInt()
     defaultConfig {
-        applicationId = "pion.tech.pionbase"
+        applicationId = "co.fingerspinner"
         minSdk =
             libs.versions.minSdkVersion
                 .get()
