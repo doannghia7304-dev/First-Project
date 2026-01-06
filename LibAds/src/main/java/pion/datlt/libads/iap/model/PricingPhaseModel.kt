@@ -1,4 +1,4 @@
-package com.example.libiap.model
+package pion.datlt.libads.iap.model
 
 data class PricingPhaseModel(
     val priceCurrencyCode: String,
@@ -6,5 +6,5 @@ data class PricingPhaseModel(
     val priceAmountMicros: Long,
     val formattedPrice: String,
     val billingPeriod: String,
-    val billingCycleCount: Int
+    val billingCycleCount: Int,
 )
