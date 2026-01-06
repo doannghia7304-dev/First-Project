@@ -24,7 +24,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import pion.datlt.libads.AdsActivity
 import pion.datlt.libads.AdsController
-import pion.datlt.libads.IAPConnector
 import pion.datlt.libads.utils.AdsConstant
 import pion.tech.pionbase.BuildConfig
 import pion.tech.pionbase.R
@@ -106,43 +105,43 @@ class MainActivity : AdsActivity() {
 
     override fun onGetIapDone(isSuccess: Boolean) {
         super.onGetIapDone(isSuccess)
-        val tag = "onGetIapDone"
-        if (isSuccess) {
-            // Ví dụ: cập nhật giao diện hoặc trạng thái ứng dụng
-            val productModel =
-                IAPConnector
-                    .getAllProductModel()
-                    .find { it.isPurchase }
-            Timber.tag(tag).d("onGetIapDone: $productModel")
-            if (productModel != null) {
-                Constant.isPremium = productModel.isPurchase
-                AdsConstant.isPremium = productModel.isPurchase
-                lifecycleScope.launch(Dispatchers.IO) {
-                    Constant.setPremium(
-                        isPremium = productModel.isPurchase,
-                        dataStoreRepository = dataStoreRepository,
-                    )
-                }
-            } else {
-                Constant.isPremium = false
-                AdsConstant.isPremium = false
-                lifecycleScope.launch(Dispatchers.IO) {
-                    Constant.setPremium(
-                        isPremium = false,
-                        dataStoreRepository = dataStoreRepository,
-                    )
-                }
-            }
-        } else {
-            Constant.isPremium = false
-            AdsConstant.isPremium = false
-            lifecycleScope.launch(Dispatchers.IO) {
-                Constant.setPremium(
-                    isPremium = false,
-                    dataStoreRepository = dataStoreRepository,
-                )
-            }
-        }
+//        val tag = "onGetIapDone"
+//        if (isSuccess) {
+//            // Ví dụ: cập nhật giao diện hoặc trạng thái ứng dụng
+//            val productModel =
+//                IAPConnector
+//                    .getAllProductModel()
+//                    .find { it.isPurchase }
+//            Timber.tag(tag).d("onGetIapDone: $productModel")
+//            if (productModel != null) {
+//                Constant.isPremium = productModel.isPurchase
+//                AdsConstant.isPremium = productModel.isPurchase
+//                lifecycleScope.launch(Dispatchers.IO) {
+//                    Constant.setPremium(
+//                        isPremium = productModel.isPurchase,
+//                        dataStoreRepository = dataStoreRepository,
+//                    )
+//                }
+//            } else {
+//                Constant.isPremium = false
+//                AdsConstant.isPremium = false
+//                lifecycleScope.launch(Dispatchers.IO) {
+//                    Constant.setPremium(
+//                        isPremium = false,
+//                        dataStoreRepository = dataStoreRepository,
+//                    )
+//                }
+//            }
+//        } else {
+//            Constant.isPremium = false
+//            AdsConstant.isPremium = false
+//            lifecycleScope.launch(Dispatchers.IO) {
+//                Constant.setPremium(
+//                    isPremium = false,
+//                    dataStoreRepository = dataStoreRepository,
+//                )
+//            }
+//        }
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {

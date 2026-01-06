@@ -5,8 +5,8 @@ import android.content.Intent
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
+import com.example.libiap.IapController
 import pion.datlt.libads.AdsController
-import pion.datlt.libads.IAPConnector
 import pion.datlt.libads.utils.isNeedToShowConsent
 import pion.datlt.libads.utils.resetConsent
 import pion.datlt.libads.utils.showPolicyForm
@@ -15,6 +15,7 @@ import pion.tech.pionbase.R
 import pion.tech.pionbase.feature.setting.dialog.AdvertisementDialog
 import pion.tech.pionbase.feature.setting.dialog.DeveloperDialog
 import pion.tech.pionbase.util.Constant
+import pion.tech.pionbase.util.setPreventDoubleClick
 import pion.tech.pionbase.util.setPreventDoubleClickScaleView
 
 fun SettingFragment.backEvent() {
@@ -83,13 +84,9 @@ fun SettingFragment.policyEvent() {
 }
 
 fun SettingFragment.resetIapEvent() {
-    if (BuildConfig.DEBUG) {
-        binding.btnResetIap.isVisible = true
-        binding.btnResetIap.setPreventDoubleClickScaleView {
-            activity?.let { IAPConnector.resetIap(it) }
-        }
-    } else {
-        binding.btnResetIap.isVisible = false
+    binding.btnResetIap.isVisible = BuildConfig.DEBUG
+    binding.btnResetIap.setPreventDoubleClick {
+        IapController.resetIap(requireActivity())
     }
 }
 
