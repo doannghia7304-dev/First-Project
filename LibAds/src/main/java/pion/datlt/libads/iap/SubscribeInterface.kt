@@ -1,6 +1,6 @@
-package pion.datlt.libads.iap
+package com.example.libiap
 
-import pion.datlt.libads.iap.model.ProductModel
+import com.example.libiap.model.ProductModel
 
 interface SubscribeInterface {
     fun subscribeSuccess(productModel: ProductModel)

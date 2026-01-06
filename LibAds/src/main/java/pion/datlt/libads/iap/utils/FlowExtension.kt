@@ -1,4 +1,4 @@
-package pion.datlt.libads.iap.utils
+package com.example.libiap.utils
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
