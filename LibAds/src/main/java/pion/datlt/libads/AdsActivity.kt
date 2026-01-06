@@ -12,6 +12,7 @@ import android.media.RingtoneManager
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
@@ -311,9 +312,11 @@ abstract class AdsActivity : AppCompatActivity() {
                         )
                     } ?: false
                 } catch (e: Exception) {
+                    Log.d("asgawgawgawg", "e: $e")
                     e.printStackTrace()
                     false
                 }
+            Log.d("asgawgawgawg", "isInitSuccess: $isInitSuccess")
 
             withContext(Dispatchers.Main) {
                 onGetIapDone(isInitSuccess)

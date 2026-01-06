@@ -1,34 +1,38 @@
-package pion.datlt.libads.iap.billing
+package pion.datlt.libads.iap.repository.billingRepository
 
 import android.app.Application
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.PendingPurchasesParams
-import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withTimeout
+import pion.datlt.libads.iap.utils.BillingResponseCode
 
 /**
  * Manages BillingClient lifecycle and connection state.
  * Provides suspend functions for connecting to Google Play Billing.
  */
-class BillingClientManager(
+class BillingClientManagerImpl(
     private val application: Application,
     private val purchasesUpdatedListener: PurchasesUpdatedListener,
-) {
+) : BillingClientManager {
     companion object {
         private const val DEFAULT_TIMEOUT_MS = 7000L
     }
 
+    init {
+        ensureBillingClientCreated()
+    }
+
     private var billingClient: BillingClient? = null
 
-    val client: BillingClient?
+    override val client: BillingClient?
         get() = billingClient
 
-    val isReady: Boolean
+    override val isReady: Boolean
         get() = billingClient?.isReady == true
 
     /**
@@ -36,7 +40,7 @@ class BillingClientManager(
      * @return true if connection successful, false otherwise
      */
     @OptIn(ExperimentalCoroutinesApi::class)
-    suspend fun startConnection(): Boolean {
+    override suspend fun startConnection(): Boolean {
         return try {
             if (isReady) return true
 
@@ -47,7 +51,10 @@ class BillingClientManager(
                     object : BillingClientStateListener {
                         override fun onBillingSetupFinished(billingResult: BillingResult) {
                             if (!cont.isActive) return
-                            cont.resume(BillingResponseCode.isSuccess(billingResult.responseCode), null)
+                            cont.resume(
+                                BillingResponseCode.isSuccess(billingResult.responseCode),
+                                null
+                            )
                         }
 
                         override fun onBillingServiceDisconnected() {
@@ -67,7 +74,7 @@ class BillingClientManager(
      * @return true if connection successful within timeout, false otherwise
      */
     @OptIn(ExperimentalCoroutinesApi::class)
-    suspend fun startConnectionWithTimeout(timeoutMs: Long = DEFAULT_TIMEOUT_MS): Boolean {
+    override suspend fun startConnectionWithTimeout(timeoutMs: Long): Boolean {
         return try {
             if (isReady) return true
 
@@ -114,7 +121,7 @@ class BillingClientManager(
         }
     }
 
-    fun endConnection() {
+    override fun endConnection() {
         billingClient?.endConnection()
         billingClient = null
     }

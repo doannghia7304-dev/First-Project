@@ -12,17 +12,16 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import pion.datlt.libads.iap.billing.BillingClientManager
-import pion.datlt.libads.iap.billing.BillingResponseCode
+import pion.datlt.libads.iap.utils.BillingResponseCode
 import pion.datlt.libads.iap.mapper.ProductMapper
 import pion.datlt.libads.iap.model.BasePlanModel
 import pion.datlt.libads.iap.model.IapIdModel
 import pion.datlt.libads.iap.model.InAppProductModel
 import pion.datlt.libads.iap.model.ProductModel
 import pion.datlt.libads.iap.model.SubscriptionProductModel
-import pion.datlt.libads.iap.repository.ProductRepository
-import pion.datlt.libads.iap.repository.PurchaseRepository
 import pion.datlt.libads.iap.utils.Utils
+import pion.datlt.libads.iap.di.IapControllerFactory
+import pion.datlt.libads.iap.di.IapProvider
 
 /**
  * Facade for Google Play Billing operations.
@@ -30,10 +29,6 @@ import pion.datlt.libads.iap.utils.Utils
  */
 object IapController {
     private var isDebug = false
-
-    private var billingClientManager: BillingClientManager? = null
-    private var productRepository: ProductRepository? = null
-    private var purchaseRepository: PurchaseRepository? = null
 
     private val listID = mutableListOf<IapIdModel>()
 
@@ -64,23 +59,30 @@ object IapController {
         this.isDebug = isDebug
         listID.clear()
         listID.addAll(Utils.getDataInput(application, pathJson))
+        Log.d("asgawgawgawg", "chay vao day1")
 
-        // Initialize repositories
-        billingClientManager = BillingClientManager(application, ::onPurchaseUpdated)
-        productRepository = ProductRepository { billingClientManager?.client }
-        purchaseRepository = PurchaseRepository { billingClientManager?.client }
+        // Initialize dependencies using factory
+        val dependencies = IapControllerFactory.create(application, ::onPurchaseUpdated)
+        Log.d("asgawgawgawg", "chay vao day2")
+        IapProvider.initialize(dependencies)
+        Log.d("asgawgawgawg", "chay vao day3")
 
         // Connect to BillingClient
-        val isConnectSuccess = billingClientManager?.startConnectionWithTimeout() ?: false
-        if (!isConnectSuccess) return false
+        val isConnectSuccess = dependencies.billingClientManager.startConnectionWithTimeout()
+        Log.d("asgawgawgawg", "chay vao day4")
+        if (!isConnectSuccess) {
+            Log.d("asgawgawgawg", "chay vao day")
+            return false
+        }
 
         // Query products and purchases
-        val allProductDetails = productRepository?.queryAllProducts(listID) ?: emptyList()
-        val allPurchases = purchaseRepository?.queryAllPurchases() ?: emptyList()
+        val allProductDetails = dependencies.productRepository.queryAllProducts(listID)
+        val allPurchases = dependencies.purchaseRepository.queryAllPurchases()
 
         // Map to product models and merge with purchase info
         val products = ProductMapper.mapToProductModels(allProductDetails, listID)
         val productsWithPurchases = ProductMapper.mergeWithPurchases(products, allPurchases)
+        Log.d("asgawgawgawg", "initIap: $products")
 
         // Update cached list
         listProductModel.clear()
@@ -101,7 +103,7 @@ object IapController {
             for (purchase in purchases) {
                 if (!purchase.isAcknowledged) {
                     // Acknowledge purchase
-                    purchaseRepository?.acknowledgePurchase(purchase) {
+                    IapProvider.getDependencies()?.purchaseRepository?.acknowledgePurchase(purchase) {
                         // Update product model and notify success
                         updateProductPurchaseStatus(purchase, true)
                     }
@@ -198,7 +200,7 @@ object IapController {
      */
     fun resetIap(activity: Activity) {
         if (isDebug) {
-            purchaseRepository?.consumeAllInAppPurchases(activity) {
+            IapProvider.getDependencies()?.purchaseRepository?.consumeAllInAppPurchases(activity) {
                 Toast
                     .makeText(
                         activity,
@@ -221,10 +223,11 @@ object IapController {
         basePlanId: String? = null,
     ) {
         val product = getProduct(productId) ?: return
+        val dependencies = IapProvider.getDependencies() ?: return
 
         CoroutineScope(Dispatchers.IO).launch {
             // Reconnect if needed
-            billingClientManager?.startConnection()
+            dependencies.billingClientManager.startConnection()
 
             when (product) {
                 is InAppProductModel -> {
@@ -232,7 +235,7 @@ object IapController {
                     val productDetails = findProductDetails(productId)
                     if (productDetails != null) {
                         withContext(Dispatchers.Main) {
-                            purchaseRepository?.launchInAppPurchaseFlow(activity, productDetails)
+                            dependencies.purchaseRepository.launchInAppPurchaseFlow(activity, productDetails)
                         }
                     }
                 }
@@ -249,15 +252,15 @@ object IapController {
                     if (productDetails != null && offerToken != null && basePlanId != null) {
                         // Check for existing subscription (upgrade/downgrade)
                         val oldPurchaseToken =
-                            purchaseRepository
-                                ?.queryPurchases(ProductType.SUBS)
-                                ?.find { productId in it.products }
+                            dependencies.purchaseRepository
+                                .queryPurchases(ProductType.SUBS)
+                                ?.find { purchase -> productId in purchase.products }
                                 ?.purchaseToken
 
                         withContext(Dispatchers.Main) {
                             currentBasePlanId = basePlanId
                             Log.d("CHECKIAPPRODUCT", "buyIap: $currentBasePlanId")
-                            purchaseRepository?.launchSubscriptionPurchaseFlow(
+                            dependencies.purchaseRepository.launchSubscriptionPurchaseFlow(
                                 activity,
                                 productDetails,
                                 offerToken,
@@ -271,8 +274,22 @@ object IapController {
     }
 
     private suspend fun findProductDetails(productId: String): ProductDetails? {
-        billingClientManager?.startConnection()
-        val allDetails = productRepository?.queryAllProducts(listID) ?: emptyList()
+        val dependencies = IapProvider.getDependencies() ?: return null
+        dependencies.billingClientManager.startConnection()
+        val allDetails = dependencies.productRepository.queryAllProducts(listID)
         return allDetails.find { it.productId == productId }
+    }
+
+    /**
+     * Releases all IAP resources and clears dependencies.
+     * Should be called when IAP is no longer needed.
+     */
+    fun release() {
+        listProductModel.clear()
+        listID.clear()
+        subscribeInterface = null
+        currentBasePlanId = null
+        IapProvider.getDependencies()?.billingClientManager?.endConnection()
+        IapProvider.clear()
     }
 }

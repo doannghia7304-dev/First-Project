@@ -1,4 +1,4 @@
-package pion.datlt.libads.iap.billing
+package pion.datlt.libads.iap.utils
 
 import com.android.billingclient.api.BillingClient
 
