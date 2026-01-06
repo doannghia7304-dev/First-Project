@@ -16,7 +16,10 @@ sealed interface ProductModel {
     val purchaseTime: Long
 
     /** Creates a copy with updated purchase status */
-    fun copyWithPurchaseStatus(isPurchase: Boolean, purchaseTime: Long): ProductModel
+    fun copyWithPurchaseStatus(
+        isPurchase: Boolean,
+        purchaseTime: Long,
+    ): ProductModel
 }
 
 /**
@@ -35,8 +38,10 @@ data class InAppProductModel(
 ) : ProductModel {
     override val productType: String = ProductType.INAPP
 
-    override fun copyWithPurchaseStatus(isPurchase: Boolean, purchaseTime: Long): InAppProductModel =
-        copy(isPurchase = isPurchase, purchaseTime = purchaseTime)
+    override fun copyWithPurchaseStatus(
+        isPurchase: Boolean,
+        purchaseTime: Long,
+    ): InAppProductModel = copy(isPurchase = isPurchase, purchaseTime = purchaseTime)
 }
 
 /**
@@ -53,6 +58,8 @@ data class SubscriptionProductModel(
 ) : ProductModel {
     override val productType: String = ProductType.SUBS
 
-    override fun copyWithPurchaseStatus(isPurchase: Boolean, purchaseTime: Long): SubscriptionProductModel =
-        copy(isPurchase = isPurchase, purchaseTime = purchaseTime)
+    override fun copyWithPurchaseStatus(
+        isPurchase: Boolean,
+        purchaseTime: Long,
+    ): SubscriptionProductModel = copy(isPurchase = isPurchase, purchaseTime = purchaseTime)
 }
