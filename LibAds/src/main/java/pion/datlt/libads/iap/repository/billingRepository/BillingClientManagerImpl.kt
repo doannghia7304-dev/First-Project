@@ -19,9 +19,6 @@ class BillingClientManagerImpl(
     private val application: Application,
     private val purchasesUpdatedListener: PurchasesUpdatedListener,
 ) : BillingClientManager {
-    companion object {
-        private const val DEFAULT_TIMEOUT_MS = 7000L
-    }
 
     init {
         ensureBillingClientCreated()
@@ -29,11 +26,14 @@ class BillingClientManagerImpl(
 
     private var billingClient: BillingClient? = null
 
-    override val client: BillingClient?
-        get() = billingClient
-
-    override val isReady: Boolean
-        get() = billingClient?.isReady == true
+    /**
+     * Gets the BillingClient if it's ready for use.
+     * @return BillingClient if connected and ready, null otherwise
+     */
+    override fun getBillingClient(): BillingClient? {
+        val client = billingClient ?: return null
+        return if (client.isReady) client else null
+    }
 
     /**
      * Starts connection to BillingClient without timeout.
@@ -55,7 +55,8 @@ class BillingClientManagerImpl(
      */
     @OptIn(ExperimentalCoroutinesApi::class)
     private suspend fun connectInternal(timeoutMs: Long?): Boolean {
-        if (isReady) return true
+        // Already connected
+        if (billingClient?.isReady == true) return true
 
         return try {
             val connectionBlock: suspend () -> Boolean = {

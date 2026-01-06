@@ -2,84 +2,57 @@ package pion.datlt.libads.iap.model
 
 import com.android.billingclient.api.BillingClient.ProductType
 
-open class ProductModel(
-    val productId: String,
-    val productName: String,
-    val productType: String,
-    val productTitle: String,
-    val productDescription: String,
-    val isPurchase: Boolean,
-    val purchaseTime: Long = 0L,
-) {
-    override fun toString(): String =
-        "ProductModel(" +
-            "productId='$productId', " +
-            "productName='$productName', " +
-            "productType='$productType', " +
-            "productTitle='$productTitle', " +
-            "isPurchase=$isPurchase, " +
-            "purchaseTime=$purchaseTime" +
-            ")"
+/**
+ * Base sealed interface for all product types.
+ * Using sealed interface allows exhaustive when expressions and type-safe copying.
+ */
+sealed interface ProductModel {
+    val productId: String
+    val productName: String
+    val productType: String
+    val productTitle: String
+    val productDescription: String
+    val isPurchase: Boolean
+    val purchaseTime: Long
+
+    /** Creates a copy with updated purchase status */
+    fun copyWithPurchaseStatus(isPurchase: Boolean, purchaseTime: Long): ProductModel
 }
 
-class InAppProductModel(
-    productId: String,
-    productName: String,
-    productTitle: String,
-    productDescription: String,
-    isPurchase: Boolean,
-    purchaseTime: Long = 0L,
+/**
+ * Model for in-app (one-time) purchases.
+ */
+data class InAppProductModel(
+    override val productId: String,
+    override val productName: String,
+    override val productTitle: String,
+    override val productDescription: String,
+    override val isPurchase: Boolean,
+    override val purchaseTime: Long = 0L,
     val priceCurrencyCode: String,
     val formattedPrice: String,
     val offerTag: List<String>?,
-) : ProductModel(
-        productId = productId,
-        productName = productName,
-        productType = ProductType.INAPP,
-        productTitle = productTitle,
-        productDescription = productDescription,
-        isPurchase = isPurchase,
-        purchaseTime = purchaseTime,
-    ) {
-    override fun toString(): String =
-        "InAppProductModel(" +
-            "productId='$productId', " +
-            "productName='$productName', " +
-            "productType='$productType', " +
-            "productTitle='$productTitle', " +
-            "isPurchase=$isPurchase, " +
-            "purchaseTime=$purchaseTime, " +
-            "priceCurrencyCode='$priceCurrencyCode', " +
-            "formattedPrice='$formattedPrice', " +
-            "offerTag=$offerTag" +
-            ")"
+) : ProductModel {
+    override val productType: String = ProductType.INAPP
+
+    override fun copyWithPurchaseStatus(isPurchase: Boolean, purchaseTime: Long): InAppProductModel =
+        copy(isPurchase = isPurchase, purchaseTime = purchaseTime)
 }
 
-class SubscriptionProductModel(
-    productId: String,
-    productName: String,
-    productTitle: String,
-    productDescription: String,
-    isPurchase: Boolean,
-    purchaseTime: Long = 0L,
+/**
+ * Model for subscription purchases.
+ */
+data class SubscriptionProductModel(
+    override val productId: String,
+    override val productName: String,
+    override val productTitle: String,
+    override val productDescription: String,
+    override val isPurchase: Boolean,
+    override val purchaseTime: Long = 0L,
     val listBasePlan: List<BasePlanModel>,
-) : ProductModel(
-        productId = productId,
-        productName = productName,
-        productType = ProductType.SUBS,
-        productTitle = productTitle,
-        productDescription = productDescription,
-        isPurchase = isPurchase,
-        purchaseTime = purchaseTime,
-    ) {
-    override fun toString(): String =
-        "SubscriptionProductModel(" +
-            "productId='$productId', " +
-            "productName='$productName', " +
-            "productType='$productType', " +
-            "productTitle='$productTitle', " +
-            "isPurchase=$isPurchase, " +
-            "purchaseTime=$purchaseTime, " +
-            "listBasePlan=${listBasePlan.size} plans" +
-            ")"
+) : ProductModel {
+    override val productType: String = ProductType.SUBS
+
+    override fun copyWithPurchaseStatus(isPurchase: Boolean, purchaseTime: Long): SubscriptionProductModel =
+        copy(isPurchase = isPurchase, purchaseTime = purchaseTime)
 }

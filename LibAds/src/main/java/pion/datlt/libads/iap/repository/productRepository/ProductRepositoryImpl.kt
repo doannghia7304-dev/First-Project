@@ -19,18 +19,15 @@ class ProductRepositoryImpl(
     private val billingClientManager: BillingClientManager,
 ) : ProductRepository {
 
-    /** Gets current BillingClient from manager, throws if not available */
-    private val billingClient
-        get() = billingClientManager.client
-            ?: throw IllegalStateException("BillingClient not connected. Call startConnection() first.")
-
     /**
      * Queries all product details (both INAPP and SUBS) based on configured IDs.
      * @param iapIdModels List of configured product IDs
-     * @return List of ProductDetails from Google Play
+     * @return List of ProductDetails from Google Play, empty if not connected
      */
-    override suspend fun queryAllProducts(iapIdModels: List<IapIdModel>): List<ProductDetails> =
-        coroutineScope {
+    override suspend fun queryAllProducts(iapIdModels: List<IapIdModel>): List<ProductDetails> {
+        val client = billingClientManager.getBillingClient() ?: return emptyList()
+
+        return coroutineScope {
             val (inAppProducts, subsProducts) = iapIdModels.partition { it.type == ProductType.INAPP }
 
             val inAppQuery = buildQueryParams(inAppProducts, ProductType.INAPP)
@@ -38,15 +35,16 @@ class ProductRepositoryImpl(
 
             val deferredInApp =
                 async {
-                    inAppQuery?.let { queryProductDetails(it) } ?: emptyList()
+                    inAppQuery?.let { queryProductDetails(client, it) } ?: emptyList()
                 }
             val deferredSubs =
                 async {
-                    subsQuery?.let { queryProductDetails(it) } ?: emptyList()
+                    subsQuery?.let { queryProductDetails(client, it) } ?: emptyList()
                 }
 
             awaitAll(deferredInApp, deferredSubs).flatten()
         }
+    }
 
     private fun buildQueryParams(
         products: List<IapIdModel>,
@@ -69,8 +67,11 @@ class ProductRepositoryImpl(
             .build()
     }
 
-    private suspend fun queryProductDetails(params: QueryProductDetailsParams): List<ProductDetails> {
-        val result = billingClient.queryProductDetails(params)
+    private suspend fun queryProductDetails(
+        client: com.android.billingclient.api.BillingClient,
+        params: QueryProductDetailsParams,
+    ): List<ProductDetails> {
+        val result = client.queryProductDetails(params)
 
         return if (BillingResponseCode.isSuccess(result.billingResult.responseCode)) {
             result.productDetailsList ?: emptyList()

@@ -2,7 +2,6 @@ package pion.datlt.libads.iap
 
 import android.app.Activity
 import android.app.Application
-import android.util.Log
 import android.widget.Toast
 import com.android.billingclient.api.BillingClient.ProductType
 import com.android.billingclient.api.BillingResult
@@ -12,16 +11,16 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import pion.datlt.libads.iap.utils.BillingResponseCode
+import pion.datlt.libads.iap.di.IapControllerFactory
+import pion.datlt.libads.iap.di.IapDependencies
 import pion.datlt.libads.iap.mapper.ProductMapper
 import pion.datlt.libads.iap.model.BasePlanModel
 import pion.datlt.libads.iap.model.IapIdModel
 import pion.datlt.libads.iap.model.InAppProductModel
 import pion.datlt.libads.iap.model.ProductModel
 import pion.datlt.libads.iap.model.SubscriptionProductModel
+import pion.datlt.libads.iap.utils.BillingResponseCode
 import pion.datlt.libads.iap.utils.Utils
-import pion.datlt.libads.iap.di.IapControllerFactory
-import pion.datlt.libads.iap.di.IapDependencies
 
 /**
  * Facade for Google Play Billing operations.
@@ -32,10 +31,6 @@ object IapController {
 
     /** Holds all IAP dependencies after initialization */
     private var dependencies: IapDependencies? = null
-
-    /** Safe getter for dependencies - throws if not initialized */
-    private val deps: IapDependencies
-        get() = dependencies ?: throw IllegalStateException("IAP not initialized. Call initIap() first.")
 
     private val listID = mutableListOf<IapIdModel>()
 
@@ -66,28 +61,24 @@ object IapController {
         this.isDebug = isDebug
         listID.clear()
         listID.addAll(Utils.getDataInput(application, pathJson))
-        Log.d("asgawgawgawg", "chay vao day1")
 
         // Initialize dependencies using factory and store directly
         dependencies = IapControllerFactory.create(application, ::onPurchaseUpdated)
-        Log.d("asgawgawgawg", "chay vao day2")
 
         // Connect to BillingClient
-        val isConnectSuccess = deps.billingClientManager.startConnectionWithTimeout()
-        Log.d("asgawgawgawg", "chay vao day3")
-        if (!isConnectSuccess) {
-            Log.d("asgawgawgawg", "chay vao day")
+        val isConnectSuccess = dependencies?.billingClientManager?.startConnectionWithTimeout()
+        if (isConnectSuccess != true) {
             return false
         }
 
         // Query products and purchases
-        val allProductDetails = deps.productRepository.queryAllProducts(listID)
-        val allPurchases = deps.purchaseRepository.queryAllPurchases()
+        val allProductDetails =
+            dependencies?.productRepository?.queryAllProducts(listID) ?: emptyList()
+        val allPurchases = dependencies?.purchaseRepository?.queryAllPurchases() ?: emptyList()
 
         // Map to product models and merge with purchase info
         val products = ProductMapper.mapToProductModels(allProductDetails, listID)
         val productsWithPurchases = ProductMapper.mergeWithPurchases(products, allPurchases)
-        Log.d("asgawgawgawg", "initIap: $products")
 
         // Update cached list
         listProductModel.clear()
@@ -131,7 +122,7 @@ object IapController {
         purchase.products.forEach { productId ->
             listProductModel.find { it.productId == productId }?.let { product ->
                 val updatedProduct =
-                    copyWithPurchaseStatus(product, isPurchased, purchase.purchaseTime)
+                    product.copyWithPurchaseStatus(isPurchased, purchase.purchaseTime)
                 val index = listProductModel.indexOf(product)
                 if (index >= 0) {
                     listProductModel[index] = updatedProduct
@@ -141,63 +132,18 @@ object IapController {
         }
     }
 
-    private fun copyWithPurchaseStatus(
-        product: ProductModel,
-        isPurchased: Boolean,
-        purchaseTime: Long,
-    ): ProductModel =
-        when (product) {
-            is InAppProductModel -> {
-                InAppProductModel(
-                    productId = product.productId,
-                    productName = product.productName,
-                    productTitle = product.productTitle,
-                    productDescription = product.productDescription,
-                    isPurchase = isPurchased,
-                    purchaseTime = if (isPurchased) purchaseTime else 0L,
-                    priceCurrencyCode = product.priceCurrencyCode,
-                    formattedPrice = product.formattedPrice,
-                    offerTag = product.offerTag,
-                )
-            }
-
-            is SubscriptionProductModel -> {
-                SubscriptionProductModel(
-                    productId = product.productId,
-                    productName = product.productName,
-                    productTitle = product.productTitle,
-                    productDescription = product.productDescription,
-                    isPurchase = isPurchased,
-                    purchaseTime = if (isPurchased) purchaseTime else 0L,
-                    listBasePlan = product.listBasePlan,
-                )
-            }
-
-            else -> {
-                product
-            }
-        }
-
     fun getProduct(productID: String): ProductModel? = listProductModel.find { it.productId == productID }
 
     fun getBasePlan(
         productID: String,
         basePlanId: String,
     ): BasePlanModel? =
-        try {
-            (listProductModel.find { it.productId == productID } as? SubscriptionProductModel)
-                ?.listBasePlan
-                ?.find { it.basePlanId == basePlanId }
-        } catch (e: Exception) {
-            null
-        }
+        (listProductModel.find { it.productId == productID } as? SubscriptionProductModel)
+            ?.listBasePlan
+            ?.find { it.basePlanId == basePlanId }
 
     fun hasAnyPurchasedProduct(listProductId: List<String>): Boolean =
-        try {
-            listProductModel.filter { it.productId in listProductId }.any { it.isPurchase }
-        } catch (e: Exception) {
-            false
-        }
+        listProductModel.filter { it.productId in listProductId }.any { it.isPurchase }
 
     /**
      * Resets all in-app purchases (debug mode only).
@@ -234,20 +180,22 @@ object IapController {
             // Reconnect if needed
             currentDeps.billingClientManager.startConnection()
 
+            // Get ProductDetails for this product
+            val productDetails = findProductDetails(productId)
+
             when (product) {
                 is InAppProductModel -> {
-                    // Find ProductDetails for in-app purchase
-                    val productDetails = findProductDetails(productId)
                     if (productDetails != null) {
                         withContext(Dispatchers.Main) {
-                            currentDeps.purchaseRepository.launchInAppPurchaseFlow(activity, productDetails)
+                            currentDeps.purchaseRepository.launchInAppPurchaseFlow(
+                                activity,
+                                productDetails,
+                            )
                         }
                     }
                 }
 
                 is SubscriptionProductModel -> {
-                    // Find ProductDetails and offer token for subscription
-                    val productDetails = findProductDetails(productId)
                     val offerToken =
                         productDetails
                             ?.subscriptionOfferDetails
@@ -264,7 +212,6 @@ object IapController {
 
                         withContext(Dispatchers.Main) {
                             currentBasePlanId = basePlanId
-                            Log.d("CHECKIAPPRODUCT", "buyIap: $currentBasePlanId")
                             currentDeps.purchaseRepository.launchSubscriptionPurchaseFlow(
                                 activity,
                                 productDetails,
@@ -278,9 +225,11 @@ object IapController {
         }
     }
 
+    /**
+     * Finds ProductDetails from Google Play for a specific product.
+     */
     private suspend fun findProductDetails(productId: String): ProductDetails? {
         val currentDeps = dependencies ?: return null
-        currentDeps.billingClientManager.startConnection()
         val allDetails = currentDeps.productRepository.queryAllProducts(listID)
         return allDetails.find { it.productId == productId }
     }

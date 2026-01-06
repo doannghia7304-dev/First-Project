@@ -27,14 +27,9 @@ class PurchaseRepositoryImpl(
     private val billingClientManager: BillingClientManager,
 ) : PurchaseRepository {
 
-    /** Gets current BillingClient from manager, throws if not available */
-    private val billingClient
-        get() = billingClientManager.client
-            ?: throw IllegalStateException("BillingClient not connected. Call startConnection() first.")
-
     /**
      * Queries all active purchases (both INAPP and SUBS).
-     * @return List of active Purchase objects
+     * @return List of active Purchase objects, empty if not connected
      */
     override suspend fun queryAllPurchases(): List<Purchase> {
         val subsResult = queryPurchases(ProductType.SUBS)
@@ -47,12 +42,14 @@ class PurchaseRepositoryImpl(
     /**
      * Queries purchases for a specific product type.
      * @param productType INAPP or SUBS
-     * @return List of Purchase or null if error
+     * @return List of Purchase or null if error/not connected
      */
     @OptIn(ExperimentalCoroutinesApi::class)
-    override suspend fun queryPurchases(productType: String): List<Purchase>? =
-        suspendCancellableCoroutine { cont ->
-            billingClient.queryPurchasesAsync(
+    override suspend fun queryPurchases(productType: String): List<Purchase>? {
+        val client = billingClientManager.getBillingClient() ?: return null
+
+        return suspendCancellableCoroutine { cont ->
+            client.queryPurchasesAsync(
                 QueryPurchasesParams
                     .newBuilder()
                     .setProductType(productType)
@@ -65,6 +62,7 @@ class PurchaseRepositoryImpl(
                 }
             }
         }
+    }
 
     /**
      * Acknowledges a purchase.
@@ -75,13 +73,15 @@ class PurchaseRepositoryImpl(
         purchase: Purchase,
         onSuccess: () -> Unit,
     ) {
+        val client = billingClientManager.getBillingClient() ?: return
+
         val params =
             AcknowledgePurchaseParams
                 .newBuilder()
                 .setPurchaseToken(purchase.purchaseToken)
                 .build()
 
-        billingClient.acknowledgePurchase(params) { billingResult ->
+        client.acknowledgePurchase(params) { billingResult ->
             if (BillingResponseCode.isSuccess(billingResult.responseCode)) {
                 onSuccess()
             }
@@ -95,6 +95,8 @@ class PurchaseRepositoryImpl(
         activity: Activity,
         productDetails: ProductDetails,
     ) {
+        val client = billingClientManager.getBillingClient() ?: return
+
         val params =
             BillingFlowParams.ProductDetailsParams
                 .newBuilder()
@@ -107,7 +109,7 @@ class PurchaseRepositoryImpl(
                 .setProductDetailsParamsList(listOf(params))
                 .build()
 
-        billingClient.launchBillingFlow(activity, billingFlowParams)
+        client.launchBillingFlow(activity, billingFlowParams)
     }
 
     /**
@@ -123,6 +125,8 @@ class PurchaseRepositoryImpl(
         offerToken: String,
         oldPurchaseToken: String?,
     ) {
+        val client = billingClientManager.getBillingClient() ?: return
+
         val productDetailsParams =
             BillingFlowParams.ProductDetailsParams
                 .newBuilder()
@@ -147,7 +151,7 @@ class PurchaseRepositoryImpl(
             billingFlowParamsBuilder.setSubscriptionUpdateParams(subscriptionUpdateParams)
         }
 
-        billingClient.launchBillingFlow(activity, billingFlowParamsBuilder.build())
+        client.launchBillingFlow(activity, billingFlowParamsBuilder.build())
     }
 
     /**
@@ -155,8 +159,10 @@ class PurchaseRepositoryImpl(
      * @param onComplete Callback when all purchases are consumed
      */
     override fun consumeAllInAppPurchases(onComplete: () -> Unit) {
+        val client = billingClientManager.getBillingClient() ?: return
+
         CoroutineScope(Dispatchers.IO).launch {
-            val purchasesResult = billingClient.queryPurchasesAsync(
+            val purchasesResult = client.queryPurchasesAsync(
                 QueryPurchasesParams
                     .newBuilder()
                     .setProductType(ProductType.INAPP)
@@ -169,7 +175,7 @@ class PurchaseRepositoryImpl(
                             .newBuilder()
                             .setPurchaseToken(purchase.purchaseToken)
                             .build()
-                    billingClient.consumePurchase(consumeParams)
+                    client.consumePurchase(consumeParams)
                 }
                 withContext(Dispatchers.Main) {
                     onComplete()

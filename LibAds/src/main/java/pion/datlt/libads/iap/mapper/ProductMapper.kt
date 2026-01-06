@@ -164,37 +164,6 @@ object ProductMapper {
     ): ProductModel {
         val isPurchased = purchase != null
         val purchaseTime = purchase?.purchaseTime ?: 0L
-
-        return when (product) {
-            is InAppProductModel -> {
-                InAppProductModel(
-                    productId = product.productId,
-                    productName = product.productName,
-                    productTitle = product.productTitle,
-                    productDescription = product.productDescription,
-                    isPurchase = isPurchased,
-                    purchaseTime = purchaseTime,
-                    priceCurrencyCode = product.priceCurrencyCode,
-                    formattedPrice = product.formattedPrice,
-                    offerTag = product.offerTag,
-                )
-            }
-
-            is SubscriptionProductModel -> {
-                SubscriptionProductModel(
-                    productId = product.productId,
-                    productName = product.productName,
-                    productTitle = product.productTitle,
-                    productDescription = product.productDescription,
-                    isPurchase = isPurchased,
-                    purchaseTime = purchaseTime,
-                    listBasePlan = product.listBasePlan,
-                )
-            }
-
-            else -> {
-                product
-            }
-        }
+        return product.copyWithPurchaseStatus(isPurchased, purchaseTime)
     }
 }
