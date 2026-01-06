@@ -30,12 +30,12 @@ class DataStoreRepositoryImpl
                     emit(Result.Error<Boolean>(exception) as Result<Boolean>)
                 }
 
-        override fun setIsPremium(isPremium: Boolean): Flow<Result<Boolean>> =
-            flow<Result<Boolean>> {
+        override fun setIsPremium(isPremium: Boolean): Flow<Result<Unit>> =
+            flow<Result<Unit>> {
                 dataStore.edit {
                     it[isPremiumKey] = isPremium
                 }
-                emit(Result.Success(isPremium))
+                emit(Result.Success(Unit))
             }.catch {
                 emit(Result.Error(it))
             }
@@ -48,12 +48,12 @@ class DataStoreRepositoryImpl
                     emit(Result.Error<String?>(exception) as Result<String?>)
                 }
 
-        override fun setToken(token: String): Flow<Result<String>> =
-            flow<Result<String>> {
+        override fun setToken(token: String): Flow<Result<Unit>> =
+            flow<Result<Unit>> {
                 dataStore.edit {
                     it[tokenKey] = token
                 }
-                emit(Result.Success(token))
+                emit(Result.Success(Unit))
             }.catch {
                 emit(Result.Error(it))
             }
