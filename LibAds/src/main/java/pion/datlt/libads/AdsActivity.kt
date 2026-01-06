@@ -28,6 +28,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
+import com.example.libiap.IapController
 import com.facebook.FacebookSdk
 import com.facebook.LoggingBehavior
 import com.google.firebase.Firebase
@@ -39,21 +40,13 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.FlowCollector
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import pion.datlt.libads.iap.SubscribeInterface
-import pion.datlt.libads.iap.model.ProductModel
+import kotlinx.coroutines.withTimeoutOrNull
 import pion.datlt.libads.model.ConfigResult
 import pion.datlt.libads.utils.AdsConstant
 import pion.datlt.libads.utils.collectFlowOnView
@@ -62,21 +55,20 @@ import pion.datlt.libads.utils.loadAndShowConsentFormIfRequire
 import pion.datlt.libads.utils.requestConsentInfoUpdate
 
 abstract class AdsActivity : AppCompatActivity() {
-
     protected val remoteConfig: FirebaseRemoteConfig = Firebase.remoteConfig
     private var jobSetBlockAds: Job? = null
     private var jobShowNotification: Job? = null
     private var lastTimeShowNotification: Long = 0
 
-
     override fun onResume() {
         super.onResume()
         getAppResumeInfo().let { appResumeInfo ->
-            val config: Boolean = if (appResumeInfo != null) {
-                AdsConstant.listConfigAds[appResumeInfo.first]?.isOn ?: false
-            } else {
-                false
-            }
+            val config: Boolean =
+                if (appResumeInfo != null) {
+                    AdsConstant.listConfigAds[appResumeInfo.first]?.isOn ?: false
+                } else {
+                    false
+                }
             val isInNotShowFragment: Boolean
             getListNotShowAppResumeFragmentId().let { listNotShowAppResumeFragmentId ->
                 isInNotShowFragment =
@@ -86,12 +78,13 @@ abstract class AdsActivity : AppCompatActivity() {
             if (isInNotShowFragment || !config || AdsConstant.isPremium) {
                 AdsController.isBlockOpenAds = true
             } else {
-                jobSetBlockAds = launchIO {
-                    delay(1000L)
-                    if (lifecycle.currentState == Lifecycle.State.RESUMED) {
-                        AdsController.isBlockOpenAds = false
+                jobSetBlockAds =
+                    launchIO {
+                        delay(1000L)
+                        if (lifecycle.currentState == Lifecycle.State.RESUMED) {
+                            AdsController.isBlockOpenAds = false
+                        }
                     }
-                }
             }
         }
         jobShowNotification?.cancel()
@@ -104,17 +97,17 @@ abstract class AdsActivity : AppCompatActivity() {
 
     private fun launchIO(
         exceptionHandler: CoroutineExceptionHandler = CoroutineExceptionHandler { _, throwable -> },
-        block: suspend CoroutineScope.() -> Unit
+        block: suspend CoroutineScope.() -> Unit,
     ): Job = lifecycleScope.launch(Dispatchers.IO + exceptionHandler, block = block)
 
     private fun launchDefault(
         exceptionHandler: CoroutineExceptionHandler = CoroutineExceptionHandler { _, throwable -> },
-        block: suspend CoroutineScope.() -> Unit
+        block: suspend CoroutineScope.() -> Unit,
     ): Job = lifecycleScope.launch(Dispatchers.Default + exceptionHandler, block = block)
 
     private fun launchMain(
         exceptionHandler: CoroutineExceptionHandler = CoroutineExceptionHandler { _, throwable -> },
-        block: suspend CoroutineScope.() -> Unit
+        block: suspend CoroutineScope.() -> Unit,
     ): Job = lifecycleScope.launch(Dispatchers.Main + exceptionHandler, block = block)
 
     protected fun initAds() {
@@ -129,7 +122,6 @@ abstract class AdsActivity : AppCompatActivity() {
         initSdkStateFlow.collectFlowOnView(this) {
             when (it) {
                 InitSdkState.NONE -> {
-
                 }
 
                 InitSdkState.LOADING -> {
@@ -189,12 +181,12 @@ abstract class AdsActivity : AppCompatActivity() {
             initSdkStateFlow,
             getDataRemoteConfigStateFlow,
             initGDPRStateFlow,
-            initIAPStateFlow
+            initIAPStateFlow,
         ) { initSdkState, getDataRemoteConfigState, initGDPRState, initIAPState ->
-            if (initSdkState is InitSdkState.DONE
-                && getDataRemoteConfigState is GetDataRemoteConfigState.DONE
-                && initGDPRState is InitGDPRState.DONE
-                && initIAPState is InitIAPState.DONE
+            if (initSdkState is InitSdkState.DONE &&
+                getDataRemoteConfigState is GetDataRemoteConfigState.DONE &&
+                initGDPRState is InitGDPRState.DONE &&
+                initIAPState is InitIAPState.DONE
             ) {
                 initAdsStateFlow.value = InitAdsState.DONE
                 isAllInitDone.value = true
@@ -211,7 +203,7 @@ abstract class AdsActivity : AppCompatActivity() {
     abstract fun getNavHost(): NavController
 
     open fun onGetRemoteConfigDone(remoteConfig: FirebaseRemoteConfig) {
-        //do nothing
+        // do nothing
     }
 
     open fun getNativeAfterInterInfo(): Pair<String, List<String>>? = null
@@ -221,7 +213,7 @@ abstract class AdsActivity : AppCompatActivity() {
     open fun getListNotShowAppResumeFragmentId(): List<Int>? = null
 
     open fun onGetIapDone(isSuccess: Boolean) {
-        //do nothing
+        // do nothing
     }
 
     open fun onRemoteConfigSuccess(isSuccess: Boolean) {
@@ -249,7 +241,7 @@ abstract class AdsActivity : AppCompatActivity() {
             appFlyerKey = getAppFlyerKey(),
             tapjoyKey = getTapjoyKey(),
             packageName = packageName,
-            navController = getNavHost()
+            navController = getNavHost(),
         )
         initSdkStateFlow.value = InitSdkState.DONE
     }
@@ -259,21 +251,25 @@ abstract class AdsActivity : AppCompatActivity() {
         val remoteConfig: FirebaseRemoteConfig = Firebase.remoteConfig
         var isTimeOut = false
         val handler = Handler(Looper.getMainLooper())
-        val timeoutRunnable = Runnable {
-            isTimeOut = true
-            getDataRemoteConfig()
-        }
-        handler.postDelayed(timeoutRunnable, 7000L)
-        val configSettings = remoteConfigSettings {
-            minimumFetchIntervalInSeconds = if (BuildConfig.DEBUG) {
-                30
-            } else {
-                3600
+        val timeoutRunnable =
+            Runnable {
+                isTimeOut = true
+                getDataRemoteConfig()
             }
-        }
+        handler.postDelayed(timeoutRunnable, 7000L)
+        val configSettings =
+            remoteConfigSettings {
+                minimumFetchIntervalInSeconds =
+                    if (BuildConfig.DEBUG) {
+                        30
+                    } else {
+                        3600
+                    }
+            }
         remoteConfig.setConfigSettingsAsync(configSettings)
         remoteConfig.setDefaultsAsync(getRemoteConfigDefaults(context = applicationContext))
-        remoteConfig.fetchAndActivate()
+        remoteConfig
+            .fetchAndActivate()
             .addOnCompleteListener(this) { task ->
                 if (!isTimeOut) {
                     handler.removeCallbacks(timeoutRunnable)
@@ -304,16 +300,24 @@ abstract class AdsActivity : AppCompatActivity() {
 
     private fun initIap() {
         initIAPStateFlow.value = InitIAPState.LOADING
-        IAPConnector.initIap(application, "iap_id.json", BuildConfig.DEBUG)
-        IAPConnector.stateCheckIap.collectFlowOnView(this) { stateCheckIap ->
-            if (stateCheckIap == IAPConnector.StateCheckIap.DONE) {
-                onGetIapDone(true)
+        lifecycleScope.launch(Dispatchers.IO) {
+            val isInitSuccess =
+                try {
+                    withTimeoutOrNull(5_000L) {
+                        IapController.initIap(
+                            application = application,
+                            pathJson = "iap_id.json",
+                            BuildConfig.DEBUG,
+                        )
+                    } ?: false
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    false
+                }
+
+            withContext(Dispatchers.Main) {
+                onGetIapDone(isInitSuccess)
                 initIAPStateFlow.value = InitIAPState.DONE
-                initPurchaseIap()
-            } else if (stateCheckIap == IAPConnector.StateCheckIap.FAILED) {
-                onGetIapDone(false)
-                initIAPStateFlow.value = InitIAPState.DONE
-                initPurchaseIap()
             }
         }
     }
@@ -322,28 +326,28 @@ abstract class AdsActivity : AppCompatActivity() {
         initGDPRStateFlow.value = InitGDPRState.LOADING
         AdsController.getInstance().requestConsentInfoUpdate(
             onFailed = { error ->
-                //vao nhu luong binh thuong
+                // vao nhu luong binh thuong
                 initGDPRStateFlow.value = InitGDPRState.DONE
             },
             onSuccess = { isRequire, isConsentAvailable ->
                 if (isRequire) {
-                    AdsController.getInstance()
+                    AdsController
+                        .getInstance()
                         .loadAndShowConsentFormIfRequire(
                             onConsentError = { errorConsent ->
-                                //tai consent bi loi
+                                // tai consent bi loi
                                 initGDPRStateFlow.value = InitGDPRState.DONE
                             },
                             onConsentDone = {
-                                //tai consent thanh cong
+                                // tai consent thanh cong
                                 initGDPRStateFlow.value = InitGDPRState.DONE
-
-                            }
+                            },
                         )
                 } else {
-                    //quoc gia nay khong can hien consent
+                    // quoc gia nay khong can hien consent
                     initGDPRStateFlow.value = InitGDPRState.DONE
                 }
-            }
+            },
         )
     }
 
@@ -354,33 +358,37 @@ abstract class AdsActivity : AppCompatActivity() {
             AdsController.getInstance().initNativeInter(
                 activity = this,
                 configName = nativeConfigName,
-                listSpaceName = listNativeSpaceName
+                listSpaceName = listNativeSpaceName,
             )
         }
     }
 
     private fun initAppResumeAds() {
-        val viewShowOpenApp = TextView(applicationContext).apply {
-            id = View.generateViewId()
-            layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
-            setBackgroundColor(ContextCompat.getColor(context, R.color.white))
-            elevation = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, 10f, resources.displayMetrics
-            )
-            typeface = ResourcesCompat.getFont(context, R.font.font_500)
-            gravity = Gravity.CENTER
-            text = context.getString(R.string.loading_data)
-            setTextColor(ContextCompat.getColor(context, R.color.black))
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
-            visibility = View.GONE
-        }
+        val viewShowOpenApp =
+            TextView(applicationContext).apply {
+                id = View.generateViewId()
+                layoutParams =
+                    ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                    )
+                setBackgroundColor(ContextCompat.getColor(context, R.color.white))
+                elevation =
+                    TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP,
+                        10f,
+                        resources.displayMetrics,
+                    )
+                typeface = ResourcesCompat.getFont(context, R.font.font_500)
+                gravity = Gravity.CENTER
+                text = context.getString(R.string.loading_data)
+                setTextColor(ContextCompat.getColor(context, R.color.black))
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
+                visibility = View.GONE
+            }
         val rootViewGroup = (window.decorView.rootView as? ViewGroup)
         rootViewGroup?.removeView(viewShowOpenApp)
         rootViewGroup?.addView(viewShowOpenApp)
-
 
         getAppResumeInfo()?.let { appResumeInfo ->
             AdsController.getInstance().initResumeAds(
@@ -397,28 +405,10 @@ abstract class AdsActivity : AppCompatActivity() {
                     viewShowOpenApp.visibility = View.GONE
                 },
                 onPaidEvent = {
-                    //do nothing
-                })
+                    // do nothing
+                },
+            )
         }
-    }
-
-    private fun initPurchaseIap() {
-        IAPConnector.addIAPListener(object : SubscribeInterface {
-            override fun subscribeSuccess(productModel: ProductModel) {
-                Handler(Looper.getMainLooper()).postDelayed({
-                    val intent = baseContext.packageManager.getLaunchIntentForPackage(
-                        baseContext.packageName
-                    )
-                    intent!!.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                    startActivity(intent)
-                }, 500)
-            }
-
-            override fun subscribeError(error: String) {
-
-            }
-        })
     }
 
     private fun initFaceBookSdk() {
@@ -436,11 +426,12 @@ abstract class AdsActivity : AppCompatActivity() {
             }
         } catch (e: Exception) {
             if (BuildConfig.DEBUG) {
-                Toast.makeText(
-                    applicationContext,
-                    "initFaceBookSdk: ${e.message}",
-                    Toast.LENGTH_LONG
-                ).show()
+                Toast
+                    .makeText(
+                        applicationContext,
+                        "initFaceBookSdk: ${e.message}",
+                        Toast.LENGTH_LONG,
+                    ).show()
             }
         }
     }
@@ -450,8 +441,7 @@ abstract class AdsActivity : AppCompatActivity() {
             val gson = Gson()
             val objectResult = gson.fromJson(dataJson, ConfigResult::class.java)
 
-
-            //remote cho tung vi tri
+            // remote cho tung vi tri
             AdsConstant.apply {
                 positionCloseNativeAfterInter = objectResult.positionCloseNativeAfterInter
                 timeDelayNative = objectResult.timeDelayNative
@@ -468,14 +458,12 @@ abstract class AdsActivity : AppCompatActivity() {
                 isRewardVideoOn = objectResult.isRewardVideoOn
                 isRewardInterOn = objectResult.isRewardInterOn
 
-
-                //remote notification
+                // remote notification
 //                isNotificationOn = objectResult.isNotificationOn
                 notificationTemplate = objectResult.notificationTemplate
                 timeShowNotificationAfterLeftApp = objectResult.timeShowNotificationAfterLeftApp
                 timeDelayNotification = objectResult.timeDelayNotification
             }
-
 
             for (config in objectResult.listConfig) {
                 AdsConstant.listConfigAds[config.configName] = config
@@ -486,19 +474,21 @@ abstract class AdsActivity : AppCompatActivity() {
     private fun initNotification() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val chanelName =
-                applicationContext.applicationInfo.loadLabel(applicationContext.packageManager)
+                applicationContext.applicationInfo
+                    .loadLabel(applicationContext.packageManager)
                     .toString()
             val descriptionText = "Channel for ads app notifications"
             val channelID = applicationContext.packageName
             val importance = NotificationManager.IMPORTANCE_HIGH
-            val channel = NotificationChannel(channelID, chanelName, importance).apply {
-                description = descriptionText
-                enableVibration(true)
-                setSound(
-                    RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
-                    Notification.AUDIO_ATTRIBUTES_DEFAULT
-                )
-            }
+            val channel =
+                NotificationChannel(channelID, chanelName, importance).apply {
+                    description = descriptionText
+                    enableVibration(true)
+                    setSound(
+                        RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
+                        Notification.AUDIO_ATTRIBUTES_DEFAULT,
+                    )
+                }
 
             val notificationManager =
                 applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -511,33 +501,37 @@ abstract class AdsActivity : AppCompatActivity() {
         val intent = Intent(applicationContext, this.javaClass)
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP)
 
-        val pendingIntent = PendingIntent.getActivity(
-            applicationContext,
-            0,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
+        val pendingIntent =
+            PendingIntent.getActivity(
+                applicationContext,
+                0,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+            )
 
-        val builder = NotificationCompat.Builder(applicationContext, applicationContext.packageName)
-            .setSmallIcon(R.drawable.ic_phone_ads) // icon bắt buộc (trắng đen vector)
-            .setCustomContentView(getNotificationTemplate())
-            .setContentIntent(pendingIntent)
-            .setStyle(NotificationCompat.DecoratedCustomViewStyle())
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setAutoCancel(true)
+        val builder =
+            NotificationCompat
+                .Builder(applicationContext, applicationContext.packageName)
+                .setSmallIcon(R.drawable.ic_phone_ads) // icon bắt buộc (trắng đen vector)
+                .setCustomContentView(getNotificationTemplate())
+                .setContentIntent(pendingIntent)
+                .setStyle(NotificationCompat.DecoratedCustomViewStyle())
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true)
 
         val notificationManager = NotificationManagerCompat.from(applicationContext)
         if (ActivityCompat.checkSelfPermission(
                 this,
-                Manifest.permission.POST_NOTIFICATIONS
+                Manifest.permission.POST_NOTIFICATIONS,
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             jobShowNotification?.cancel()
-            jobShowNotification = launchIO {
-                delay(AdsConstant.timeShowNotificationAfterLeftApp)
-                lastTimeShowNotification = System.currentTimeMillis()
-                notificationManager.notify(1, builder.build())
-            }
+            jobShowNotification =
+                launchIO {
+                    delay(AdsConstant.timeShowNotificationAfterLeftApp)
+                    lastTimeShowNotification = System.currentTimeMillis()
+                    notificationManager.notify(1, builder.build())
+                }
         }
     }
 
@@ -550,34 +544,35 @@ abstract class AdsActivity : AppCompatActivity() {
 
     private fun getNotificationTemplate(): RemoteViews? {
         try {
-            val remoteView = when (AdsConstant.notificationTemplate) {
-                "notification_with_cta" -> {
-                    RemoteViews(applicationContext.packageName, R.layout.notification_with_cta)
-                }
+            val remoteView =
+                when (AdsConstant.notificationTemplate) {
+                    "notification_with_cta" -> {
+                        RemoteViews(applicationContext.packageName, R.layout.notification_with_cta)
+                    }
 
-                "notification_no_cta2" -> {
-                    RemoteViews(applicationContext.packageName, R.layout.notification_no_cta2)
-                }
+                    "notification_no_cta2" -> {
+                        RemoteViews(applicationContext.packageName, R.layout.notification_no_cta2)
+                    }
 
-                else -> {
-                    RemoteViews(applicationContext.packageName, R.layout.notification_no_cta1)
+                    else -> {
+                        RemoteViews(applicationContext.packageName, R.layout.notification_no_cta1)
+                    }
                 }
-            }
 
             remoteView.apply {
                 setTextViewText(
                     R.id.txvAppName,
-                    applicationContext.applicationInfo.loadLabel(applicationContext.packageManager)
-                        .toString()
+                    applicationContext.applicationInfo
+                        .loadLabel(applicationContext.packageManager)
+                        .toString(),
                 )
                 setTextViewText(
                     R.id.txvBody,
-                    applicationContext.getString(R.string.you_have_not_done_your_journey_click_the_noti_to_return)
+                    applicationContext.getString(R.string.you_have_not_done_your_journey_click_the_noti_to_return),
                 )
             }
             return remoteView
         } catch (_: Exception) {
-
         }
         return null
     }
@@ -586,7 +581,9 @@ abstract class AdsActivity : AppCompatActivity() {
 
     sealed class InitSdkState {
         data object NONE : InitSdkState()
+
         data object LOADING : InitSdkState()
+
         data object DONE : InitSdkState()
     }
 
@@ -595,7 +592,9 @@ abstract class AdsActivity : AppCompatActivity() {
 
     sealed class GetDataRemoteConfigState {
         data object NONE : GetDataRemoteConfigState()
+
         data object LOADING : GetDataRemoteConfigState()
+
         data object DONE : GetDataRemoteConfigState()
     }
 
@@ -603,7 +602,9 @@ abstract class AdsActivity : AppCompatActivity() {
 
     sealed class InitIAPState {
         data object NONE : InitIAPState()
+
         data object LOADING : InitIAPState()
+
         data object DONE : InitIAPState()
     }
 
@@ -612,7 +613,9 @@ abstract class AdsActivity : AppCompatActivity() {
 
     sealed class InitGDPRState {
         data object NONE : InitGDPRState()
+
         data object LOADING : InitGDPRState()
+
         data object DONE : InitGDPRState()
     }
 
@@ -620,14 +623,22 @@ abstract class AdsActivity : AppCompatActivity() {
 
     sealed class InitAdsState {
         data object NONE : InitAdsState()
-        data class LOADING(val log: InitAdsLog) : InitAdsState()
+
+        data class LOADING(
+            val log: InitAdsLog,
+        ) : InitAdsState()
+
         data object DONE : InitAdsState()
     }
 
     enum class InitAdsLog {
-        START_INIT_SDK, INIT_SDK_DONE, START_INIT_IAP, INIT_IAP_DONE, START_INIT_GDPR, INIT_GDPR_DONE,
-        START_INIT_REMOTE_CONFIG, INIT_REMOTE_CONFIG_DONE
+        START_INIT_SDK,
+        INIT_SDK_DONE,
+        START_INIT_IAP,
+        INIT_IAP_DONE,
+        START_INIT_GDPR,
+        INIT_GDPR_DONE,
+        START_INIT_REMOTE_CONFIG,
+        INIT_REMOTE_CONFIG_DONE,
     }
-
-
 }
