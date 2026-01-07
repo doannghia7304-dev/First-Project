@@ -26,10 +26,6 @@ class LanguageFragment :
         initView()
         applyEvent()
         onBackEvent()
-        val listDto =
-            IapController
-                .getListAllProduct()
-        Log.d("asgawgwgawa", "init: $listDto")
     }
 
     override fun subscribeObserver(view: View) {
