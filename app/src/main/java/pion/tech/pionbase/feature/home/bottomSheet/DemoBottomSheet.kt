@@ -1,12 +1,10 @@
 package pion.tech.pionbase.feature.home.bottomSheet
 
 import android.os.Bundle
-import dagger.hilt.android.AndroidEntryPoint
 import pion.tech.pionbase.R
 import pion.tech.pionbase.base.BaseBottomSheetDialogFragment
 import pion.tech.pionbase.databinding.BottomSheetDemoBinding
 
-@AndroidEntryPoint
 class DemoBottomSheet : BaseBottomSheetDialogFragment<BottomSheetDemoBinding>(R.layout.bottom_sheet_demo) {
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)

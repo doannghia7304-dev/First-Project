@@ -2,17 +2,15 @@ package pion.tech.pionbase.feature.splash
 
 import android.animation.ValueAnimator
 import android.view.View
-import dagger.hilt.android.AndroidEntryPoint
 import pion.tech.pionbase.app.MainActivity
 import pion.tech.pionbase.base.BaseFragment
 import pion.tech.pionbase.databinding.FragmentSplashBinding
 import pion.tech.pionbase.util.collectFlowOnView
 
-@AndroidEntryPoint
 class SplashFragment :
     BaseFragment<FragmentSplashBinding, SplashViewModel>(
         FragmentSplashBinding::inflate,
-        SplashViewModel::class.java,
+        SplashViewModel::class,
     ) {
     var progressAnimator: ValueAnimator? = null
 

@@ -1,7 +1,6 @@
 package pion.tech.pionbase.feature.home
 
 import android.view.View
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import pion.tech.pionbase.base.BaseFragment
@@ -11,13 +10,10 @@ import pion.tech.pionbase.feature.home.dialog.DemoDialog
 import pion.tech.pionbase.util.collectFlowOnView
 import pion.tech.pionbase.util.displayToast
 
-// removed duplicate imports
-
-@AndroidEntryPoint
 class HomeFragment :
     BaseFragment<FragmentHomeBinding, HomeViewModel>(
         FragmentHomeBinding::inflate,
-        HomeViewModel::class.java,
+        HomeViewModel::class,
     ),
     DemoDialog.Listener {
     //    val adapter = DemoMultipleAdapter()

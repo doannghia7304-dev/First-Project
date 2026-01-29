@@ -1,6 +1,5 @@
 package pion.tech.pionbase.feature.home
 
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import pion.tech.pionbase.base.BaseViewModel
@@ -8,12 +7,8 @@ import pion.tech.pionbase.data.model.installedApp.InstalledAppUIModel
 import pion.tech.pionbase.data.model.installedApp.toPresentation
 import pion.tech.pionbase.data.repository.installedAppRepository.InstalledAppsRepository
 import pion.tech.pionbase.util.handleApiCall
-import javax.inject.Inject
 
-@HiltViewModel
-class HomeViewModel
-@Inject
-constructor(
+class HomeViewModel(
     private val installedAppsRepository: InstalledAppsRepository,
 ) : BaseViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())

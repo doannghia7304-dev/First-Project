@@ -1,6 +1,5 @@
 package pion.tech.pionbase.feature.language
 
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import pion.tech.pionbase.base.BaseViewModel
@@ -8,12 +7,8 @@ import pion.tech.pionbase.data.model.language.LanguageUIModel
 import pion.tech.pionbase.data.model.language.toPresentation
 import pion.tech.pionbase.data.repository.languageRepository.LanguageRepository
 import pion.tech.pionbase.util.handleApiCall
-import javax.inject.Inject
 
-@HiltViewModel
-class LanguageViewModel
-@Inject
-constructor(
+class LanguageViewModel(
     private val repository: LanguageRepository,
 ) : BaseViewModel() {
     private val _uiState = MutableStateFlow(LanguageUiState())

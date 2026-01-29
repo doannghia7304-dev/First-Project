@@ -28,7 +28,7 @@ fun SettingFragment.backEvent() {
 }
 
 fun SettingFragment.onBackPressed() {
-    findNavController().popBackStack()
+    navigator.navigateUp()
 }
 
 @SuppressLint("SetTextI18n")
