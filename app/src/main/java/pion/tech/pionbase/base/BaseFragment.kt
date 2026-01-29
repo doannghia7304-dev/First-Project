@@ -6,12 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
@@ -22,25 +20,25 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModelForClass
 import pion.tech.pionbase.app.CommonViewModel
 import pion.tech.pionbase.base.firebaseAnalytics.FirebaseAnalyticsLogger
 import pion.tech.pionbase.base.navigator.Navigator
 import pion.tech.pionbase.base.navigator.NavigatorImpl
 import pion.tech.pionbase.data.repository.dataStore.DataStoreRepository
 import timber.log.Timber
-import javax.inject.Inject
+import kotlin.reflect.KClass
 
 typealias Inflate<Binding> = (LayoutInflater, ViewGroup?, Boolean) -> Binding
 
 abstract class BaseFragment<Binding : ViewBinding, VM : ViewModel>(
     private val inflate: Inflate<Binding>,
-    private val viewModelClass: Class<VM>,
+    private val viewModelClass: KClass<VM>,
 ) : Fragment() {
-    @Inject
-    lateinit var logger: FirebaseAnalyticsLogger
-
-    @Inject
-    lateinit var dataStoreRepository: DataStoreRepository
+    val logger: FirebaseAnalyticsLogger by inject()
+    val dataStoreRepository: DataStoreRepository by inject()
 
     private var _navigator: Navigator? = null
     val navigator: Navigator
@@ -57,11 +55,9 @@ abstract class BaseFragment<Binding : ViewBinding, VM : ViewModel>(
                 "Fragment $this binding cannot be accessed before onCreateView() or after onDestroyView()"
             }
 
-    val commonViewModel: CommonViewModel by activityViewModels()
+    val commonViewModel: CommonViewModel by activityViewModel()
 
-    val viewModel: VM by lazy {
-        ViewModelProvider(this)[viewModelClass]
-    }
+    val viewModel: VM by viewModelForClass(viewModelClass)
 
     private var isInit = false
     private var saveView = false

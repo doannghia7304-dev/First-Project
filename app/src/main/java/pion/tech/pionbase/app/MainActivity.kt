@@ -2,7 +2,6 @@ package pion.tech.pionbase.app
 
 import android.graphics.Rect
 import android.os.Bundle
-import android.util.Log
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -12,10 +11,10 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import pion.datlt.libads.iap.IapController
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
-import dagger.hilt.android.AndroidEntryPoint
+import org.koin.android.ext.android.inject
 import pion.datlt.libads.AdsActivity
+import pion.datlt.libads.iap.IapController
 import pion.datlt.libads.iap.SubscribeInterface
 import pion.datlt.libads.iap.model.ProductModel
 import pion.tech.pionbase.BuildConfig
@@ -23,15 +22,11 @@ import pion.tech.pionbase.R
 import pion.tech.pionbase.base.lifecycleCallback.FragmentLifecycleCallbacksImpl
 import pion.tech.pionbase.data.repository.dataStore.DataStoreRepository
 import pion.tech.pionbase.util.Constant
-import javax.inject.Inject
 import kotlin.getValue
 
-@AndroidEntryPoint
 class MainActivity : AdsActivity() {
     private val commonViewModel: CommonViewModel by viewModels()
-
-    @Inject
-    lateinit var dataStoreRepository: DataStoreRepository
+    private val dataStoreRepository: DataStoreRepository by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
