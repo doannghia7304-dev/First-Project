@@ -29,7 +29,7 @@ constraintlayout = "2.2.0"
 recyclerview = "1.3.2"
 swiperefreshlayout = "1.1.0"
 navigation = "2.8.5"
-hilt = "2.52"
+koin = "4.1.1"
 room = "2.6.1"
 coroutines = "1.9.0"
 lifecycleExtensions = "2.2.0"
@@ -47,6 +47,7 @@ media3 = "1.5.0"
 viewpager2 = "1.1.0"
 leakcanary = "2.14"
 firebaseConfigKtx = "22.1.0"
+kotzilla = "1.4.2"
 
 [libraries]
 androidx-appcompat-resources = { module = "androidx.appcompat:appcompat-resources", version.ref = "appcompat" }
@@ -73,8 +74,8 @@ androidx-activity = { group = "androidx.activity", name = "activity", version.re
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
 androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swiperefreshlayout" }
-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+koin-core-viewmodel = { module = "io.insert-koin:koin-core-viewmodel", version.ref = "koin" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
@@ -112,6 +113,7 @@ androidx-media3-exoplayer-dash = { module = "androidx.media3:media3-exoplayer-da
 androidx-media3-exoplayer-smoothstreaming = { module = "androidx.media3:media3-exoplayer-smoothstreaming", version.ref = "media3" }
 androidx-media3-exoplayer-rtsp = { module = "androidx.media3:media3-exoplayer-rtsp", version.ref = "media3" }
 google-firebase-config-ktx = { group = "com.google.firebase", name = "firebase-config-ktx", version.ref = "firebaseConfigKtx" }
+kotzilla-sdk = { group = "io.kotzilla", name = "kotzilla-sdk", version.ref = "kotzilla" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -119,8 +121,9 @@ android-library = { id = "com.android.library", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 androidx-navigation-safeargs-kotlin = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navigation" }
-dagger-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+
 gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 google-firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlytics" }
 google-firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "firebasePerf" }
+kotzilla = { id = "io.kotzilla.kotzilla-plugin", version.ref = "kotzilla" }
 

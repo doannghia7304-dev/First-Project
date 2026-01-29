@@ -1,9 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.dagger.hilt.android)
     alias(libs.plugins.google.devtools.ksp)
     alias(libs.plugins.gms.google.services)
     alias(libs.plugins.google.firebase.crashlytics)
+    alias(libs.plugins.kotzilla)
     id("kotlin-parcelize")
     id("kotlin-kapt")
     id("kotlin-android")
@@ -78,9 +78,15 @@ android {
             enableSplit = false
         }
     }
+
+    lint {
+        // Disable problematic lint detectors that cause crashes
+        disable += "NullSafeMutableLiveData"
+    }
 }
 
 dependencies {
+    implementation(libs.kotzilla.sdk)
 
     implementation(libs.kotlin.stdlib)
     implementation(libs.androidx.core.ktx)
@@ -101,9 +107,8 @@ dependencies {
     // ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
-    // Hilt
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
+    // Koin
+    implementation(libs.koin.android)
 
     // Glide
     api(libs.glide)
