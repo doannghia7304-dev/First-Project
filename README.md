@@ -39,7 +39,7 @@ app/
 │   │   ├── dto/                # Data Transfer Objects
 │   │   ├── remote/             # API interfaces
 │   │   └── repository/         # Repository implementations
-│   ├── di/                     # Dependency Injection với Hilt
+│   ├── di/                     # Dependency Injection với Koin
 │   ├── feature/                # Các tính năng của ứng dụng
 │   │   ├── splash/             # Màn hình khởi động
 │   │   ├── onboard/            # Màn hình giới thiệu
@@ -94,7 +94,6 @@ Mỗi màn hình trong ứng dụng bao gồm 3 thành phần chính:
 Định nghĩa cấu trúc UI và vòng đời của màn hình. Ví dụ (đã cập nhật theo pattern mới: tách luồng theo từng thuộc tính qua `map + distinctUntilChanged`):
 
 ```kotlin
-@AndroidEntryPoint
 class HomeFragment :
     BaseFragment<FragmentHomeBinding, HomeViewModel>(
         FragmentHomeBinding::inflate,
@@ -168,8 +167,7 @@ fun HomeFragment.plusEvent() {
 Quản lý trạng thái UI và xử lý logic nghiệp vụ. Ví dụ (đã cập nhật dùng `UiState` dạng data class theo màn hình):
 
 ```kotlin
-@HiltViewModel
-class HomeViewModel @Inject constructor(
+class HomeViewModel(
     private val dataStoreRepository: DataStoreRepository,
     private val installedAppsRepository: InstalledAppsRepository,
 ) : BaseViewModel() {
@@ -303,8 +301,7 @@ data class HomeUiState(
     val error: Throwable? = null,
 )
 
-@HiltViewModel
-class HomeViewModel @Inject constructor(
+class HomeViewModel(
     private val installedAppsRepository: InstalledAppsRepository,
 ) : BaseViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -460,8 +457,8 @@ Dự án Pion-Base bao gồm các màn hình và tính năng cơ bản sau:
     - Mỗi tính năng có 3 thành phần chính: Fragment, FragmentEx (extension functions), ViewModel
 
 2. **Dependency Injection**:
-    - Sử dụng Hilt cho dependency injection
-    - Đánh dấu các lớp với @AndroidEntryPoint, @HiltViewModel, @Inject khi cần thiết
+    - Sử dụng Koin cho dependency injection
+    - Inject dependencies bằng `by inject()` và ViewModels bằng `viewModel { }`
 
 3. **Coroutines và Flow**:
     - Sử dụng coroutines cho các tác vụ bất đồng bộ

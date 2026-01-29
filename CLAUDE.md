@@ -49,7 +49,7 @@ app/src/main/java/pion/tech/pionbase/
 │   ├── model/        # DTO and UI models
 │   ├── remote/       # API interfaces
 │   └── repository/   # Repository interfaces and implementations
-├── di/               # Hilt dependency injection modules
+├── di/               # Koin dependency injection modules
 ├── feature/          # Feature packages (each contains Fragment + FragmentEx + ViewModel)
 └── util/             # Extensions and utilities
 ```
@@ -79,8 +79,7 @@ feature/{feature_name}/
 
 ### ViewModel State Pattern
 ```kotlin
-@HiltViewModel
-class HomeViewModel @Inject constructor(
+class HomeViewModel(
     private val repository: SomeRepository,
 ) : BaseViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -151,6 +150,6 @@ binding.btnNext.setPreventDoubleClick { /* action */ }
 
 1. **Fragment params**: Never pass params via constructor. Use `arguments` Bundle or shared ViewModel
 2. **Adapter listeners**: Use `setListener()` method instead of constructor params
-3. **Dependency Injection**: Use Hilt with `@AndroidEntryPoint`, `@HiltViewModel`, `@Inject`
+3. **Dependency Injection**: Use Koin with `by inject()` for dependencies and `viewModel { }` for ViewModels
 4. **No testing required**: Skip writing tests unless explicitly requested
 5. **Comments**: Keep short, clear, in English
