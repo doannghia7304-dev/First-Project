@@ -5,151 +5,203 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Build Commands
 
 ```bash
-# Build project
-./gradlew build
-
-# Clean and build
-./gradlew clean build
-
-# Assemble debug APK
+# Build debug APK
 ./gradlew assembleDebug
+
+# Build release APK
+./gradlew assembleRelease
 
 # Run unit tests
 ./gradlew test
 
 # Run a single test class
-./gradlew test --tests "pion.tech.pionbase.YourTestClass"
+./gradlew testDebugUnitTest --tests "pion.tech.pionbase.ExampleUnitTest"
 
-# Check for lint errors
+# Clean build
+./gradlew clean assembleDebug
+
+# Check lint
 ./gradlew lint
 ```
 
 ## Architecture Overview
 
-Pion-Base follows Google's recommended app architecture with 2 layers (Domain Layer is skipped for simplicity):
+**Pion-Base** is an Android template project using a 2-layer architecture (UI Layer + Data Layer, no Domain Layer) with MVVM pattern. Built with Kotlin, ViewBinding/DataBinding, Koin DI, and Navigation Component (single-Activity).
 
-### UI Layer (MVVM Pattern)
-- **Fragment**: Defines UI structure and lifecycle (`init()`, `subscribeObserver()`)
-- **FragmentEx**: Extension functions for separated logic (click events, view initialization)
-- **ViewModel**: Manages UI state with `MutableStateFlow`/`StateFlow`
+### Modules
 
-### Data Layer
-- **Repository**: Returns `Flow<Result<T>>` for all data operations
-- **DTO Models**: Data layer models (e.g., `LanguageDtoModel`)
-- **UI Models**: UI layer models (e.g., `LanguageUIModel`)
-- Mapping via `toPresentation()` extension functions
+- **`:app`** - Main application module (`pion.tech.pionbase`)
+- **`:LibAds`** - Ads management library module
 
-## Project Structure
+### Key Tech Stack
 
-```
-app/src/main/java/pion/tech/pionbase/
-├── app/              # Application, MainActivity, CommonViewModel
-├── base/             # Base classes (MUST use these)
-├── data/
-│   ├── model/        # DTO and UI models
-│   ├── remote/       # API interfaces
-│   └── repository/   # Repository interfaces and implementations
-├── di/               # Koin dependency injection modules
-├── feature/          # Feature packages (each contains Fragment + FragmentEx + ViewModel)
-└── util/             # Extensions and utilities
-```
+| Component | Technology |
+|-----------|-----------|
+| DI | Koin (NOT Hilt/Dagger) |
+| Navigation | Jetpack Navigation Component (single `nav_main.xml`) |
+| Network | Retrofit2 + OkHttp3 + Gson |
+| Database | Room |
+| Preferences | DataStore |
+| Image Loading | Glide |
+| Logging | Timber |
+| Analytics | Firebase Analytics + Crashlytics + Remote Config |
+| Coroutines | Kotlin Coroutines + Flow + StateFlow |
+| Min SDK | 24, Target/Compile SDK 35 |
+| JVM | Java 17 |
 
-## Required Base Classes
+## Base Classes (MANDATORY)
 
-**Always extend from these base classes:**
+Never use raw Android classes. Always extend from these base classes:
 
 | Instead of | Use |
-|------------|-----|
-| `Fragment` | `BaseFragment<Binding, VM>` |
-| `ViewModel` | `BaseViewModel` |
-| `ListAdapter` | `BaseListAdapter<Item, ViewBinding>` |
-| `DialogFragment` | `BaseDialogFragment<T>` |
-| `BottomSheetDialogFragment` | `BaseBottomSheetDialogFragment<T>` |
+|-----------|-----|
+| `Fragment` | `BaseFragment<Binding, VM>(inflate, vmClass)` |
+| `ViewModel` | `BaseViewModel<State, Event>(initialState)` |
+| `ListAdapter` | `BaseListAdapter<Item, ViewBinding>(diffCallback)` |
+| `DialogFragment` | `BaseDialogFragment<T>(layoutRes)` |
+| `BottomSheetDialogFragment` | `BaseBottomSheetDialogFragment<T>(layoutRes)` |
 
-## Key Patterns
+### BaseFragment
 
-### Feature Structure
-Each feature requires 3 files:
+- Generic params: `<ViewBinding, ViewModel>`
+- Constructor params: `inflate` function reference and ViewModel `KClass`
+- Override `init(view: View)` for setup and `subscribeObserver(view: View)` for Flow collection
+- Provides `binding`, `viewModel`, `commonViewModel`, `navigator`, `dataStoreRepository`, `logger`
+- Built-in `showHideLoading(Boolean)` and `onSystemBack { }`
+
+### BaseViewModel
+
+- Generic params: `<State, Event>` with `initialState`
+- Built-in `_uiState`/`uiState` (StateFlow) and `_uiEvent`/`uiEvent` (Channel)
+- Use `setState { copy(...) }` to update state, `setEvent(event)` to emit one-shot events
+- Each screen defines its own `data class XxxUiState(...)` passed as `initialState`
+
+## Feature Structure Pattern
+
+Each feature follows a strict 3-file pattern:
+
 ```
-feature/{feature_name}/
-├── {Feature}Fragment.kt      # UI definition
-├── {Feature}FragmentEx.kt    # Extension functions for logic
-└── {Feature}ViewModel.kt     # State management
+feature/{featureName}/
+├── {Feature}Fragment.kt      # UI + observer subscriptions
+├── {Feature}FragmentEx.kt    # Extension functions for click events, view init
+├── {Feature}ViewModel.kt     # State management + business logic
+├── adapter/                  # RecyclerView adapters
+├── dialog/                   # DialogFragments
+└── bottomSheet/              # BottomSheetDialogFragments
 ```
 
-### ViewModel State Pattern
+### Fragment Pattern
+
 ```kotlin
-class HomeViewModel(
-    private val repository: SomeRepository,
-) : BaseViewModel() {
-    private val _uiState = MutableStateFlow(HomeUiState())
-    val uiState = _uiState.asStateFlow()
+class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(
+    FragmentHomeBinding::inflate,
+    HomeViewModel::class,
+) {
+    override fun init(view: View) {
+        initView()        // from FragmentEx
+        settingEvent()    // from FragmentEx
+    }
+    override fun subscribeObserver(view: View) {
+        viewModel.uiState
+            .map { it.someField }
+            .distinctUntilChanged()
+            .collectFlowOnView(viewLifecycleOwner) { value -> /* update UI */ }
+    }
 }
-
-data class HomeUiState(
-    val isLoading: Boolean = false,
-    val data: List<SomeUIModel> = emptyList(),
-    val error: Throwable? = null,
-)
 ```
 
-### Fragment Observer Pattern
-Use `map + distinctUntilChanged` to observe individual state properties:
+### FragmentEx Pattern
+
+Extension functions on the Fragment class, separating UI logic:
+
+```kotlin
+fun HomeFragment.initView() {
+    adapter.setListener(this)
+    binding.rvMain.adapter = adapter
+}
+fun HomeFragment.settingEvent() {
+    binding.btnSetting.setPreventDoubleClickScaleView { navigator.navigateTo(R.id.action_...) }
+}
+```
+
+## Coroutine Extensions
+
+Use the built-in coroutine launchers (they include exception handling):
+
+```kotlin
+// In Fragment (from BaseFragment.kt extensions):
+launchIO { }       // IO dispatcher
+launchMain { }     // Main dispatcher
+launchDefault { }  // Default dispatcher
+
+// In ViewModel (from BaseViewModel.kt extensions):
+launchIO { }
+launchMain { }
+launchDefault { }
+```
+
+**Do NOT use** `viewModelScope.launch()` or `lifecycleScope.launch()` directly.
+
+## State Observation
+
+Always use `collectFlowOnView` with `map + distinctUntilChanged` to observe specific state fields:
+
 ```kotlin
 viewModel.uiState
-    .map { it.isLoading }
+    .map { it.fieldName }
     .distinctUntilChanged()
-    .collectFlowOnView(viewLifecycleOwner) { isLoading ->
-        showHideLoading(isLoading)
-    }
+    .collectFlowOnView(viewLifecycleOwner) { value -> /* handle */ }
 ```
 
-### Repository Pattern
+## Data Layer Patterns
+
+### Repository
+
+- Interface + Impl pattern in `data/repository/{featureName}Repository/`
+- All functions return `Flow<Result<T>>` (using custom `pion.tech.pionbase.util.Result`)
+- Implementation uses `.flowOn(Dispatchers.IO)` and `.catch { emit(Result.Error(it)) }`
+
+### Models
+
+- **DtoModel** (`{Entity}DtoModel`): Data from API/DB, used in Repository layer
+- **UIModel** (`{Entity}UIModel`): Transformed data for UI layer
+- Extension function `fun XxxDtoModel.toPresentation(): XxxUIModel` for mapping
+
+### API Call Handling
+
+Use `handleApiCall` extensions from `ApiExtensions.kt`:
+
 ```kotlin
-// Interface
-interface SomeRepository {
-    fun getData(): Flow<Result<List<SomeDtoModel>>>
-}
+// With manual state management (preferred for screen-level state):
+handleApiCall(
+    apiCall = { repository.getData() },
+    onSuccess = { data -> setState { copy(items = data.map { it.toPresentation() }) } },
+    onError = { throwable -> setState { copy(error = throwable) } },
+)
 
-// Implementation - MUST use .catch and .flowOn(Dispatchers.IO)
-class SomeRepositoryImpl @Inject constructor() : SomeRepository {
-    override fun getData(): Flow<Result<List<SomeDtoModel>>> =
-        flow<Result<List<SomeDtoModel>>> {
-            emit(Result.Success(apiInterface.getData()))
-        }.catch {
-            emit(Result.Error(it))
-        }.flowOn(Dispatchers.IO)
-}
+// With automatic UiState<T> management:
+handleApiCall(stateFlow, apiCall = { repository.getData() })
 ```
 
-### Coroutine Extensions
-Use built-in extensions with exception handlers (NOT `viewModelScope.launch()` directly):
-- `launchIO {}` - for network/database operations
-- `launchDefault {}` - for CPU-intensive work
-- `launchMain {}` - for UI updates
+## Dependency Injection (Koin)
 
-### Click Listener
-Use `setPreventDoubleClick` instead of `setOnClickListener`:
-```kotlin
-binding.btnNext.setPreventDoubleClick { /* action */ }
-```
+Modules defined in `di/` package, aggregated in `AppModule.kt`:
 
-## Naming Conventions
+- `coreModule` - Firebase RemoteConfig, DataStore
+- `networkModule` - Gson, OkHttp, Retrofit, ApiInterface
+- `databaseModule` - Room database + DAOs
+- `repositoryModule` - Repository bindings (Impl bind Interface)
+- `platformModule` - Firebase Analytics
+- `viewModelModule` - ViewModel registrations via `viewModelOf(::XxxViewModel)`
 
-| Type | Pattern | Example |
-|------|---------|---------|
-| ViewModel | `{Feature}ViewModel` | `HomeViewModel` |
-| Fragment | `{Feature}Fragment` | `HomeFragment` |
-| Fragment Extension | `{Feature}FragmentEx` | `HomeFragmentEx` |
-| UI Model | `{Entity}UIModel` | `LanguageUIModel` |
-| DTO Model | `{Entity}DtoModel` | `LanguageDtoModel` |
-| Repository Interface | `{Feature}Repository` | `LanguageRepository` |
-| Repository Impl | `{Feature}RepositoryImpl` | `LanguageRepositoryImpl` |
+Register new ViewModel: add `viewModelOf(::NewViewModel)` in `viewModelModule`.
+Register new Repository: add `singleOf(::NewRepositoryImpl) bind NewRepository::class` in `repositoryModule`.
 
-## Important Rules
+## Critical Conventions
 
-1. **Fragment params**: Never pass params via constructor. Use `arguments` Bundle or shared ViewModel
-2. **Adapter listeners**: Use `setListener()` method instead of constructor params
-3. **Dependency Injection**: Use Koin with `by inject()` for dependencies and `viewModel { }` for ViewModels
-4. **No testing required**: Skip writing tests unless explicitly requested
-5. **Comments**: Keep short, clear, in English
+- **Click listeners**: Use `setPreventDoubleClick { }` or `setPreventDoubleClickScaleView { }` instead of `setOnClickListener`
+- **Dialog show**: Use `safeShowDialog(dialog)` / `safeShowBottomSheet(dialog)` from `Utils.kt`
+- **Fragment params**: Never pass via constructor. Use `arguments` Bundle or shared ViewModel
+- **Adapter listeners**: Never pass via constructor. Use `setListener()` method
+- **Navigation**: Use `navigator.navigateTo(actionId)` / `navigator.navigateUp()` (Navigator interface wraps NavController)
+- **CommonViewModel**: Shared across all fragments via `activityViewModel()`, manages app-wide state (categories, templates, premium status)
