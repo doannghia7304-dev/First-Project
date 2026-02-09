@@ -29,10 +29,8 @@ abstract class BaseViewModel<State, Event>(
         _uiState.update { it.reduce() }
     }
 
-    protected fun setEvent(event: Event) {
-        launchMain {
-            _uiEvent.send(event)
-        }
+    protected suspend fun setEvent(event: Event) {
+        _uiEvent.send(event)
     }
 }
 
