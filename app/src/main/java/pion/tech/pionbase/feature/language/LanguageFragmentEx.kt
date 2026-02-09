@@ -5,6 +5,7 @@ import androidx.core.os.LocaleListCompat
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import pion.tech.pionbase.R
+import pion.tech.pionbase.util.AppRemoteConfig
 import pion.tech.pionbase.util.displayToast
 import pion.tech.pionbase.util.setPreventDoubleClick
 import pion.tech.pionbase.util.setPreventDoubleClickScaleView
@@ -41,7 +42,11 @@ fun LanguageFragment.navigateToNextScreen() {
     if (isCameFromSetting()) {
         navigator.navigateTo(R.id.action_languageFragment_to_splashFragment)
     } else {
-        navigator.navigateTo(R.id.action_languageFragment_to_onboardFragment)
+        if (AppRemoteConfig.maxTimeShowChangeLanguageScreen > 0L) {
+            navigator.navigateTo(R.id.action_languageFragment_to_changeLanguageFragment)
+        } else {
+            navigator.navigateTo(R.id.action_languageFragment_to_onboardFragment)
+        }
     }
 }
 
@@ -56,7 +61,7 @@ fun LanguageFragment.onBackEvent() {
 
 fun LanguageFragment.backEvent() {
     if (isCameFromSetting()) {
-        findNavController().navigateUp()
+        navigator.navigateUp()
     }
 }
 

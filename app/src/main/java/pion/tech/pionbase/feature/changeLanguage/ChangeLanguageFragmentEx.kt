@@ -1,5 +1,7 @@
 package pion.tech.pionbase.feature.changeLanguage
 
+import android.animation.ValueAnimator
+import android.view.animation.LinearInterpolator
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -9,7 +11,7 @@ import pion.datlt.libads.callback.PreloadCallback
 import pion.datlt.libads.utils.adsuntils.safePreloadAds
 import pion.tech.pionbase.R
 import pion.tech.pionbase.base.launchMain
-import pion.tech.pionbase.util.Constant
+import pion.tech.pionbase.util.AppRemoteConfig
 import pion.tech.pionbase.util.OnboardAds
 import pion.tech.pionbase.util.OnboardFullAds
 import timber.log.Timber
@@ -18,6 +20,22 @@ import kotlin.coroutines.resume
 fun ChangeLanguageFragment.initView() {
     onSystemBack {
     }
+    startProgressAnimation()
+}
+
+fun ChangeLanguageFragment.startProgressAnimation() {
+    progressAnimator =
+        ValueAnimator.ofInt(0, 100).apply {
+            duration = AppRemoteConfig.maxTimeShowChangeLanguageScreen
+            interpolator = LinearInterpolator()
+            addUpdateListener { animator ->
+                runCatching {
+                    val progress = animator.animatedValue as Int
+                    binding.progressBar.progress = progress
+                }
+            }
+            start()
+        }
 }
 
 fun ChangeLanguageFragment.preloadAndNav() {
@@ -42,7 +60,7 @@ fun ChangeLanguageFragment.preloadAndNav() {
             var completionReason = "unknown"
             try {
                 val result =
-                    withTimeoutOrNull(Constant.maxTimeShowChangeLanguageScreen) {
+                    withTimeoutOrNull(AppRemoteConfig.maxTimeShowChangeLanguageScreen) {
                         val targetJobs = mutableListOf<Deferred<Boolean>>()
                         adsToLoad.forEach { (configName, spaceName) ->
                             val job =
@@ -67,7 +85,7 @@ fun ChangeLanguageFragment.preloadAndNav() {
                 Timber.tag(tag).d(e, "exception occurred")
             } finally {
                 Timber.tag(tag).d("goToNextScreen called - reason: $completionReason")
-                goToNextScreen()
+//                goToNextScreen()
             }
         }
 }
