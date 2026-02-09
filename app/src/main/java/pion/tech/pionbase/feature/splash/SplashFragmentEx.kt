@@ -1,11 +1,8 @@
 package pion.tech.pionbase.feature.splash
 
 import android.animation.ValueAnimator
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import pion.datlt.libads.utils.AdsConstant
 import pion.tech.pionbase.R
-import pion.tech.pionbase.base.launchIO
-import pion.tech.pionbase.util.Constant
 
 fun SplashFragment.onBackEvent() {
     onSystemBack {
@@ -30,7 +27,7 @@ fun SplashFragment.initView() {
 
     progressAnimator =
         ValueAnimator.ofInt(0, 100).apply {
-            duration = 15000
+            duration = 15000L
 
             addUpdateListener { animation ->
                 runCatching {
@@ -42,17 +39,13 @@ fun SplashFragment.initView() {
 }
 
 fun SplashFragment.goToNextScreen() {
-    launchIO {
-        val destination =
-            if (Constant.isPremiumValue(dataStoreRepository) || isCameFromLanguage()) {
-                R.id.action_splashFragment_to_homeFragment
-            } else {
-                R.id.action_splashFragment_to_languageFragment
-            }
-        withContext(Dispatchers.Main) {
-            navigator.navigateTo(destination)
+    val destination =
+        if (AdsConstant.isPremium || isCameFromLanguage()) {
+            R.id.action_splashFragment_to_homeFragment
+        } else {
+            R.id.action_splashFragment_to_languageFragment
         }
-    }
+    navigator.navigateTo(destination)
 }
 
 fun SplashFragment.isCameFromLanguage(): Boolean = navigator.isCameFrom(R.id.languageFragment)
@@ -100,39 +93,22 @@ fun SplashFragment.showAds() {
 fun SplashFragment.preloadLanguageAds() {
     if (isCameFromLanguage()) return
 //    safePreloadAds(
-//        spaceNameConfig = "Language1.1",
-//        spaceNameAds = "language1_native1",
+//        configName = LanguageAds.NATIVE_11_CONFIG,
+//        spaceName = LanguageAds.NATIVE_11_SPACE1,
 //    )
 //    safePreloadAds(
-//        spaceNameConfig = "Language1.1",
-//        spaceNameAds = "language1_native2",
+//        configName = LanguageAds.NATIVE_11_CONFIG,
+//        spaceName = LanguageAds.NATIVE_11_SPACE2,
 //    )
-//    safePreloadAds(
-//        spaceNameConfig = "Language1.1",
-//        spaceNameAds = "language1_native3",
-//    )
-//    if (AdsConstant.listConfigAds["Language1.1"]?.isOn == true) {
+//
+//    if (AdsConstant.listConfigAds[LanguageAds.NATIVE_11_CONFIG]?.isOn == true) {
 //        safePreloadAds(
-//            spaceNameConfig = "Language1.2",
-//            spaceNameAds = "language1_native4",
+//            configName = LanguageAds.NATIVE_12_CONFIG,
+//            spaceName = LanguageAds.NATIVE_12_SPACE1,
 //        )
 //        safePreloadAds(
-//            spaceNameConfig = "Language1.2",
-//            spaceNameAds = "language1_native5",
-//        )
-//        safePreloadAds(
-//            spaceNameConfig = "Language1.2",
-//            spaceNameAds = "language1_native6",
-//        )
-//    }
-//    safePreloadAds(
-//        spaceNameConfig = "language2.1",
-//        spaceNameAds = "language2.1_native",
-//    )
-//    if (AdsConstant.listConfigAds["language2.1"]?.isOn == true) {
-//        safePreloadAds(
-//            spaceNameConfig = "language2.2",
-//            spaceNameAds = "language2.2_native",
+//            configName = LanguageAds.NATIVE_12_CONFIG,
+//            spaceName = LanguageAds.NATIVE_12_SPACE2,
 //        )
 //    }
 }
