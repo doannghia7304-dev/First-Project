@@ -21,6 +21,7 @@ import pion.tech.pionbase.BuildConfig
 import pion.tech.pionbase.R
 import pion.tech.pionbase.base.lifecycleCallback.FragmentLifecycleCallbacksImpl
 import pion.tech.pionbase.data.repository.dataStore.DataStoreRepository
+import pion.tech.pionbase.util.AppRemoteConfig
 import pion.tech.pionbase.util.Constant
 import kotlin.getValue
 
@@ -83,10 +84,11 @@ class MainActivity : AdsActivity() {
     }
 
     override fun onRemoteConfigSuccess(isSuccess: Boolean) {
-        Constant.isRemoteConfigSuccess = isSuccess
+        AppRemoteConfig.setRemoteConfigSuccess(isSuccess)
     }
 
     override fun onGetRemoteConfigDone(remoteConfig: FirebaseRemoteConfig) {
+        AppRemoteConfig.init(remoteConfig)
     }
 
     override fun getAppFlyerKey() = "4Ti9yuyaVb6BJMoy25gWUP"

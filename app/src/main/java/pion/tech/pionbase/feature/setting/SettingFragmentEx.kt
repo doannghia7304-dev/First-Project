@@ -14,7 +14,7 @@ import pion.tech.pionbase.BuildConfig
 import pion.tech.pionbase.R
 import pion.tech.pionbase.feature.setting.dialog.AdvertisementDialog
 import pion.tech.pionbase.feature.setting.dialog.DeveloperDialog
-import pion.tech.pionbase.util.Constant
+import pion.tech.pionbase.util.AppRemoteConfig
 import pion.tech.pionbase.util.setPreventDoubleClick
 import pion.tech.pionbase.util.setPreventDoubleClickScaleView
 
@@ -34,7 +34,7 @@ fun SettingFragment.onBackPressed() {
 @SuppressLint("SetTextI18n")
 fun SettingFragment.bindView() {
     val remoteResult =
-        if (Constant.isRemoteConfigSuccess) {
+        if (AppRemoteConfig.isRemoteConfigSuccess) {
             "R"
         } else {
             "D"
