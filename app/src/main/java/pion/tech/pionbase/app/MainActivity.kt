@@ -16,6 +16,7 @@ import androidx.navigation.fragment.NavHostFragment
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import pion.datlt.libads.AdsActivity
 import pion.datlt.libads.iap.IapController
@@ -24,13 +25,17 @@ import pion.datlt.libads.iap.model.ProductModel
 import pion.datlt.libads.utils.AdsConstant
 import pion.tech.pionbase.BuildConfig
 import pion.tech.pionbase.R
+import pion.tech.pionbase.base.firebaseAnalytics.FirebaseAnalyticsLogger
+import pion.tech.pionbase.base.firebaseAnalytics.FirebaseEventNameSanitizer
 import pion.tech.pionbase.base.lifecycleCallback.FragmentLifecycleCallbacksImpl
 import pion.tech.pionbase.util.AppRemoteConfig
 import pion.tech.pionbase.util.collectFlowOnView
 import timber.log.Timber
+import kotlin.getValue
 
 class MainActivity : AdsActivity() {
     private val commonViewModel: CommonViewModel by viewModel()
+    val logger: FirebaseAnalyticsLogger by inject()
 
     companion object {
         private const val RESTART_DELAY_MS = 500L
@@ -51,6 +56,7 @@ class MainActivity : AdsActivity() {
         }
         initAds()
         initPurchaseIap()
+        setupNavigationLogging()
         subscribeObserver()
     }
 
@@ -61,6 +67,21 @@ class MainActivity : AdsActivity() {
             .collectFlowOnView(this) {
                 AdsConstant.isPremium = it
             }
+    }
+
+    private fun setupNavigationLogging() {
+        val navHostFragment =
+            supportFragmentManager
+                .findFragmentById(R.id.fragmentContainerMain) as? NavHostFragment
+                ?: return
+        navHostFragment.navController.addOnDestinationChangedListener { _, destination, _ ->
+            val screenName = destination.label?.toString() ?: return@addOnDestinationChangedListener
+            val sanitizedName =
+                FirebaseEventNameSanitizer.sanitize(screenName)
+                    ?: return@addOnDestinationChangedListener
+            logger.logEvent("${sanitizedName}_show")
+            logger.logScreen("${sanitizedName}_view")
+        }
     }
 
     override fun getListAppId(): List<String> =
