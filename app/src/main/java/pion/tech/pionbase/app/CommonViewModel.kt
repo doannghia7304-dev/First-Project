@@ -1,7 +1,5 @@
 package pion.tech.pionbase.app
 
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import pion.tech.pionbase.base.BaseViewModel
 import pion.tech.pionbase.data.model.appCategory.AppCategoryUIModel
 import pion.tech.pionbase.data.model.appCategory.toPresentation
@@ -14,47 +12,34 @@ import pion.tech.pionbase.util.handleApiCall
 class CommonViewModel(
     private val apiRepository: ApiRepository,
     private val dataStoreRepository: DataStoreRepository,
-) : BaseViewModel() {
-    private val _uiState = MutableStateFlow(CommonUiState())
-    val uiState = _uiState.asStateFlow()
-
+) : BaseViewModel<CommonUiState, Nothing>(CommonUiState()) {
     /**
      * Load app categories. Can be called from multiple screens (e.g. Language, Home).
      */
     fun getAppId() {
-        // turn on loading for category state
-        _uiState.value =
-            _uiState.value.copy(
-                categoryState =
-                    _uiState.value.categoryState.copy(
-                        isLoading = true,
-                        error = null,
-                    ),
-            )
+        setState {
+            copy(categoryState = categoryState.copy(isLoading = true, error = null))
+        }
 
         handleApiCall(
             apiCall = { apiRepository.getAppCategory() },
             onSuccess = { data ->
                 val categories = data.map { item -> item.toPresentation() }
-                _uiState.value =
-                    _uiState.value.copy(
+                setState {
+                    copy(
                         categoryState =
-                            _uiState.value.categoryState.copy(
+                            categoryState.copy(
                                 isLoading = false,
                                 categories = categories,
                                 error = null,
                             ),
                     )
+                }
             },
             onError = { throwable ->
-                _uiState.value =
-                    _uiState.value.copy(
-                        categoryState =
-                            _uiState.value.categoryState.copy(
-                                isLoading = false,
-                                error = throwable,
-                            ),
-                    )
+                setState {
+                    copy(categoryState = categoryState.copy(isLoading = false, error = throwable))
+                }
             },
         )
     }
@@ -63,39 +48,29 @@ class CommonViewModel(
      * Load templates for a specific category id.
      */
     fun getTemplate(categoryId: String) {
-        // turn on loading for template state
-        _uiState.value =
-            _uiState.value.copy(
-                templateState =
-                    _uiState.value.templateState.copy(
-                        isLoading = true,
-                        error = null,
-                    ),
-            )
+        setState {
+            copy(templateState = templateState.copy(isLoading = true, error = null))
+        }
 
         handleApiCall(
             apiCall = { apiRepository.getTemplateData(categoryId) },
             onSuccess = { data ->
                 val templates = data.map { item -> item.toPresentation() }
-                _uiState.value =
-                    _uiState.value.copy(
+                setState {
+                    copy(
                         templateState =
-                            _uiState.value.templateState.copy(
+                            templateState.copy(
                                 isLoading = false,
                                 templates = templates,
                                 error = null,
                             ),
                     )
+                }
             },
             onError = { throwable ->
-                _uiState.value =
-                    _uiState.value.copy(
-                        templateState =
-                            _uiState.value.templateState.copy(
-                                isLoading = false,
-                                error = throwable,
-                            ),
-                    )
+                setState {
+                    copy(templateState = templateState.copy(isLoading = false, error = throwable))
+                }
             },
         )
     }
@@ -105,7 +80,7 @@ class CommonViewModel(
      * It tries to use existing categories if available.
      */
     fun loadTemplateFromTemplateCategoryName(name: String = "Template") {
-        val categories = _uiState.value.categoryState.categories
+        val categories = uiState.value.categoryState.categories
 
         val templateCategoryId =
             categories?.firstOrNull { item -> item.name == name }?.id
