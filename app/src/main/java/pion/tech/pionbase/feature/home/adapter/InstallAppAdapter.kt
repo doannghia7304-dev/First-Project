@@ -5,6 +5,7 @@ import pion.tech.pionbase.base.BaseListAdapter
 import pion.tech.pionbase.base.createDiffCallback
 import pion.tech.pionbase.data.model.installedApp.InstalledAppUIModel
 import pion.tech.pionbase.databinding.ItemAppBinding
+import pion.tech.pionbase.util.setPreventDoubleClick
 
 class InstallAppAdapter :
     BaseListAdapter<InstalledAppUIModel, ItemAppBinding>(
@@ -13,6 +14,16 @@ class InstallAppAdapter :
             areContentsTheSame = { oldItem, newItem -> oldItem == newItem },
         ),
     ) {
+    interface Listener {
+        fun onClickApp(item: InstalledAppUIModel)
+    }
+
+    private var listener: Listener? = null
+
+    fun setListener(listener: Listener) {
+        this.listener = listener
+    }
+
     override fun getLayoutRes(viewType: Int): Int = R.layout.item_app
 
     override fun bindView(
@@ -25,6 +36,9 @@ class InstallAppAdapter :
             tvPackageName.text = item.packageName
             tvVersionName.text = item.versionName ?: "Unknown"
             ivAppIcon.setImageDrawable(item.icon)
+            root.setPreventDoubleClick {
+                listener?.onClickApp(item)
+            }
         }
     }
 }

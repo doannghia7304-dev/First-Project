@@ -28,4 +28,6 @@
     <string name="des_6">- Banner, native ads are customized as a component of AD (usually with a yellow label)</string>
     <string name="des_7">We are always trying to balance the user experience and advertisement</string>
     <string name="please_select_language">Please select language</string>
+    <string name="do_you_want_to_exit">Do you want to exit?</string>
+    <string name="exit">Exit</string>
 </resources>

@@ -1,13 +1,14 @@
 package pion.tech.pionbase.feature.home
 
 import pion.tech.pionbase.R
-import pion.tech.pionbase.feature.home.bottomSheet.DemoBottomSheet
 import pion.tech.pionbase.feature.home.dialog.DemoDialog
+import pion.tech.pionbase.feature.home.dialog.ExitAppDialog
 import pion.tech.pionbase.util.safeShowDialog
 import pion.tech.pionbase.util.setPreventDoubleClick
 import pion.tech.pionbase.util.setPreventDoubleClickScaleView
 
 fun HomeFragment.initView() {
+    adapter.setListener(this)
     binding.rvMain.adapter = adapter
 }
 
@@ -18,6 +19,8 @@ fun HomeFragment.onBackEvent() {
 }
 
 fun HomeFragment.backEvent() {
+    val dialog = ExitAppDialog()
+    dialog.show(childFragmentManager)
 }
 
 fun HomeFragment.settingEvent() {
