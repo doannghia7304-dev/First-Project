@@ -3,8 +3,8 @@ package pion.tech.pionbase.base
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Rect
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -84,26 +84,36 @@ abstract class BaseDialogFragment<T : ViewDataBinding>(
                 setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
                 setLayout(
                     WindowManager.LayoutParams.MATCH_PARENT,
-                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.MATCH_PARENT,
                 )
-                attributes =
-                    attributes.apply {
-                        gravity = Gravity.CENTER
-                    }
 
                 decorView.setOnTouchListener { v, event ->
                     if (event.action == MotionEvent.ACTION_DOWN) {
+                        val context = context ?: return@setOnTouchListener false
                         val inputMethodManager =
-                            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                        inputMethodManager.hideSoftInputFromWindow(v.windowToken, 0)
+                            context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                        inputMethodManager?.hideSoftInputFromWindow(v.windowToken, 0)
+
+                        if (isCancelable && isTouchOutsideContent(event)) {
+                            dismiss()
+                        }
                     }
                     false
                 }
             }
             setCancelable(true)
-            setCanceledOnTouchOutside(true)
         }
     }
+
+    protected open fun getContentView(): View? = (binding.root as? ViewGroup)?.getChildAt(0)
+
+    private fun isTouchOutsideContent(event: MotionEvent): Boolean =
+        runCatching {
+            val contentView = getContentView() ?: return@runCatching false
+            val rect = Rect()
+            contentView.getGlobalVisibleRect(rect)
+            !rect.contains(event.rawX.toInt(), event.rawY.toInt())
+        }.getOrDefault(false)
 
     open fun initView(savedInstanceState: Bundle?) {}
 
