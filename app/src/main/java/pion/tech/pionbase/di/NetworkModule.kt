@@ -1,9 +1,10 @@
-package pion.tech.pionbase.di.data.network
+package pion.tech.pionbase.di
 
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.google.gson.Strictness
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -16,17 +17,14 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 import java.util.concurrent.TimeUnit
 
-/**
- * Network layer dependencies
- * - Gson for JSON serialization
- * - OkHttp client with type-safe interceptors (Header, Logging, Chucker)
- * - Retrofit for API communication
- *
- * Using specific types instead of named qualifiers for better type safety
- */
+private const val CACHE_DIR_NAME = "http-cache"
+private const val CACHE_SIZE_MB = 10L
+private const val CACHE_SIZE_BYTES = CACHE_SIZE_MB * 1024 * 1024
+private const val TIMEOUT_SECONDS = 30L
+
 val networkModule =
     module {
-        single<Gson> { GsonBuilder().setLenient().create() }
+        single<Gson> { GsonBuilder().setStrictness(Strictness.LENIENT).create() }
 
         // Type-safe interceptors - no magic strings
         single<HeaderInterceptor> { HeaderInterceptor() }
@@ -43,8 +41,8 @@ val networkModule =
         }
 
         single<Cache> {
-            val httpCacheDirectory = File(get<Context>().cacheDir, "http-cache")
-            Cache(httpCacheDirectory, 10 * 1024 * 1024L) // 10 MB
+            val httpCacheDirectory = File(get<Context>().cacheDir, CACHE_DIR_NAME)
+            Cache(httpCacheDirectory, CACHE_SIZE_BYTES)
         }
 
         single<OkHttpClient> {
@@ -54,9 +52,9 @@ val networkModule =
                 .addInterceptor(get<HeaderInterceptor>())
                 .addInterceptor(get<HttpLoggingInterceptor>())
                 .addInterceptor(ChuckerInterceptor(get()))
-                .connectTimeout(30L, TimeUnit.SECONDS)
-                .readTimeout(30L, TimeUnit.SECONDS)
-                .writeTimeout(30L, TimeUnit.SECONDS)
+                .connectTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+                .readTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+                .writeTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
                 .build()
         }
 

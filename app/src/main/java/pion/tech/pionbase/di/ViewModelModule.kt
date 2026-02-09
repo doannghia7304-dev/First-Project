@@ -1,4 +1,4 @@
-package pion.tech.pionbase.di.feature
+package pion.tech.pionbase.di
 
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
@@ -9,10 +9,6 @@ import pion.tech.pionbase.feature.onboard.OnboardViewModel
 import pion.tech.pionbase.feature.setting.SettingViewModel
 import pion.tech.pionbase.feature.splash.SplashViewModel
 
-/**
- * Presentation layer dependencies
- * ViewModels for each feature
- */
 val viewModelModule =
     module {
         viewModelOf(::CommonViewModel)

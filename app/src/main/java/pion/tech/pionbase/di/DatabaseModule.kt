@@ -1,4 +1,4 @@
-package pion.tech.pionbase.di.data.local
+package pion.tech.pionbase.di
 
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -7,11 +7,6 @@ import pion.tech.pionbase.BuildConfig
 import pion.tech.pionbase.data.database.AppDatabase
 import pion.tech.pionbase.data.database.dao.DummyDAO
 
-/**
- * Local database dependencies
- * - Room Database
- * - DAOs
- */
 val databaseModule =
     module {
         single<AppDatabase> {

@@ -1,4 +1,4 @@
-package pion.tech.pionbase.di.data.repository
+package pion.tech.pionbase.di
 
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
@@ -12,12 +12,6 @@ import pion.tech.pionbase.data.repository.installedAppRepository.InstalledAppsRe
 import pion.tech.pionbase.data.repository.languageRepository.LanguageRepository
 import pion.tech.pionbase.data.repository.languageRepository.LanguageRepositoryImpl
 
-/**
- * Repository layer dependencies
- * Bridges data sources (API, local database, DataStore) to the rest of the app
- *
- * Using Constructor DSL (singleOf) for cleaner, type-safe dependency injection
- */
 val repositoryModule =
     module {
         singleOf(::DataStoreRepositoryImpl) bind DataStoreRepository::class

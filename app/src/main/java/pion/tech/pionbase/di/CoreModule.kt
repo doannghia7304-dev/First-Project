@@ -1,4 +1,4 @@
-package pion.tech.pionbase.di.core
+package pion.tech.pionbase.di
 
 import android.app.Application
 import androidx.datastore.core.DataStore
@@ -9,11 +9,6 @@ import com.google.firebase.remoteconfig.ktx.remoteConfig
 import org.koin.dsl.module
 import pion.tech.pionbase.util.dataStore
 
-/**
- * Core application dependencies
- * - Firebase Remote Config
- * - DataStore (initialized in Application, this just provides the instance)
- */
 val coreModule =
     module {
         single<FirebaseRemoteConfig> { Firebase.remoteConfig }
