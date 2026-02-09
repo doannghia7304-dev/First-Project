@@ -39,12 +39,12 @@ class HomeFragment :
             }
 
         // Observe loading state
-        viewModel.uiState
-            .map { it.isLoading }
-            .distinctUntilChanged()
-            .collectFlowOnView(viewLifecycleOwner) { isLoading ->
-                showHideLoading(isLoading)
-            }
+//        viewModel.uiState
+//            .map { it.isLoading }
+//            .distinctUntilChanged()
+//            .collectFlowOnView(viewLifecycleOwner) { isLoading ->
+//                showHideLoading(isLoading)
+//            }
 
         // Observe error state
         viewModel.uiState
@@ -57,14 +57,14 @@ class HomeFragment :
             }
 
         // Observe CommonViewModel state for template loading if needed
-        commonViewModel.uiState
-            .map { it.templateState.isLoading }
-            .distinctUntilChanged()
-            .collectFlowOnView(viewLifecycleOwner) { isLoadingTemplate ->
-                if (isLoadingTemplate) {
-                    showHideLoading(true)
-                }
-            }
+//        commonViewModel.uiState
+//            .map { it.templateState.isLoading }
+//            .distinctUntilChanged()
+//            .collectFlowOnView(viewLifecycleOwner) { isLoadingTemplate ->
+//                if (isLoadingTemplate) {
+//                    showHideLoading(true)
+//                }
+//            }
     }
 
     override fun onDialogPositiveClick() {
