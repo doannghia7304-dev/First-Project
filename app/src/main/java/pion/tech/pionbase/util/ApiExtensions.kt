@@ -106,29 +106,6 @@ inline fun <R, T> BaseViewModel.handleApiCall(
 }
 
 /**
- * Extension function for handling local data operations (non-API)
- */
-inline fun <T> BaseViewModel.handleLocalDataCall(
-    stateFlow: MutableStateFlow<UiState<T>>,
-    crossinline dataCall: suspend () -> T,
-    skipIfInProgress: Boolean = true,
-) {
-    launchIO {
-        if (skipIfInProgress && (stateFlow.value is UiState.Loading || stateFlow.value is UiState.Success)) {
-            return@launchIO
-        }
-
-        stateFlow.value = UiState.Loading
-        try {
-            val data = dataCall()
-            stateFlow.value = UiState.Success(data)
-        } catch (e: Exception) {
-            stateFlow.value = UiState.Error(e)
-        }
-    }
-}
-
-/**
  * Extension function to extract data from Flow<Result<T>> with a default fallback value.
  * This eliminates the need for repetitive when expressions when working with Result types.
  *

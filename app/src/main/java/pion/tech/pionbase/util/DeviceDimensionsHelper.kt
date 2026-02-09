@@ -23,13 +23,12 @@ object DeviceDimensionsHelper {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.displayMetrics)
     }
 
-    fun Fragment.convertDpToPx(dp: Float): Float {
-        return TypedValue.applyDimension(
+    fun Fragment.convertDpToPx(dp: Float): Float =
+        TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
             dp,
-            resources.displayMetrics
+            resources.displayMetrics,
         )
-    }
 
     // DeviceDimensionsHelper.convertPixelsToDp(25f, context) => (25px converted to dp)
     fun Context.convertPixelsToDp(px: Float): Float {
@@ -44,16 +43,13 @@ object DeviceDimensionsHelper {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp, r.displayMetrics)
     }
 
-    fun Fragment.convertSpToPx(sp: Float): Float {
-        return TypedValue.applyDimension(
+    fun Fragment.convertSpToPx(sp: Float): Float =
+        TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_SP,
             sp,
-            resources.displayMetrics
+            resources.displayMetrics,
         )
-    }
 
     // Not tested yet
-    fun Context.convertPixelsToSp(px: Float): Float {
-        return px / resources.displayMetrics.scaledDensity
-    }
+    fun Context.convertPixelsToSp(px: Float): Float = px / resources.displayMetrics.scaledDensity
 }

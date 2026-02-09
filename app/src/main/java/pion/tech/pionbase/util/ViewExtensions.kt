@@ -38,13 +38,7 @@ import java.lang.Exception
 @SuppressLint("ClickableViewAccessibility")
 fun SwitchCompat.preventDrag() {
     setOnTouchListener { _, event ->
-        if (event.action == MotionEvent.ACTION_MOVE) {
-            // Chặn drag
-            true
-        } else {
-            // Cho phép xử lý bình thường các sự kiện khác (click)
-            false
-        }
+        event.action == MotionEvent.ACTION_MOVE
     }
 }
 
