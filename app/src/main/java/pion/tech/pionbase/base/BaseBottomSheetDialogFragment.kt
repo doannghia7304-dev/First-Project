@@ -20,7 +20,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 abstract class BaseBottomSheetDialogFragment<T : ViewDataBinding>(
-    @LayoutRes private val contentLayoutId: Int,
+    @param:LayoutRes private val contentLayoutId: Int,
 ) : BottomSheetDialogFragment() {
     @Inject
     lateinit var logger: FirebaseAnalyticsLogger
@@ -129,19 +129,15 @@ abstract class BaseBottomSheetDialogFragment<T : ViewDataBinding>(
         if (isVisible) {
             return
         }
-        try {
+        runCatching {
             manager.beginTransaction().remove(this).commit()
             super.show(manager, tag)
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
     }
 
     override fun dismiss() {
-        try {
+        runCatching {
             super.dismiss()
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
     }
 }

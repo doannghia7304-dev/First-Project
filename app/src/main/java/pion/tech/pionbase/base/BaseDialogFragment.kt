@@ -23,7 +23,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 abstract class BaseDialogFragment<T : ViewDataBinding>(
-    @LayoutRes private val contentLayoutId: Int,
+    @param:LayoutRes private val contentLayoutId: Int,
 ) : DialogFragment() {
     @Inject
     lateinit var logger: FirebaseAnalyticsLogger
@@ -79,24 +79,29 @@ abstract class BaseDialogFragment<T : ViewDataBinding>(
      */
     @SuppressLint("ClickableViewAccessibility")
     private fun setupDialogWindow() {
-        dialog?.window?.apply {
-            setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
-            setLayout(
-                WindowManager.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.MATCH_PARENT,
-            )
-            attributes = attributes.apply {
-                gravity = Gravity.CENTER
-            }
+        dialog?.apply {
+            window?.apply {
+                setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+                setLayout(
+                    WindowManager.LayoutParams.MATCH_PARENT,
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                )
+                attributes =
+                    attributes.apply {
+                        gravity = Gravity.CENTER
+                    }
 
-            decorView.setOnTouchListener { v, event ->
-                if (event.action == MotionEvent.ACTION_DOWN) {
-                    val inputMethodManager =
-                        requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    inputMethodManager.hideSoftInputFromWindow(v.windowToken, 0)
+                decorView.setOnTouchListener { v, event ->
+                    if (event.action == MotionEvent.ACTION_DOWN) {
+                        val inputMethodManager =
+                            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        inputMethodManager.hideSoftInputFromWindow(v.windowToken, 0)
+                    }
+                    false
                 }
-                false
             }
+            setCancelable(true)
+            setCanceledOnTouchOutside(true)
         }
     }
 
@@ -106,24 +111,6 @@ abstract class BaseDialogFragment<T : ViewDataBinding>(
 
     open fun initData(savedInstanceState: Bundle?) {}
 
-    /**
-     * Set dialog to be cancelable
-     */
-    fun setDialogCanCancel() {
-        dialog?.apply {
-            window?.apply {
-                setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
-                setLayout(
-                    WindowManager.LayoutParams.MATCH_PARENT,
-                    WindowManager.LayoutParams.WRAP_CONTENT,
-                )
-            }
-            setCancelable(true)
-            setCanceledOnTouchOutside(true)
-        }
-    }
-
-    // Lifecycle methods with logging
     override fun onStart() {
         Timber.d("${this::class.simpleName} onStart")
         super.onStart()
@@ -169,19 +156,15 @@ abstract class BaseDialogFragment<T : ViewDataBinding>(
         if (isVisible) {
             return
         }
-        try {
+        runCatching {
             manager.beginTransaction().remove(this).commit()
             super.show(manager, tag)
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
     }
 
     override fun dismiss() {
-        try {
+        runCatching {
             super.dismiss()
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
     }
 }
