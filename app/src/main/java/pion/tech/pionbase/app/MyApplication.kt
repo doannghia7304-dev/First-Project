@@ -19,16 +19,12 @@ class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        // Start Koin
         startKoin {
             androidContext(this@MyApplication)
             analytics()
             modules(appModules)
         }
-
-        // Initialize Firebase Remote Config
         setupRemoteConfig()
-
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
         if (BuildConfig.DEBUG) {
@@ -42,7 +38,7 @@ class MyApplication : Application() {
                 .silent(false, Recovery.SilentMode.RECOVER_ACTIVITY_STACK)
                 .init(this)
 
-            Timber.Forest.plant(Timber.DebugTree())
+            Timber.plant(Timber.DebugTree())
         }
         registerActivityLifecycleCallbacks(ActivityLifecycleCallbacksImpl())
     }
@@ -53,12 +49,17 @@ class MyApplication : Application() {
             remoteConfigSettings {
                 minimumFetchIntervalInSeconds =
                     if (BuildConfig.DEBUG) {
-                        30
+                        REMOTE_CONFIG_FETCH_INTERVAL_DEBUG
                     } else {
-                        3600
+                        REMOTE_CONFIG_FETCH_INTERVAL_RELEASE
                     }
             },
         )
         remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
+    }
+
+    companion object {
+        private const val REMOTE_CONFIG_FETCH_INTERVAL_DEBUG = 30L
+        private const val REMOTE_CONFIG_FETCH_INTERVAL_RELEASE = 3600L
     }
 }

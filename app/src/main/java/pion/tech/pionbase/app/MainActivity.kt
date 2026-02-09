@@ -9,7 +9,6 @@ import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.NavController
@@ -17,7 +16,7 @@ import androidx.navigation.fragment.NavHostFragment
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
-import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import pion.datlt.libads.AdsActivity
 import pion.datlt.libads.iap.IapController
 import pion.datlt.libads.iap.SubscribeInterface
@@ -26,16 +25,16 @@ import pion.datlt.libads.utils.AdsConstant
 import pion.tech.pionbase.BuildConfig
 import pion.tech.pionbase.R
 import pion.tech.pionbase.base.lifecycleCallback.FragmentLifecycleCallbacksImpl
-import pion.tech.pionbase.data.repository.dataStore.DataStoreRepository
 import pion.tech.pionbase.util.AppRemoteConfig
-import pion.tech.pionbase.util.Constant
 import pion.tech.pionbase.util.collectFlowOnView
-import pion.tech.pionbase.util.handleUiState
 import timber.log.Timber
-import kotlin.getValue
 
 class MainActivity : AdsActivity() {
-    private val commonViewModel: CommonViewModel by viewModels()
+    private val commonViewModel: CommonViewModel by viewModel()
+
+    companion object {
+        private const val RESTART_DELAY_MS = 500L
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -140,7 +139,7 @@ class MainActivity : AdsActivity() {
                         intent!!.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                         startActivity(intent)
-                    }, 500)
+                    }, RESTART_DELAY_MS)
                 }
 
                 override fun subscribeError(error: String) {
