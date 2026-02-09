@@ -9,7 +9,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         tools:background="#4D000000">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,7 +18,6 @@
             android:theme="@style/RoundedCorner.16"
             android:backgroundTint="@color/white"
             android:padding="@dimen/_16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
