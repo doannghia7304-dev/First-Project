@@ -7,10 +7,34 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-abstract class BaseViewModel : ViewModel()
+abstract class BaseViewModel<State, Event>(
+    initialState: State,
+) : ViewModel() {
+    private val _uiState = MutableStateFlow(initialState)
+    val uiState = _uiState.asStateFlow()
+
+    private val _uiEvent = Channel<Event>(Channel.BUFFERED)
+    val uiEvent = _uiEvent.receiveAsFlow()
+
+    protected fun setState(reduce: State.() -> State) {
+        _uiState.update { it.reduce() }
+    }
+
+    protected fun setEvent(event: Event) {
+        launchMain {
+            _uiEvent.send(event)
+        }
+    }
+}
 
 /**
  * Launch a coroutine with exception handling

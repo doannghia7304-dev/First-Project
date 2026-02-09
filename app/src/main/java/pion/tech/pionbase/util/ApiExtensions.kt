@@ -1,5 +1,6 @@
 package pion.tech.pionbase.util
 
+import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
@@ -28,7 +29,7 @@ sealed interface UiState<out T> {
 /**
  * Extension function to handle API calls with automatic state management
  */
-inline fun <T, R> BaseViewModel.handleApiCall(
+inline fun <T, R> ViewModel.handleApiCall(
     stateFlow: MutableStateFlow<UiState<T>>,
     crossinline apiCall: suspend () -> Flow<Result<R>>,
     crossinline transform: (R) -> T,
@@ -54,7 +55,7 @@ inline fun <T, R> BaseViewModel.handleApiCall(
 /**
  * Extension function for simple API calls without transformation
  */
-inline fun <T> BaseViewModel.handleApiCall(
+inline fun <T> ViewModel.handleApiCall(
     stateFlow: MutableStateFlow<UiState<T>>,
     crossinline apiCall: suspend () -> Flow<Result<T>>,
     skipIfInProgress: Boolean = true,
@@ -66,7 +67,7 @@ inline fun <T> BaseViewModel.handleApiCall(
  * Extension function for API calls without needing to track UI state
  * Useful when you just need to process the result without updating UI state
  */
-inline fun <R> BaseViewModel.handleApiCall(
+inline fun <R> ViewModel.handleApiCall(
     crossinline apiCall: suspend () -> Flow<Result<R>>,
     crossinline onSuccess: (R) -> Unit = {},
     crossinline onError: (Throwable) -> Unit = {},
@@ -87,7 +88,7 @@ inline fun <R> BaseViewModel.handleApiCall(
  * Extension function for API calls with data transformation
  * Useful when you need to transform the data before processing it
  */
-inline fun <R, T> BaseViewModel.handleApiCall(
+inline fun <R, T> ViewModel.handleApiCall(
     crossinline apiCall: suspend () -> Flow<Result<R>>,
     crossinline transform: (R) -> T,
     crossinline onSuccess: (T) -> Unit = {},
