@@ -12,17 +12,23 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import org.koin.android.ext.android.inject
 import pion.datlt.libads.AdsActivity
 import pion.datlt.libads.iap.IapController
 import pion.datlt.libads.iap.SubscribeInterface
 import pion.datlt.libads.iap.model.ProductModel
+import pion.datlt.libads.utils.AdsConstant
 import pion.tech.pionbase.BuildConfig
 import pion.tech.pionbase.R
 import pion.tech.pionbase.base.lifecycleCallback.FragmentLifecycleCallbacksImpl
 import pion.tech.pionbase.data.repository.dataStore.DataStoreRepository
 import pion.tech.pionbase.util.AppRemoteConfig
 import pion.tech.pionbase.util.Constant
+import pion.tech.pionbase.util.collectFlowOnView
+import pion.tech.pionbase.util.handleUiState
+import timber.log.Timber
 import kotlin.getValue
 
 class MainActivity : AdsActivity() {
@@ -44,6 +50,16 @@ class MainActivity : AdsActivity() {
         }
         initAds()
         initPurchaseIap()
+        subscribeObserver()
+    }
+
+    private fun subscribeObserver() {
+        commonViewModel.uiState
+            .map { it.isPremium }
+            .distinctUntilChanged()
+            .collectFlowOnView(this) {
+                AdsConstant.isPremium = it
+            }
     }
 
     override fun getListAppId(): List<String> =
@@ -95,43 +111,19 @@ class MainActivity : AdsActivity() {
 
     override fun onGetIapDone(isSuccess: Boolean) {
         super.onGetIapDone(isSuccess)
-//        val tag = "onGetIapDone"
-//        if (isSuccess) {
-//            // Ví dụ: cập nhật giao diện hoặc trạng thái ứng dụng
-//            val productModel =
-//                IAPConnector
-//                    .getAllProductModel()
-//                    .find { it.isPurchase }
-//            Timber.tag(tag).d("onGetIapDone: $productModel")
-//            if (productModel != null) {
-//                Constant.isPremium = productModel.isPurchase
-//                AdsConstant.isPremium = productModel.isPurchase
-//                lifecycleScope.launch(Dispatchers.IO) {
-//                    Constant.setPremium(
-//                        isPremium = productModel.isPurchase,
-//                        dataStoreRepository = dataStoreRepository,
-//                    )
-//                }
-//            } else {
-//                Constant.isPremium = false
-//                AdsConstant.isPremium = false
-//                lifecycleScope.launch(Dispatchers.IO) {
-//                    Constant.setPremium(
-//                        isPremium = false,
-//                        dataStoreRepository = dataStoreRepository,
-//                    )
-//                }
-//            }
-//        } else {
-//            Constant.isPremium = false
-//            AdsConstant.isPremium = false
-//            lifecycleScope.launch(Dispatchers.IO) {
-//                Constant.setPremium(
-//                    isPremium = false,
-//                    dataStoreRepository = dataStoreRepository,
-//                )
-//            }
-//        }
+        val tag = "onGetIapDone"
+        if (isSuccess) {
+            val productModel =
+                IapController
+                    .getListAllProduct()
+                    .find { it.isPurchase }
+            Timber.tag(tag).d("onGetIapDone: $productModel")
+            if (productModel != null) {
+                commonViewModel.setPremium(productModel.isPurchase)
+            } else {
+                commonViewModel.setPremium(false)
+            }
+        }
     }
 
     private fun initPurchaseIap() {

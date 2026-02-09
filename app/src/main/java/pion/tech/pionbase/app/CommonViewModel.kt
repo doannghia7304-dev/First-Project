@@ -89,7 +89,21 @@ class CommonViewModel(
         }
     }
 
+    private fun getIsPremium() {
+        handleApiCall(
+            apiCall = { dataStoreRepository.getIsPremium() },
+            onSuccess = { isPremium ->
+                setState { copy(isPremium = isPremium) }
+            },
+        )
+    }
+
+    fun setPremium(isPremium: Boolean) {
+        handleApiCall(apiCall = { dataStoreRepository.setIsPremium(isPremium) })
+    }
+
     init {
+        getIsPremium()
         getAppId()
     }
 }
@@ -109,4 +123,5 @@ data class TemplateUiState(
 data class CommonUiState(
     val categoryState: CategoryUiState = CategoryUiState(),
     val templateState: TemplateUiState = TemplateUiState(),
+    val isPremium: Boolean = false,
 )
