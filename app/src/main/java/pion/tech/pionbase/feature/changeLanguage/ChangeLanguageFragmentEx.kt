@@ -43,16 +43,28 @@ fun ChangeLanguageFragment.preloadAndNav() {
 
     val adsToLoad: List<Pair<String, String>> =
         listOf(
+            // Onboard 1
             OnboardAds.NATIVE_11_CONFIG to OnboardAds.NATIVE_11_SPACE1,
             OnboardAds.NATIVE_11_CONFIG to OnboardAds.NATIVE_11_SPACE2,
+            // Onboard full 1
             OnboardFullAds.NATIVE_11_CONFIG to OnboardFullAds.NATIVE_11_SPACE1,
             OnboardFullAds.NATIVE_11_CONFIG to OnboardFullAds.NATIVE_11_SPACE2,
+            // Onboard 2
+            OnboardAds.NATIVE_2_CONFIG to OnboardAds.NATIVE_2_SPACE,
+            // Onboard full 2
+            OnboardFullAds.NATIVE_21_CONFIG to OnboardFullAds.NATIVE_21_SPACE1,
+            OnboardFullAds.NATIVE_21_CONFIG to OnboardFullAds.NATIVE_21_SPACE2,
+            // Onboard 3
+            OnboardAds.NATIVE_2_CONFIG to OnboardAds.NATIVE_3_SPACE,
         )
 
     val adsTarget =
         setOf(
             OnboardAds.NATIVE_11_SPACE1,
             OnboardFullAds.NATIVE_11_SPACE1,
+            OnboardAds.NATIVE_2_SPACE,
+            OnboardFullAds.NATIVE_21_SPACE1,
+            OnboardAds.NATIVE_3_SPACE,
         )
 
     preloadJob =
@@ -85,7 +97,7 @@ fun ChangeLanguageFragment.preloadAndNav() {
                 Timber.tag(tag).d(e, "exception occurred")
             } finally {
                 Timber.tag(tag).d("goToNextScreen called - reason: $completionReason")
-//                goToNextScreen()
+                goToNextScreen()
             }
         }
 }
