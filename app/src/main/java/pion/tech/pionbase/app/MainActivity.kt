@@ -1,7 +1,10 @@
 package pion.tech.pionbase.app
 
+import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -33,7 +36,6 @@ import kotlin.getValue
 
 class MainActivity : AdsActivity() {
     private val commonViewModel: CommonViewModel by viewModels()
-    private val dataStoreRepository: DataStoreRepository by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -130,9 +132,19 @@ class MainActivity : AdsActivity() {
         IapController.setIAPListener(
             object : SubscribeInterface {
                 override fun subscribeSuccess(productModel: ProductModel) {
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        val intent =
+                            baseContext.packageManager.getLaunchIntentForPackage(
+                                baseContext.packageName,
+                            )
+                        intent!!.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                        startActivity(intent)
+                    }, 500)
                 }
 
                 override fun subscribeError(error: String) {
+                    Timber.e("Subscribe error: $error")
                 }
             },
         )
@@ -140,21 +152,20 @@ class MainActivity : AdsActivity() {
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         if (ev?.action == MotionEvent.ACTION_DOWN) {
-            currentFocus?.let { view ->
-                if (view is EditText) {
-                    val outRect = Rect()
-                    view.getGlobalVisibleRect(outRect)
-                    if (!outRect.contains(ev.rawX.toInt(), ev.rawY.toInt())) {
-                        runCatching {
-                            val imm =
-                                getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                            imm.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
-                        }
-                        view.clearFocus()
-                    }
-                }
-            }
+            hideKeyboardOnTouchOutsideEditText(ev)
         }
         return super.dispatchTouchEvent(ev)
+    }
+
+    private fun hideKeyboardOnTouchOutsideEditText(ev: MotionEvent) {
+        val view = currentFocus as? EditText ?: return
+        val outRect = Rect()
+        view.getGlobalVisibleRect(outRect)
+        if (outRect.contains(ev.rawX.toInt(), ev.rawY.toInt())) return
+        runCatching {
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
+        }
+        view.clearFocus()
     }
 }
