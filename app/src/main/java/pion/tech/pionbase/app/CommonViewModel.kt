@@ -1,5 +1,6 @@
 package pion.tech.pionbase.app
 
+import pion.datlt.libads.utils.AdsConstant
 import pion.tech.pionbase.base.BaseViewModel
 import pion.tech.pionbase.data.model.appCategory.AppCategoryUIModel
 import pion.tech.pionbase.data.model.appCategory.toPresentation
@@ -99,6 +100,7 @@ class CommonViewModel(
     }
 
     fun setPremium(isPremium: Boolean) {
+        AdsConstant.isPremium = isPremium
         handleApiCall(apiCall = { dataStoreRepository.setIsPremium(isPremium) })
     }
 
