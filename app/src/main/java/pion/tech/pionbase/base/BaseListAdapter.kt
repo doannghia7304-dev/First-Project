@@ -8,7 +8,20 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+
+/**
+ * Shared singleton executor for all ListAdapter diff calculations.
+ * Prevents thread leak from creating new executor per adapter.
+ */
+private val diffExecutor: ExecutorService by lazy {
+    Executors.newSingleThreadExecutor { r ->
+        Thread(r, "ListAdapter-Diff-Thread").apply {
+            isDaemon = true // Don't prevent JVM shutdown
+        }
+    }
+}
 
 private interface BaseRecyclerAdapter<Item : Any, ViewBinding : ViewDataBinding> {
     /**
@@ -34,7 +47,7 @@ abstract class BaseListAdapter<Item : Any, ViewBinding : ViewDataBinding>(
 ) : ListAdapter<Item, BaseViewHolder<ViewBinding>>(
         AsyncDifferConfig
             .Builder(diffCallback)
-            .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
+            .setBackgroundThreadExecutor(diffExecutor)
             .build(),
     ),
     BaseRecyclerAdapter<Item, ViewBinding> {
