@@ -5,10 +5,10 @@ plugins {
 
 android {
     namespace 'pion.datlt.libads'
-    compileSdk 34
+    compileSdk 36
 
     defaultConfig {
-        minSdk 24
+        minSdk 28
 
 
         versionCode 4
