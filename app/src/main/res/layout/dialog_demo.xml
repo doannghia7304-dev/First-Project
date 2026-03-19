@@ -16,7 +16,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintWidth_percent="0.8"
-            android:background="@drawable/bg_radius_16"
+            android:theme="@style/RoundedCorner.16"
             android:padding="@dimen/_16dp"
             android:orientation="vertical"
             android:backgroundTint="@color/white"
@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:layout_gravity="center_horizontal"
-                android:textSize="@dimen/text_size_18"
+                android:textSize="@dimen/_18sp"
                 android:text="This is demo dialog" />
 
             <Button

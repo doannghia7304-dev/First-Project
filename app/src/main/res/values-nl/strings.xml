@@ -1,0 +1,29 @@
+<resources>
+    <string name="admob_application_id" translatable="false">ca-app-pub-2222869408518511~9607465111</string>
+    <string name="please_wait" translatable="false">Please wait!</string>
+    <string name="app_name" translatable="false">Pion base</string>
+    <string name="loading">Laden</string>
+    <string name="home">Thuis</string>
+    <string name="language">Taal</string>
+    <string name="loading_ads">Advertenties laden</string>
+    <string name="something_error">Iets fout</string>
+    <string name="swipe_to_continue">Veeg om door te gaan</string>
+    <string name="loading_data">Gegevens laden</string>
+    <string name="setting">Instelling</string>
+    <string name="general_setting">Algemene setting</string>
+    <string name="information_about">Informatie over</string>
+    <string name="developer">Ontwikkelaar</string>
+    <string name="privacy_policy">Privacybeleid</string>
+    <string name="gdpr">GDPR</string>
+    <string name="store_name">Winkelnaam:</string>
+    <string name="website">Website:</string>
+    <string name="why_do_you_see_ads">Waarom zie je advertenties\?</string>
+    <string name="des_advertisement_1">Voor productie en ontwikkeling hebben we financiering nodig, waarvan er één afkomstig is van advertentie -inkomsten</string>
+    <string name="des_advertisment_2">1. Om advertenties te verwijderen, kunt u ons ondersteunen door de premiumversie of de AD-verwijderde versie te kopen.</string>
+    <string name="des_advertisement_3">2. Neem contact met ons op per e -mail om in aanmerking te komen voor deelname aan het pilotprogramma, waaruit u versies met minder advertenties kunt gebruiken, maar mogelijk niet wordt geoptimaliseerd voor prestaties.</string>
+    <string name="what_ads_type_do_we_use">Welk advertentietype gebruiken we\?</string>
+    <string name="des_advertisement_4">We zijn geassocieerd met veel advertentienetwerkpartners en de grootste is Google -advertentie voor grote advertentie -formaten</string>
+    <string name="des_5">- advertenties op volledig scherm afgewisseld tussen schermen</string>
+    <string name="des_6">- Banner, native advertenties worden aangepast als een component van AD (meestal met een geel label)</string>
+    <string name="des_7">We proberen altijd de gebruikerservaring en advertentie in evenwicht te brengen</string>
+</resources>

@@ -1,0 +1,29 @@
+<resources>
+    <string name="admob_application_id" translatable="false">ca-app-pub-2222869408518511~9607465111</string>
+    <string name="please_wait" translatable="false">Please wait!</string>
+    <string name="app_name" translatable="false">Pion base</string>
+    <string name="loading">Încărcare</string>
+    <string name="home">Acasă</string>
+    <string name="language">Limbă</string>
+    <string name="loading_ads">Încărcarea reclamelor</string>
+    <string name="something_error">Ceva eroare</string>
+    <string name="swipe_to_continue">Glisați pentru a continua</string>
+    <string name="loading_data">Încărcarea datelor</string>
+    <string name="setting">Setare</string>
+    <string name="general_setting">Setare generală</string>
+    <string name="information_about">Informații despre</string>
+    <string name="developer">Dezvoltator</string>
+    <string name="privacy_policy">Politica de confidențialitate</string>
+    <string name="gdpr">GDPR</string>
+    <string name="store_name">Numele magazinului:</string>
+    <string name="website">Site -ul:</string>
+    <string name="why_do_you_see_ads">De ce vezi reclame\?</string>
+    <string name="des_advertisement_1">Pentru producție și dezvoltare, avem nevoie de finanțare, dintre care unul provine din veniturile din reclame</string>
+    <string name="des_advertisment_2">1. Pentru a elimina anunțurile, ne puteți susține achiziționând versiunea premium sau versiunea eliminată în anunțuri.</string>
+    <string name="des_advertisement_3">2. Contactați -ne prin e -mail pentru a fi luate în considerare pentru participarea la programul pilot, din care puteți utiliza versiuni cu mai puține anunțuri, dar este posibil să nu fie optimizat pentru performanță.</string>
+    <string name="what_ads_type_do_we_use">Ce tip de reclame folosim\?</string>
+    <string name="des_advertisement_4">Suntem asociați cu mulți parteneri de rețea publicitară, iar cel mai mare este Google AD pentru formate de anunțuri majore</string>
+    <string name="des_5">- Anunțuri cu ecran complet intercalate între ecrane</string>
+    <string name="des_6">- Banner, anunțurile autohtone sunt personalizate ca o componentă a AD (de obicei cu o etichetă galbenă)</string>
+    <string name="des_7">Încercăm mereu să echilibrăm experiența și reclama utilizatorului</string>
+</resources>

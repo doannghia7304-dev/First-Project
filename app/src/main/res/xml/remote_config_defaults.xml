@@ -1,0 +1,755 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defaultsMap>
+    <entry>
+        <key>base_url_otp</key>
+        <value>https://us-central1-fir-otp-3efe1.cloudfunctions.net/</value>
+    </entry>
+    <entry>
+        <key>config_show_ads</key>
+        <value>{
+            "timeDelayNative": 4000,
+            "disableAllConfig": false,
+            "isOpenAppOn": true,
+            "isInterstitialOn": true,
+            "isNativeOn": true,
+            "isNativeFullScreenOn": true,
+            "isBannerOn": true,
+            "isBannerAdaptiveOn": true,
+            "isBannerLargeOn": true,
+            "isBannerInlineOn": true,
+            "isBannerCollapsibleOn": true,
+            "isRewardVideoOn": true,
+            "isRewardInter": true,
+            "listTemplateNative": [
+            "Larger_cta_bot",
+            "Larger_cta_bot_no_padding",
+            "Medium_cta_middle",
+            "Medium_cta_middle_no_padding",
+            "Medium_cta_right",
+            "Medium_cta_right_no_padding",
+            "Small_cta_right",
+            "Small_logotop_ctabot",
+            "Small_logotop_ctatop",
+            "Small_logotop_ctabot_noicon",
+            "Small_logotop_ctatop_noicon",
+            "Medium_icon_ctamiddle_collapsible",
+            "Medium_Icon_ctabot_collapsible",
+            "Medium_ctabot_collapsible",
+            "Small_icon_ctaright_collapsible"
+            ],
+            "mô tả": "disableAllConfig sử dụng để tắt toàn bộ quảng cáo ở mọi vị trí dù cho nó có được bật ở trong listconfig hay không",
+            "listConfig": [
+            {
+            "nameConfig": "Splash",
+            "isOn": true,
+            "type": "interstitial",
+            "network": "google"
+            },
+            {
+            "nameConfig": "exitapp",
+            "isOn": true,
+            "type": "native",
+            "ctaColor": "#cc0000",
+            "layoutTemplate": "Medium_cta_middle_no_padding",
+            "backGroundColor": "#191919",
+            "textContentColor": "#ffffff",
+            "textCTAColor": "#FFFFFF"
+            },
+            {
+            "nameConfig": "Language1.1",
+            "isOn": true,
+            "type": "native",
+            "ctaColor": "#cc0000",
+            "layoutTemplate": "Medium_cta_middle_no_padding",
+            "backGroundColor": "#191919",
+            "textContentColor": "#ffffff",
+            "textCTAColor": "#FFFFFF"
+            },
+            {
+            "nameConfig": "Language1.2",
+            "isOn": true,
+            "type": "native",
+            "ctaColor": "#43dd00",
+            "layoutTemplate": "Medium_cta_middle_no_padding",
+            "backGroundColor": "#191919",
+            "textContentColor": "#ffffff",
+            "textCTAColor": "#FFFFFF",
+            "mô tả kịch bản": "khi language1.1 không show thì quảng cáo này cũng không show"
+            },
+            {
+            "nameConfig": "Onboard1.1",
+            "isOn": true,
+            "type": "native",
+            "ctaColor": "#03a5fc",
+            "layoutTemplate": "Medium_cta_middle_no_padding",
+            "backGroundColor": "#191919",
+            "textContentColor": "#ffffff",
+            "textCTAColor": "#FFFFFF",
+            "mô tả kịch bản": ""
+            },
+            {
+            "nameConfig": "Onboard1.2",
+            "isOn": true,
+            "type": "native",
+            "ctaColor": "#4bf700",
+            "layoutTemplate": "Medium_cta_middle_no_padding",
+            "backGroundColor": "#191919",
+            "textContentColor": "#ffffff",
+            "textCTAColor": "#FFFFFF",
+            "mô tả kịch bản": "khi onboard1.1 không show thì quảng cáo này cũng không show"
+            },
+            {
+            "nameConfig": "Onboard2",
+            "isOn": true,
+            "type": "native",
+            "ctaColor": "#03a5fc",
+            "layoutTemplate": "Small_icon_ctaright_collapsible",
+            "backGroundColor": "#e6e6e6",
+            "textContentColor": "#2e2e2e",
+            "textCTAColor": "#FFFFFF",
+            "mô tả kịch bản": ""
+            },
+            {
+            "nameConfig": "onboardfull1.1",
+            "isOn": true,
+            "type": "native",
+            "ctaColor": "#4bf700",
+            "layoutTemplate": "Small_logotop_ctabot",
+            "backGroundColor": "#ffffff",
+            "textContentColor": "#191919",
+            "textCTAColor": "#FFFFFF",
+            "mô tả kịch bản": ""
+            },
+            {
+            "nameConfig": "onboardfull1.2",
+            "isOn": true,
+            "type": "native",
+            "ctaColor": "#03a5fc",
+            "layoutTemplate": "Medium_icon_ctamiddle_collapsible",
+            "backGroundColor": "#191919",
+            "textContentColor": "#ffffff",
+            "textCTAColor": "#FFFFFF",
+            "mô tả kịch bản": "khi onboardfull1 không show thì quảng cáo này cũng không show"
+            },
+            {
+            "nameConfig": "onboard3",
+            "isOn": true,
+            "type": "native",
+            "ctaColor": "#03a5fc",
+            "layoutTemplate": "Medium_ctabot_collapsible",
+            "backGroundColor": "#191919",
+            "textContentColor": "#ffffff",
+            "textCTAColor": "#FFFFFF",
+            "mô tả kịch bản": ""
+            },
+            {
+            "nameConfig": "onboardiap",
+            "isOn": true,
+            "type": "interstitial",
+            "network": "google",
+            "mô tả kịch bản": ""
+            },
+            {
+            "nameConfig": "appresume",
+            "isOn": true,
+            "type": "open_app"
+            },
+            {
+            "nameConfig": "home",
+            "isOn": true,
+            "type": "native",
+            "ctaColor": "#03a5fc",
+            "layoutTemplate": "Medium_Icon_ctabot_collapsible",
+            "backGroundColor": "#191919",
+            "textContentColor": "#ffffff",
+            "textCTAColor": "#FFFFFF",
+            "mô tả kịch bản": "quảng cáo này chỉ có định dạng native"
+            },
+            {
+            "nameConfig": "home-choosefunction",
+            "isOn": true,
+            "type": "interstitial",
+            "timeDelayShowInter": 5
+            },
+            {
+            "nameConfig": "voice",
+            "isOn": true,
+            "type": "native",
+            "ctaColor": "#03a5fc",
+            "layoutTemplate": "Medium_Icon_ctabot_collapsible",
+            "backGroundColor": "#191919",
+            "textContentColor": "#ffffff",
+            "textCTAColor": "#FFFFFF",
+            "mô tả kịch bản": "quảng cáo này chỉ có định dạng native"
+            },
+            {
+            "nameConfig": "voice-dialogreset",
+            "isOn": true,
+            "type": "native",
+            "ctaColor": "#03a5fc",
+            "layoutTemplate": "Medium_Icon_ctabot_collapsible",
+            "backGroundColor": "#191919",
+            "textContentColor": "#ffffff",
+            "textCTAColor": "#FFFFFF",
+            "mô tả kịch bản": "quảng cáo này chỉ có định dạng native"
+            },
+            {
+            "nameConfig": "voice-dialog-reset",
+            "isOn": true,
+            "type": "interstitial",
+            "timeDelayShowInter": 5
+            },
+            {
+            "nameConfig": "voice-back",
+            "isOn": true,
+            "type": "interstitial",
+            "timeDelayShowInter": 5
+            },
+            {
+            "nameConfig": "voice-choosefunction",
+            "isOn": true,
+            "type": "interstitial",
+            "timeDelayShowInter": 5
+            },
+            {
+            "nameConfig": "voice-step",
+            "isOn": true,
+            "type": "native",
+            "ctaColor": "#03a5fc",
+            "layoutTemplate": "Medium_Icon_ctabot_collapsible",
+            "backGroundColor": "#191919",
+            "textContentColor": "#ffffff",
+            "textCTAColor": "#FFFFFF",
+            "mô tả kịch bản": "quảng cáo này chỉ có định dạng native"
+            },
+            {
+            "nameConfig": "voice-step1-back",
+            "isOn": true,
+            "type": "interstitial",
+            "timeDelayShowInter": 5
+            },
+            {
+            "nameConfig": "voice-test",
+            "isOn": true,
+            "type": "native",
+            "ctaColor": "#03a5fc",
+            "layoutTemplate": "Medium_Icon_ctabot_collapsible",
+            "backGroundColor": "#191919",
+            "textContentColor": "#ffffff",
+            "textCTAColor": "#FFFFFF",
+            "mô tả kịch bản": "quảng cáo này chỉ có định dạng native"
+            },
+            {
+            "nameConfig": "voice-test-skip",
+            "isOn": true,
+            "type": "interstitial",
+            "timeDelayShowInter": 5
+            },
+            {
+            "nameConfig": "pin",
+            "isOn": true,
+            "type": "native",
+            "ctaColor": "#03a5fc",
+            "layoutTemplate": "Medium_Icon_ctabot_collapsible",
+            "backGroundColor": "#191919",
+            "textContentColor": "#ffffff",
+            "textCTAColor": "#FFFFFF",
+            "mô tả kịch bản": "quảng cáo này chỉ có định dạng native"
+            },
+            {
+            "nameConfig": "pin-back",
+            "isOn": true,
+            "type": "interstitial",
+            "timeDelayShowInter": 5
+            },
+            {
+            "nameConfig": "pin-choosefunction",
+            "isOn": true,
+            "type": "interstitial",
+            "timeDelayShowInter": 5
+            },
+            {
+            "nameConfig": "pin-step",
+            "isOn": true,
+            "type": "native",
+            "ctaColor": "#03a5fc",
+            "layoutTemplate": "Medium_Icon_ctabot_collapsible",
+            "backGroundColor": "#191919",
+            "textContentColor": "#ffffff",
+            "textCTAColor": "#FFFFFF",
+            "mô tả kịch bản": "quảng cáo này chỉ có định dạng native"
+            },
+            {
+            "nameConfig": "pin-step1-back",
+            "isOn": true,
+            "type": "interstitial",
+            "timeDelayShowInter": 5
+            },
+            {
+            "nameConfig": "pin-test",
+            "isOn": true,
+            "type": "native",
+            "ctaColor": "#03a5fc",
+            "layoutTemplate": "Medium_Icon_ctabot_collapsible",
+            "backGroundColor": "#191919",
+            "textContentColor": "#ffffff",
+            "textCTAColor": "#FFFFFF",
+            "mô tả kịch bản": "quảng cáo này chỉ có định dạng native"
+            },
+            {
+            "nameConfig": "pin-test-skip",
+            "isOn": true,
+            "type": "interstitial",
+            "timeDelayShowInter": 5
+            },
+            {
+            "nameConfig": "pattern",
+            "isOn": true,
+            "type": "native",
+            "ctaColor": "#03a5fc",
+            "layoutTemplate": "Medium_Icon_ctabot_collapsible",
+            "backGroundColor": "#191919",
+            "textContentColor": "#ffffff",
+            "textCTAColor": "#FFFFFF",
+            "mô tả kịch bản": "quảng cáo này chỉ có định dạng native"
+            },
+            {
+            "nameConfig": "pattern-dialogreset",
+            "isOn": true,
+            "type": "native",
+            "ctaColor": "#03a5fc",
+            "layoutTemplate": "Medium_Icon_ctabot_collapsible",
+            "backGroundColor": "#191919",
+            "textContentColor": "#ffffff",
+            "textCTAColor": "#FFFFFF",
+            "mô tả kịch bản": "quảng cáo này chỉ có định dạng native"
+            },
+            {
+            "nameConfig": "pattern-dialog-reset",
+            "isOn": true,
+            "type": "interstitial",
+            "timeDelayShowInter": 5
+            },
+            {
+            "nameConfig": "pattern-choosefunction",
+            "isOn": true,
+            "type": "interstitial",
+            "timeDelayShowInter": 5
+            },
+            {
+            "nameConfig": "pattern-back",
+            "isOn": true,
+            "type": "interstitial",
+            "timeDelayShowInter": 5
+            },
+            {
+            "nameConfig": "pattern-step",
+            "isOn": true,
+            "type": "native",
+            "ctaColor": "#03a5fc",
+            "layoutTemplate": "Medium_Icon_ctabot_collapsible",
+            "backGroundColor": "#191919",
+            "textContentColor": "#ffffff",
+            "textCTAColor": "#FFFFFF",
+            "mô tả kịch bản": "quảng cáo này chỉ có định dạng native"
+            },
+            {
+            "nameConfig": "pattern-step1-back",
+            "isOn": true,
+            "type": "interstitial",
+            "timeDelayShowInter": 5
+            },
+            {
+            "nameConfig": "pattern-test",
+            "isOn": true,
+            "type": "native",
+            "ctaColor": "#03a5fc",
+            "layoutTemplate": "Medium_Icon_ctabot_collapsible",
+            "backGroundColor": "#191919",
+            "textContentColor": "#ffffff",
+            "textCTAColor": "#FFFFFF",
+            "mô tả kịch bản": "quảng cáo này chỉ có định dạng native"
+            },
+            {
+            "nameConfig": "pattern-test-skip",
+            "isOn": true,
+            "type": "interstitial",
+            "timeDelayShowInter": 5
+            },
+            {
+            "nameConfig": "finger",
+            "isOn": true,
+            "type": "native",
+            "ctaColor": "#03a5fc",
+            "layoutTemplate": "Medium_Icon_ctabot_collapsible",
+            "backGroundColor": "#191919",
+            "textContentColor": "#ffffff",
+            "textCTAColor": "#FFFFFF",
+            "mô tả kịch bản": "quảng cáo này chỉ có định dạng native"
+            },
+            {
+            "nameConfig": "finger-step2-back",
+            "isOn": true,
+            "type": "interstitial",
+            "timeDelayShowInter": 5
+            },
+            {
+            "nameConfig": "finge-step3-done",
+            "isOn": true,
+            "type": "interstitial",
+            "timeDelayShowInter": 5
+            },
+            {
+            "nameConfig": "setquestion",
+            "isOn": true,
+            "type": "native",
+            "ctaColor": "#03a5fc",
+            "layoutTemplate": "Medium_Icon_ctabot_collapsible",
+            "backGroundColor": "#191919",
+            "textContentColor": "#ffffff",
+            "textCTAColor": "#FFFFFF",
+            "mô tả kịch bản": "quảng cáo này chỉ có định dạng native"
+            },
+            {
+            "nameConfig": "setemail-back",
+            "isOn": true,
+            "type": "interstitial",
+            "timeDelayShowInter": 5
+            },
+            {
+            "nameConfig": "setemail",
+            "isOn": true,
+            "type": "native",
+            "ctaColor": "#03a5fc",
+            "layoutTemplate": "Medium_Icon_ctabot_collapsible",
+            "backGroundColor": "#191919",
+            "textContentColor": "#ffffff",
+            "textCTAColor": "#FFFFFF",
+            "mô tả kịch bản": "quảng cáo này chỉ có định dạng native"
+            },
+            {
+            "nameConfig": "setemail-apply-success",
+            "isOn": true,
+            "type": "interstitial",
+            "timeDelayShowInter": 5
+            },
+            {
+            "nameConfig": "changequestion",
+            "isOn": true,
+            "type": "native",
+            "ctaColor": "#03a5fc",
+            "layoutTemplate": "Medium_Icon_ctabot_collapsible",
+            "backGroundColor": "#191919",
+            "textContentColor": "#ffffff",
+            "textCTAColor": "#FFFFFF",
+            "mô tả kịch bản": "quảng cáo này chỉ có định dạng native"
+            },
+            {
+            "nameConfig": "changequestion-back",
+            "isOn": true,
+            "type": "interstitial",
+            "timeDelayShowInter": 5
+            },
+            {
+            "nameConfig": "changequestion-unlock-success",
+            "isOn": true,
+            "type": "interstitial",
+            "timeDelayShowInter": 5
+            },
+            {
+            "nameConfig": "changemail",
+            "isOn": true,
+            "type": "native",
+            "ctaColor": "#03a5fc",
+            "layoutTemplate": "Medium_Icon_ctabot_collapsible",
+            "backGroundColor": "#191919",
+            "textContentColor": "#ffffff",
+            "textCTAColor": "#FFFFFF",
+            "mô tả kịch bản": "quảng cáo này chỉ có định dạng native"
+            },
+            {
+            "nameConfig": "changemail-apply-success",
+            "isOn": true,
+            "type": "interstitial",
+            "timeDelayShowInter": 5
+            },
+            {
+            "nameConfig": "lockscreen",
+            "isOn": true,
+            "type": "native",
+            "ctaColor": "#03a5fc",
+            "layoutTemplate": "Medium_Icon_ctabot_collapsible",
+            "backGroundColor": "#191919",
+            "textContentColor": "#ffffff",
+            "textCTAColor": "#FFFFFF",
+            "mô tả kịch bản": "quảng cáo này chỉ có định dạng native"
+            }
+            ]
+            }</value>
+    </entry>
+    <entry>
+        <key>admob_id</key>
+        <value>{
+            "network": "google",
+            "appId": "ca-app-pub-2222869408518511~9607465111",
+            "package": "co.voicescreenlock",
+            "listAds": [
+            {
+            "spaceName": "exitapp_native1",
+            "adsType": "native",
+            "id": ""
+            },
+            {
+            "spaceName": "exitapp_native2",
+            "adsType": "native",
+            "id": ""
+            },
+            {
+            "spaceName": "exitapp_native3",
+            "adsType": "native",
+            "id": ""
+            },
+            {
+            "spaceName": "splash_intertitial1",
+            "adsType": "interstitial",
+            "id": "ca-app-pub-2222869408518511/9301935672"
+            },
+            {
+            "spaceName": "splash_intertitial2",
+            "adsType": "interstitial",
+            "id": "ca-app-pub-2222869408518511/2757279441"
+            },
+            {
+            "spaceName": "splash_openad3",
+            "adsType": "open_app",
+            "id": "ca-app-pub-2222869408518511/9587283816"
+            },
+            {
+            "spaceName": "language1_native1",
+            "adsType": "native",
+            "id": "ca-app-pub-2222869408518511/9695095020"
+            },
+            {
+            "spaceName": "language1_native2",
+            "adsType": "native",
+            "id": "ca-app-pub-2222869408518511/7231711076"
+            },
+            {
+            "spaceName": "language1_native3",
+            "adsType": "native",
+            "id": "ca-app-pub-2222869408518511/1144244050"
+            },
+            {
+            "spaceName": "language1_native4",
+            "adsType": "native",
+            "id": "ca-app-pub-2222869408518511/6933200310"
+            },
+            {
+            "spaceName": "language1_native5",
+            "adsType": "native",
+            "id": "ca-app-pub-2222869408518511/6675772337"
+            },
+            {
+            "spaceName": "language1_native6",
+            "adsType": "native",
+            "id": "ca-app-pub-2222869408518511/7518080715"
+            },
+            {
+            "spaceName": "Onboard1_native1",
+            "adsType": "native",
+            "id": "ca-app-pub-2222869408518511/4307036977"
+            },
+            {
+            "spaceName": "Onboard1_native2",
+            "adsType": "native",
+            "id": "ca-app-pub-2222869408518511/7068931680"
+            },
+            {
+            "spaceName": "Onboard1_native3",
+            "adsType": "native",
+            "id": "ca-app-pub-2222869408518511/2993955301"
+            },
+            {
+            "spaceName": "Onboard1_native4",
+            "adsType": "native",
+            "id": "ca-app-pub-2222869408518511/4442768348"
+            },
+            {
+            "spaceName": "Onboard1_native5",
+            "adsType": "native",
+            "id": "ca-app-pub-2222869408518511/4913541638"
+            },
+            {
+            "spaceName": "Onboard1_native6",
+            "adsType": "native",
+            "id": "ca-app-pub-2222869408518511/1816605008"
+            },
+            {
+            "spaceName": "Onboard2_native",
+            "adsType": "native",
+            "id": ""
+            },
+            {
+            "spaceName": "onboardfull_native1",
+            "adsType": "native_full_screen",
+            "id": "ca-app-pub-2222869408518511/9503523331"
+            },
+            {
+            "spaceName": "onboardfull_native2",
+            "adsType": "native_full_screen",
+            "id": "ca-app-pub-2222869408518511/4752316572"
+            },
+            {
+            "spaceName": "onboardfull_native3",
+            "adsType": "native_full_screen",
+            "id": "ca-app-pub-2222869408518511/3439234900"
+            },
+            {
+            "spaceName": "onboardfull_native4",
+            "adsType": "native_full_screen",
+            "id": "ca-app-pub-2222869408518511/8190441663"
+            },
+            {
+            "spaceName": "onboardfull_native5",
+            "adsType": "native_full_screen",
+            "id": "ca-app-pub-2222869408518511/6961120472"
+            },
+            {
+            "spaceName": "onboardfull_native6",
+            "adsType": "native_full_screen",
+            "id": "ca-app-pub-2222869408518511/1979384396"
+            },
+            {
+            "spaceName": "onboard3_native",
+            "adsType": "native",
+            "id": "ca-app-pub-2222869408518511/9813071562"
+            },
+            {
+            "spaceName": "onboardiap_interstitial1",
+            "adsType": "interstitial",
+            "id": "ca-app-pub-2222869408518511/7186908224"
+            },
+            {
+            "spaceName": "onboardiap_interstitial2",
+            "adsType": "interstitial",
+            "id": "ca-app-pub-2222869408518511/5191871098"
+            },
+            {
+            "spaceName": "onboardiap_interstitial3",
+            "adsType": "interstitial",
+            "id": "ca-app-pub-2222869408518511/5564278323"
+            },
+            {
+            "spaceName": "appresume_openad1",
+            "adsType": "open_app",
+            "id": "ca-app-pub-2222869408518511/2877571087"
+            },
+            {
+            "spaceName": "appresume_openad2",
+            "adsType": "open_app",
+            "id": "ca-app-pub-2222869408518511/4933722930"
+            },
+            {
+            "spaceName": "appresume_openad3",
+            "adsType": "open_app",
+            "id": "ca-app-pub-2222869408518511/3415184179"
+            },
+            {
+            "spaceName": "home_native1",
+            "adsType": "native",
+            "id": "ca-app-pub-2222869408518511/7085243554"
+            },
+            {
+            "spaceName": "home_native2",
+            "adsType": "native",
+            "id": "ca-app-pub-2222869408518511/5430973425"
+            },
+            {
+            "spaceName": "home_native3",
+            "adsType": "native",
+            "id": "ca-app-pub-2222869408518511/4117891756"
+            },
+            {
+            "spaceName": "home-choosefunction_interstitial1",
+            "adsType": "interstitial",
+            "id": "ca-app-pub-2222869408518511/4459080215"
+            },
+            {
+            "spaceName": "home-choosefunction_interstitial2",
+            "adsType": "interstitial",
+            "id": "ca-app-pub-2222869408518511/7475253659"
+            },
+            {
+            "spaceName": "home-choosefunction_interstitial3",
+            "adsType": "interstitial",
+            "id": "ca-app-pub-2222869408518511/7368314589"
+            },
+            {
+            "spaceName": "voice-1ID_native",
+            "adsType": "native",
+            "id": "ca-app-pub-2222869408518511/1070499545"
+            },
+            {
+            "spaceName": "voice-1ID_interstitial",
+            "adsType": "interstitial",
+            "id": "ca-app-pub-2222869408518511/8757417870"
+            },
+            {
+            "spaceName": "pin-1ID_native",
+            "adsType": "native",
+            "id": "ca-app-pub-2222869408518511/5849775822"
+            },
+            {
+            "spaceName": "pin-1ID_interstitial",
+            "adsType": "interstitial",
+            "id": "ca-app-pub-2222869408518511/5580590192"
+            },
+            {
+            "spaceName": "pattern-1ID_native",
+            "adsType": "native",
+            "id": "ca-app-pub-2222869408518511/9328263514"
+            },
+            {
+            "spaceName": "pattern-1ID_interstitial",
+            "adsType": "interstitial",
+            "id": "ca-app-pub-2222869408518511/8015181846"
+            },
+            {
+            "spaceName": "finger_native",
+            "adsType": "native",
+            "id": "ca-app-pub-2222869408518511/9204140431"
+            },
+            {
+            "spaceName": "finger-1ID_interstitial",
+            "adsType": "interstitial",
+            "id": "ca-app-pub-2222869408518511/9583414386"
+            },
+            {
+            "spaceName": "recover-1ID_native",
+            "adsType": "native",
+            "id": "ca-app-pub-2222869408518511/2746543295"
+            },
+            {
+            "spaceName": "recover-1ID_interstitial",
+            "adsType": "interstitial",
+            "id": "ca-app-pub-2222869408518511/2074182347"
+            },
+            {
+            "spaceName": "change-1ID_native",
+            "adsType": "native",
+            "id": "ca-app-pub-2222869408518511/1433461622"
+            },
+            {
+            "spaceName": "change-1ID_interstitial",
+            "adsType": "interstitial",
+            "id": "ca-app-pub-2222869408518511/9120379953"
+            },
+            {
+            "spaceName": "lockscreen_native",
+            "adsType": "native",
+            "id": "lockscreen_native"
+            }
+            ]
+            }/</value>
+    </entry>
+</defaultsMap>

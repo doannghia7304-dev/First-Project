@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:background="#5F5E5E">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="@dimen/_24dp"
+            android:backgroundTint="@color/white"
+            android:paddingBottom="@dimen/_16dp"
+            android:theme="@style/RoundedCorner.12">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/layoutAds"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_margin="@dimen/_24dp"
+                android:background="@color/ads_background"
+                app:cardCornerRadius="@dimen/_8dp"
+                app:layout_constraintDimensionRatio="300:70"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:background="#D8D8D8"
+                    android:gravity="center"
+                    android:text="@string/loading_ads"
+                    android:textColor="@color/black" />
+
+
+            </androidx.cardview.widget.CardView>
+
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_24dp"
+                android:layout_marginTop="@dimen/_16dp"
+                android:fontFamily="@font/font_400"
+                android:gravity="center"
+                android:text="@string/do_you_want_to_exit"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/layoutAds" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_24dp"
+                android:layout_marginTop="@dimen/_16dp"
+                app:layout_constraintTop_toBottomOf="@id/tv_title">
+
+                <TextView
+                    android:id="@+id/btnExit"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="@dimen/_24dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="#D40202"
+                    android:fontFamily="@font/font_700"
+                    android:gravity="center"
+                    android:paddingVertical="@dimen/_6dp"
+                    android:text="@string/exit"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_16sp"
+                    android:theme="@style/RoundedCorner.4" />
+
+                <TextView
+                    android:id="@+id/btnCancel"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_radius_4_stroke_blue"
+                    android:fontFamily="@font/font_700"
+                    android:gravity="center"
+                    android:text="@string/cancel"
+                    android:textColor="#0A97E2"
+                    android:textSize="@dimen/_16sp" />
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </FrameLayout>
+</layout>

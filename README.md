@@ -1,72 +1,163 @@
-# Pretty Clean Architecture 
+# Pion-Base
 
-## Tại sao cần sử dụng các mẫu kiến trúc trong phát triển phần mềm
-Tất cả các kiến trúc đều có một mục tiêu chung - quản lý mức độ phức tạp về code trong ứng dụng của bạn. 
-<br>Bạn có thể không cần phải lo lắng về nó trong một dự án nhỏ, nhưng nó sẽ trở thành lifesaver cho những dự án lớn hơn.
+Android template project sử dụng kiến trúc MVVM 2 lớp (UI + Data), single-Activity với Navigation Component.
 
-<br>Có thể bạn đã nhìn thấy biểu đồ này ở đâu đó rồi  
-![Alt text](https://koenig-media.raywenderlich.com/uploads/2019/06/Clean-Architecture-graph.png)
+![Kiến trúc ứng dụng](https://developer.android.com/static/topic/libraries/architecture/images/mad-arch-overview.png)
 
-Hình tròn này biểu diễn các tầng khác nhau trong ứng dụng. Có 2 ý chính cần lưu ý
-* Vòng tròn trung tâm là trừu tượng nhất, và vòng tròn bên ngoài là cụ thể nhất. Đây được gọi là __Abstraction Principle__ (nguyên lý trừu tượng). Nguyên lý này nói rằng các vòng tròn bên trong sẽ chứa nghiệp vụ logic __( business logic )__, và các vòng tròn bên ngoài sẽ triển khai chi tiết __(implementation details)__.
-* 1 nguyên tắc khác của Clean Architecture là __dependency rule__. Quy tắc này qui định rằng mỗi vòng tròn chỉ có thể phụ thuộc vào vòng tròn bên trong gần nhất
+## Tech Stack
 
-Các lợi ích của việc sử dụng clean architecture 
-* Các phần code được tách ra và dễ dàng tái sử dụng và testing
-* Khi người khác làm việc với code này, họ có thể tìm hiểu Clean Architecture và sẽ hiểu rõ hơn về nó.
+| Thành phần | Công nghệ |
+|-----------|-----------|
+| Language | Kotlin, JVM 17 |
+| DI | Koin |
+| Navigation | Jetpack Navigation Component |
+| Network | Retrofit2 + OkHttp3 + Gson |
+| Database | Room |
+| Preferences | DataStore |
+| Image | Glide |
+| Async | Coroutines + Flow + StateFlow |
+| Analytics | Firebase Analytics, Crashlytics, Remote Config |
+| Logging | Timber (app), Chucker (HTTP debug) |
+| SDK | Min 24, Target/Compile 35 |
 
-## SOLID Principles
-Nắm vững những nguyên lý này, đồng thời áp dụng chúng trong việc thiết kế + viết code sẽ giúp bạn tiến thêm 1 bước trên con đường thành senior nhé (ông toidicodedao bảo thế).
-_5 nguyên tắc thiết kế giúp thiết kế phần mềm dễ hiểu, linh hoạt và dễ bảo trì hơn_ 
-* __Single Responsibility__:  Một class chỉ nên giữ 1 trách nhiệm duy nhất (Chỉ có thể sửa đổi class với 1 lý do duy nhất)
-* __Open/closed__: Có thể thoải mái mở rộng 1 class, nhưng không được sửa đổi bên trong class đó (open for extension but closed for modification).
-* __Liskov Substitution__: Trong một chương trình, các object của class con có thể thay thế class cha mà không làm thay đổi tính đúng đắn của chương trình
-* __Interface Segregation__: Thay vì dùng 1 interface lớn, ta nên tách thành nhiều interface nhỏ, với nhiều mục đích cụ thể
-* __Dependency Inversion__: 
-<br>1. Các module cấp cao không nên phụ thuộc vào các modules cấp thấp. Cả 2 nên phụ thuộc vào abstraction.
-<br>2. Interface (abstraction) không nên phụ thuộc vào chi tiết, mà ngược lại. (Các class giao tiếp với nhau thông qua interface, không phải thông qua implementation)
+## Modules
 
-<br>__Clean Architecture sử dụng tối đa các nguyên tắc này.__
+| Module | Mô tả |
+|--------|--------|
+| `:app` | Ứng dụng chính (`pion.tech.pionbase`) |
+| `:LibAds` | Quản lý quảng cáo |
 
-## Các layer của Clean Architecture
-Có nhiều ý kiến khác nhau về việc nên có bao nhiêu layer Clean Architecture. Mô hình này không quy định chính xác bao nhiêu layer mà thay vào đó là đặt ra nền tảng và bạn chính là người điều chỉnh số lượng layer trong ứng dụng của mình.
-<br>Ở đây, để đơn giản nhất có thể, chúng ta sử dụng 2 module chính với tổng cộng 5 layer
-<br>__Business Module__
-* __Domain__: chứa các model của app
-* __Data__: định nghĩa trừu tượng của tất cả các nguồn dữ liệu.
-* __Interactors__: còn được gọi là Use case. Xác định các hành động mà người dùng có thể kích hoạt.
+## Cấu Trúc Feature
 
-__Framework Module__
-* __Presentation__: giao diện người dùng
-* __Datasource__: Triển khai và phát triển cụ thể cho lớp Data
+Mỗi feature gồm 3 file + thư mục con tùy chọn:
 
-![Alt text](https://camo.githubusercontent.com/b1521f6c9e672cf5077ba69ceab27679ea8a82074a89931d958895476756e2c8/68747470733a2f2f636f64696e67776974686d697463682e73332e616d617a6f6e6177732e636f6d2f7374617469632f636f75727365732f32312f636c65616e5f6172636869746563747572655f6469616772616d732e706e67)
+```
+feature/{name}/
+├── {Name}Fragment.kt       # UI + observer
+├── {Name}FragmentEx.kt     # Extension functions (click, init)
+├── {Name}ViewModel.kt      # State + logic
+├── adapter/                # RecyclerView adapters
+├── dialog/                 # Dialogs
+└── bottomSheet/            # Bottom sheets
+```
 
-## Release
-__18/08/2021__: Simplfy packages, add timber, follow best practices: inject dispatchers, main-safe, repository pattern.(Tks 89hniM)
-__01/08/2021__: Room and Retrofit
-__05/04/2021__: Update lib in build gradle<br>
-__22/03/2021__: Update hilt to beta version<br>
-__22/02/2021__: Add view binding, remove deprecated safeNav function<br>
-__15/01/2021__: Add more extensions util (such as: GlideEx, HandlerEx ...), update safeNav function with lifecycle, refactor naming convention<br>
-__15/12/2020__: Add utility functions, refactor mapper class, minSdkVersion 21<br>
-__17/11/2020__: Add sample project using Clean Architecture, Coroutines, Flow, Hilt, Navigation Components 
+## Base Classes
 
-## Credits
-1. [https://www.raywenderlich.com/3595916-clean-architecture-tutorial-for-android-getting-started](https://www.raywenderlich.com/3595916-clean-architecture-tutorial-for-android-getting-started)
-2. [https://github.com/mitchtabian/Clean-Notes](https://github.com/mitchtabian/Clean-Notes)
-3. [https://proandroiddev.com/kotlin-clean-architecture-1ad42fcd97fa](https://proandroiddev.com/kotlin-clean-architecture-1ad42fcd97fa)
-4. [https://toidicodedao.com/2015/03/24/solid-la-gi-ap-dung-cac-nguyen-ly-solid-de-tro-thanh-lap-trinh-vien-code-cung/](https://toidicodedao.com/2015/03/24/solid-la-gi-ap-dung-cac-nguyen-ly-solid-de-tro-thanh-lap-trinh-vien-code-cung/)
-5. [https://developer.android.com/kotlin/coroutines/coroutines-best-practices](https://developer.android.com/kotlin/coroutines/coroutines-best-practices)
+> **Bắt buộc** dùng base classes, không dùng class gốc Android.
 
+| Thay vì | Dùng | Generic params |
+|---------|------|----------------|
+| `Fragment` | `BaseFragment` | `<ViewBinding, ViewModel>(inflate, KClass)` |
+| `ViewModel` | `BaseViewModel` | `<State, Event>(initialState)` |
+| `ListAdapter` | `BaseListAdapter` | `<Item, ViewDataBinding>(diffCallback)` |
+| `DialogFragment` | `BaseDialogFragment` | `<ViewDataBinding>(layoutRes)` |
+| `BottomSheetDialogFragment` | `BaseBottomSheetDialogFragment` | `<ViewDataBinding>(layoutRes)` |
 
+### BaseFragment
 
+Override 2 method:
+- `init(view)` -- setup view, gắn event
+- `subscribeObserver(view)` -- observe StateFlow
 
+Cung cấp sẵn: `binding`, `viewModel`, `commonViewModel`, `navigator`, `dataStoreRepository`, `logger`, `showHideLoading()`, `onSystemBack { }`
 
+### BaseViewModel
 
+State quản lý qua `uiState` (StateFlow), event one-shot qua `uiEvent` (Channel):
 
+```kotlin
+class HomeViewModel(...) : BaseViewModel<HomeUiState, Nothing>(HomeUiState()) {
+    fun load() {
+        setState { copy(isLoading = true) }
+        handleApiCall(
+            apiCall = { repo.getData() },
+            onSuccess = { setState { copy(data = it, isLoading = false) } },
+            onError = { setState { copy(error = it, isLoading = false) } },
+        )
+    }
+}
+```
 
+### BaseDialogFragment / BaseBottomSheetDialogFragment
 
+Override 3 method tùy chọn: `initData()`, `initView()`, `addEvent()`
 
+### BaseListAdapter
 
+Override: `getLayoutRes(viewType)`, `bindView(binding, item, position)`. Dùng `createDiffCallback()` helper.
 
+## Luồng Điều Hướng
+
+```
+Splash ──→ Language (lần đầu) ──→ Onboard ──→ Home
+Splash ──→ Home (đã dùng)
+Home ──→ Setting ──→ ChangeLanguage
+```
+
+## Data Layer
+
+### Repository Pattern
+
+Tất cả repository trả về `Flow<Result<T>>`:
+
+```kotlin
+interface XxxRepository {
+    fun getData(): Flow<Result<List<XxxDtoModel>>>
+}
+```
+
+Implementation dùng `flow { }.flowOn(Dispatchers.IO)`.
+
+### Model
+
+| Loại | Naming | Dùng ở |
+|------|--------|--------|
+| DTO | `{Entity}DtoModel` | Repository / Data layer |
+| UI | `{Entity}UIModel` | ViewModel / Fragment |
+
+Mapping qua extension: `fun XxxDtoModel.toPresentation(): XxxUIModel`
+
+## State Management
+
+Mỗi màn hình có `data class XxxUiState(...)`. Observe trong Fragment:
+
+```kotlin
+viewModel.uiState
+    .map { it.field }
+    .distinctUntilChanged()
+    .collectFlowOnView(viewLifecycleOwner) { /* update UI */ }
+```
+
+`CommonViewModel` (shared toàn app qua `activityViewModel`): quản lý categories, templates, premium status.
+
+## Koin DI
+
+| Module | Nội dung |
+|--------|----------|
+| `coreModule` | Firebase RemoteConfig, DataStore |
+| `networkModule` | Gson, OkHttp, Retrofit, ApiInterface |
+| `databaseModule` | Room, DAOs |
+| `repositoryModule` | Repository bindings |
+| `platformModule` | Firebase Analytics |
+| `viewModelModule` | ViewModel registrations |
+
+Thêm mới:
+- ViewModel: `viewModelOf(::NewVM)` trong `viewModelModule`
+- Repository: `singleOf(::NewRepoImpl) bind NewRepo::class` trong `repositoryModule`
+
+## Quy Tắc Bắt Buộc
+
+| Quy tắc | Đúng | Sai |
+|---------|------|-----|
+| Click listener | `view.setPreventDoubleClick { }` | `view.setOnClickListener { }` |
+| Show dialog | `safeShowDialog(dialog)` | `dialog.show(...)` trực tiếp |
+| Fragment params | `arguments` Bundle / shared ViewModel | Constructor params |
+| Adapter listener | `adapter.setListener(this)` | Constructor lambda |
+| Navigation | `navigator.navigateTo(actionId)` | `findNavController()` trực tiếp |
+| Coroutines | `launchIO { }` / `launchMain { }` / `launchDefault { }` | `viewModelScope.launch()` / `lifecycleScope.launch()` |
+
+## Hình Ảnh Minh Họa
+
+![Kiến trúc MVVM](https://miro.medium.com/v2/resize:fit:1400/1*BpxMFh7DdX0_hqX6ABkDgw.png)
+
+![Luồng dữ liệu](https://developer.android.com/static/topic/libraries/architecture/images/mad-arch-overview-ui.png)

@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "968646779511",
-    "project_id": "clean-architecture-proje-b6f4b",
-    "storage_bucket": "clean-architecture-proje-b6f4b.appspot.com"
+    "project_number": "780932072290",
+    "project_id": "finger-spinner-e3bbf",
+    "storage_bucket": "finger-spinner-e3bbf.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:968646779511:android:92841775e309c65682dc72",
+        "mobilesdk_app_id": "1:780932072290:android:6d412487c6c9120423e23b",
         "android_client_info": {
-          "package_name": "pion.tech.pionbase"
+          "package_name": "co.fingerspinner"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCwgv2dZMf6D788XcN6RuRH7ZMdvHAM4yU"
+          "current_key": "AIzaSyCSFIClCOFlF7HwzXh7nRfYQavFrOhER7g"
         }
       ],
       "services": {

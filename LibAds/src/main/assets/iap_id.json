@@ -1,0 +1,32 @@
+[
+  {
+    "productId": "sub_remove_ads",
+    "type": "subs",
+    "listBasePlan": [
+      {
+        "basePlanId": "iapmonthly",
+        "offerId": null
+      },
+      {
+        "basePlanId": "iapweekly",
+        "offerId": null
+      }
+    ]
+  },
+  {
+    "productId": "iapforever",
+    "type": "inapp"
+  },
+  {
+    "productId": "iapmonthlygiagach",
+    "type": "inapp"
+  },
+  {
+    "productId": "iapweeklygiagach",
+    "type": "inapp"
+  },
+  {
+    "productId": "iapforevergiagach",
+    "type": "inapp"
+  }
+]

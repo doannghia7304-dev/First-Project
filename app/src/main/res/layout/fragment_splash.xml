@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="match_parent">
 
 
     <ImageView
         android:id="@+id/iconApp"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:backgroundTint="#123123"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_app"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
-        android:src="@drawable/ic_app"
-        android:scaleType="fitCenter"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.281"
@@ -23,15 +24,17 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_28dp"
+        android:fontFamily="@font/font_700"
         android:text="@string/app_name"
+        android:backgroundTint="#A5B3D9"
         android:textColor="#218380"
-        android:textSize="@dimen/text_size_32"
+        android:theme="@style/RoundedCorner.20"
+        android:paddingHorizontal="@dimen/_20dp"
+        android:textSize="@dimen/_32sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iconApp"
-        android:layout_marginTop="@dimen/_28dp"
-        android:fontFamily="@font/font_700"/>
-
+        app:layout_constraintTop_toBottomOf="@+id/iconApp" />
 
     <TextView
         android:id="@+id/txvLoading"
@@ -41,17 +44,22 @@
         android:fontFamily="@font/font_700"
         android:text="@string/loading"
         android:textColor="#218380"
-        android:textSize="@dimen/text_size_16"
-        app:layout_constraintBottom_toTopOf="@+id/loadingView"
+        android:textSize="@dimen/_16sp"
+        app:layout_constraintBottom_toTopOf="@id/progress_bar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <pion.tech.pionbase.customview.LoadingView
-        android:id="@+id/loadingView"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/_4dp"
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_20dp"
+        android:layout_marginBottom="@dimen/_20dp"
+        app:indicatorColor="#218380"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:trackColor="#D3D3D3"
+        app:trackCornerRadius="@dimen/_10dp"
+        app:trackThickness="@dimen/_4dp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

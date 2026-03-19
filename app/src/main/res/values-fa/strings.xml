@@ -1,0 +1,29 @@
+<resources>
+    <string name="admob_application_id" translatable="false">ca-app-pub-2222869408518511~9607465111</string>
+    <string name="please_wait" translatable="false">Please wait!</string>
+    <string name="app_name" translatable="false">Pion base</string>
+    <string name="loading">بار</string>
+    <string name="home">خانه</string>
+    <string name="language">زبان</string>
+    <string name="loading_ads">در حال بارگیری تبلیغات</string>
+    <string name="something_error">خطای</string>
+    <string name="swipe_to_continue">کشیدن برای ادامه</string>
+    <string name="loading_data">بارگیری داده ها</string>
+    <string name="setting">تنظیم</string>
+    <string name="general_setting">تنظیم عمومی</string>
+    <string name="information_about">اطلاعات مربوط به</string>
+    <string name="developer">توسعه دهنده</string>
+    <string name="privacy_policy">سیاست حفظ حریم</string>
+    <string name="gdpr">GDPR</string>
+    <string name="store_name">نام فروشگاه:</string>
+    <string name="website">وب سایت:</string>
+    <string name="why_do_you_see_ads">چرا تبلیغات را می بینید؟</string>
+    <string name="des_advertisement_1">برای تولید و توسعه ، ما به بودجه نیاز داریم که یکی از آنها ناشی از درآمد تبلیغات است</string>
+    <string name="des_advertisment_2">1. برای حذف تبلیغات ، می توانید با خرید نسخه Premium یا نسخه تبلیغاتی از ما از ما پشتیبانی کنید.</string>
+    <string name="des_advertisement_3">2. از طریق ایمیل با ما تماس بگیرید تا برای مشارکت در برنامه آزمایشی در نظر گرفته شود ، که از آن می توانید از نسخه هایی با تبلیغات کمتری استفاده کنید اما ممکن است برای عملکرد بهینه نشود.</string>
+    <string name="what_ads_type_do_we_use">از چه نوع تبلیغاتی استفاده می کنیم؟</string>
+    <string name="des_advertisement_4">ما با بسیاری از شرکای شبکه تبلیغاتی در ارتباط هستیم و بزرگترین آن Google AD برای قالب های اصلی تبلیغات است</string>
+    <string name="des_5">- تبلیغات تمام صفحه بین صفحه ها در هم می آمیزند</string>
+    <string name="des_6">- بنر ، تبلیغات بومی به عنوان مؤلفه AD (معمولاً با برچسب زرد) سفارشی می شوند</string>
+    <string name="des_7">ما همیشه در تلاش هستیم تا تجربه کاربر و تبلیغات را متعادل کنیم</string>
+</resources>

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 
 // Author: https://github.com/sanogueralorenzo/Android-Kotlin-Clean-Architecture
+
 /**
  * Use only from Activities, don't use from Fragment (with getActivity) or from Dialog/DialogFragment
  */
@@ -28,4 +29,3 @@ fun View.hideKeyboard() {
     val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.hideSoftInputFromWindow(windowToken, 0)
 }
-

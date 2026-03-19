@@ -2,12 +2,14 @@
 autodimension = "1.0.8"
 cardview = "1.0.0"
 core = "3.3.0"
+datastorePreferences = "1.1.2"
 kotlinStdlib = "2.0.21"
 legacySupportV4 = "1.0.0"
 chuckerLibrary = "4.1.0"
 lib_recovery = "1.0.1"
 recovery = "1.0.0"
 retrofit = "2.11.0"
+roundablelayout = "1.1.4"
 roundedimageview = "2.3.0"
 compileSdkVersion = "35"
 minSdkVersion = "24"
@@ -27,7 +29,7 @@ constraintlayout = "2.2.0"
 recyclerview = "1.3.2"
 swiperefreshlayout = "1.1.0"
 navigation = "2.8.5"
-hilt = "2.52"
+koin = "4.1.1"
 room = "2.6.1"
 coroutines = "1.9.0"
 lifecycleExtensions = "2.2.0"
@@ -44,11 +46,14 @@ timber = "5.0.1"
 media3 = "1.5.0"
 viewpager2 = "1.1.0"
 leakcanary = "2.14"
+firebaseConfigKtx = "22.1.0"
+kotzilla = "1.4.2"
 
 [libraries]
 androidx-appcompat-resources = { module = "androidx.appcompat:appcompat-resources", version.ref = "appcompat" }
 androidx-cardview = { module = "androidx.cardview:cardview", version.ref = "cardview" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-legacy-support-v4 = { module = "androidx.legacy:legacy-support-v4", version.ref = "legacySupportV4" }
 androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycle" }
 androidx-viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "viewpager2" }
@@ -69,8 +74,8 @@ androidx-activity = { group = "androidx.activity", name = "activity", version.re
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
 androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swiperefreshlayout" }
-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+koin-core-viewmodel = { module = "io.insert-koin:koin-core-viewmodel", version.ref = "koin" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
@@ -96,6 +101,7 @@ okhttp3-okhttp = { group = "com.squareup.okhttp3", name = "okhttp" }
 okhttp3-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor" }
 recovery = { module = "com.zxy.android:recovery", version.ref = "recovery" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+roundablelayout = { module = "com.github.zladnrms:RoundableLayout", version.ref = "roundablelayout" }
 roundedimageview = { module = "com.makeramen:roundedimageview", version.ref = "roundedimageview" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3" }
@@ -106,6 +112,8 @@ androidx-media3-exoplayer-hls = { module = "androidx.media3:media3-exoplayer-hls
 androidx-media3-exoplayer-dash = { module = "androidx.media3:media3-exoplayer-dash", version.ref = "media3" }
 androidx-media3-exoplayer-smoothstreaming = { module = "androidx.media3:media3-exoplayer-smoothstreaming", version.ref = "media3" }
 androidx-media3-exoplayer-rtsp = { module = "androidx.media3:media3-exoplayer-rtsp", version.ref = "media3" }
+google-firebase-config-ktx = { group = "com.google.firebase", name = "firebase-config-ktx", version.ref = "firebaseConfigKtx" }
+kotzilla-sdk = { group = "io.kotzilla", name = "kotzilla-sdk", version.ref = "kotzilla" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -113,8 +121,9 @@ android-library = { id = "com.android.library", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 androidx-navigation-safeargs-kotlin = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navigation" }
-dagger-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+
 gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 google-firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlytics" }
 google-firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "firebasePerf" }
+kotzilla = { id = "io.kotzilla.kotzilla-plugin", version.ref = "kotzilla" }
 

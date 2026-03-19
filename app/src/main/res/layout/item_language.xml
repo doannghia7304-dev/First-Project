@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_12dp"
+        android:layout_marginBottom="@dimen/_24dp"
+        android:background="@drawable/bg_language_unselected"
+        android:orientation="vertical">
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/iv_flag"
+            android:layout_width="@dimen/_48dp"
+            android:layout_height="@dimen/_48dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/_10dp"
+            android:scaleType="centerCrop"
+            app:riv_corner_radius="@dimen/_300dp"
+            tools:src="@drawable/ic_launcher_background" />
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_5dp"
+            android:layout_marginTop="@dimen/_19dp"
+            android:layout_marginBottom="@dimen/_16dp"
+            android:fontFamily="@font/font_400"
+            android:gravity="center"
+            android:textColor="#727272"
+            android:textSize="@dimen/_12sp"
+            tools:text="Vietnamese" />
+    </LinearLayout>
+</layout>

@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintDimensionRatio="360:56"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/ivBack"
+            android:layout_width="@dimen/_32dp"
+            android:layout_height="@dimen/_32dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/_16dp"
+            android:contentDescription="@null"
+            android:padding="@dimen/_6dp"
+            android:src="@drawable/ic_back" />
+
+        <TextView
+            android:id="@+id/tvVideoName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginHorizontal="@dimen/_16dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:fontFamily="@font/font_600"
+            android:maxLines="1"
+            android:text="@string/setting"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_20sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_26dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_12dp"
+            android:fontFamily="@font/font_700"
+            android:text="@string/general_setting"
+            android:textColor="#7A7878"
+            android:textSize="@dimen/_14sp" />
+
+        <LinearLayout
+            android:id="@+id/btnLanguage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10dp">
+
+            <ImageView
+                android:layout_width="@dimen/_24dp"
+                android:layout_height="@dimen/_24dp"
+                android:layout_marginVertical="@dimen/_10dp"
+                android:src="@drawable/ic_setting_language" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/_16dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/font_400"
+                android:text="@string/language"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_16sp" />
+
+            <ImageView
+                android:layout_width="@dimen/_24dp"
+                android:layout_height="@dimen/_24dp"
+                android:layout_gravity="center_vertical"
+                android:rotation="180"
+                android:src="@drawable/ic_back" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_12dp"
+            android:fontFamily="@font/font_700"
+            android:text="@string/information_about"
+            android:textColor="#7A7878"
+            android:textSize="@dimen/_14sp" />
+
+        <LinearLayout
+            android:id="@+id/btnDeveloper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10dp">
+
+            <ImageView
+                android:layout_width="@dimen/_24dp"
+                android:layout_height="@dimen/_24dp"
+                android:layout_marginVertical="@dimen/_10dp"
+                android:src="@drawable/ic_setting_developer" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/_16dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/font_400"
+                android:text="@string/developer"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_16sp" />
+
+            <ImageView
+                android:layout_width="@dimen/_24dp"
+                android:layout_height="@dimen/_24dp"
+                android:layout_gravity="center_vertical"
+                android:rotation="180"
+                android:src="@drawable/ic_back" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btnAdvertisement"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10dp">
+
+            <ImageView
+                android:layout_width="@dimen/_24dp"
+                android:layout_height="@dimen/_24dp"
+                android:layout_marginVertical="@dimen/_10dp"
+                android:src="@drawable/ic_setting_advertisement" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/_16dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/font_400"
+                android:text="@string/advertisement"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_16sp" />
+
+            <ImageView
+                android:layout_width="@dimen/_24dp"
+                android:layout_height="@dimen/_24dp"
+                android:layout_gravity="center_vertical"
+                android:rotation="180"
+                android:src="@drawable/ic_back" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btnResetIap"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="@dimen/_24dp"
+                android:layout_height="@dimen/_24dp"
+                android:layout_marginVertical="@dimen/_10dp"
+                android:src="@drawable/ic_setting_policy" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/_16dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/font_400"
+                android:text="Reset IAP"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_16sp" />
+
+            <ImageView
+                android:layout_width="@dimen/_24dp"
+                android:layout_height="@dimen/_24dp"
+                android:layout_gravity="center_vertical"
+                android:rotation="180"
+                android:src="@drawable/ic_back" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btnPolicy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10dp">
+
+            <ImageView
+                android:layout_width="@dimen/_24dp"
+                android:layout_height="@dimen/_24dp"
+                android:layout_marginVertical="@dimen/_10dp"
+                android:src="@drawable/ic_setting_policy" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/_16dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/font_400"
+                android:text="@string/privacy_policy"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_16sp" />
+
+            <ImageView
+                android:layout_width="@dimen/_24dp"
+                android:layout_height="@dimen/_24dp"
+                android:layout_gravity="center_vertical"
+                android:rotation="180"
+                android:src="@drawable/ic_back" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btnGdpr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10dp">
+
+            <ImageView
+                android:layout_width="@dimen/_24dp"
+                android:layout_height="@dimen/_24dp"
+                android:layout_marginVertical="@dimen/_10dp"
+                android:src="@drawable/ic_gdpr" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/_16dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/font_400"
+                android:text="@string/gdpr"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_16sp" />
+
+            <ImageView
+                android:layout_width="@dimen/_24dp"
+                android:layout_height="@dimen/_24dp"
+                android:layout_gravity="center_vertical"
+                android:rotation="180"
+                android:src="@drawable/ic_back" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btnResetGdpr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10dp">
+
+            <ImageView
+                android:layout_width="@dimen/_24dp"
+                android:layout_height="@dimen/_24dp"
+                android:layout_marginVertical="@dimen/_10dp"
+                android:src="@drawable/ic_gdpr" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/_16dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/font_400"
+                android:text="Reset GDPR"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_16sp" />
+
+            <ImageView
+                android:layout_width="@dimen/_24dp"
+                android:layout_height="@dimen/_24dp"
+                android:layout_gravity="center_vertical"
+                android:rotation="180"
+                android:src="@drawable/ic_back" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txvVersion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/_37dp"
+            android:fontFamily="@font/font_500"
+            android:textColor="#C7C7C7"
+            android:textSize="@dimen/_12sp"
+            tools:text="Application version: v 1.0.1" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_19dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/pion_year" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

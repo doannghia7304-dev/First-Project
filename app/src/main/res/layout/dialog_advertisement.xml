@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:background="#4D000000">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:theme="@style/RoundedCorner.16"
+            android:backgroundTint="@color/white"
+            app:layout_constraintHeight_percent="0.8"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.8">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:scrollbars="none"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/_16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/font_400"
+                        android:text="@string/why_do_you_see_ads"
+                        android:textColor="#E38007"
+                        android:textSize="@dimen/_16sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_16dp"
+                        android:fontFamily="@font/font_300"
+                        android:text="@string/des_advertisement_1"
+                        android:textColor="#0054D3"
+                        android:textSize="@dimen/_16sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_16dp"
+                        android:fontFamily="@font/font_400"
+                        android:text="@string/why_do_you_see_ads"
+                        android:textColor="#E38007"
+                        android:textSize="@dimen/_16sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_16dp"
+                        android:fontFamily="@font/font_300"
+                        android:text="@string/des_advertisment_2"
+                        android:textColor="#0054D3"
+                        android:textSize="@dimen/_16sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_16dp"
+                        android:fontFamily="@font/font_300"
+                        android:text="@string/des_advertisement_3"
+                        android:textColor="#0054D3"
+                        android:textSize="@dimen/_16sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_16dp"
+                        android:fontFamily="@font/font_400"
+                        android:text="@string/what_ads_type_do_we_use"
+                        android:textColor="#E38007"
+                        android:textSize="@dimen/_16sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_16dp"
+                        android:fontFamily="@font/font_300"
+                        android:text="@string/des_advertisement_4"
+                        android:textColor="#0054D3"
+                        android:textSize="@dimen/_16sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_16dp"
+                        android:fontFamily="@font/font_300"
+                        android:text="@string/des_5"
+                        android:textColor="#0054D3"
+                        android:textSize="@dimen/_16sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_3dp"
+                        android:fontFamily="@font/font_300"
+                        android:text="@string/des_6"
+                        android:textColor="#0054D3"
+                        android:textSize="@dimen/_16sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_16dp"
+                        android:fontFamily="@font/font_300"
+                        android:text="@string/des_7"
+                        android:textColor="#0054D3"
+                        android:textSize="@dimen/_16sp"
+                        android:textStyle="italic" />
+                </LinearLayout>
+            </ScrollView>
+
+            <ImageView
+                android:id="@+id/ivClose"
+                android:layout_width="@dimen/_24dp"
+                android:layout_height="@dimen/_24dp"
+                android:layout_marginTop="@dimen/_8dp"
+                android:layout_marginEnd="@dimen/_8dp"
+                android:contentDescription="@null"
+                android:src="@drawable/baseline_close_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

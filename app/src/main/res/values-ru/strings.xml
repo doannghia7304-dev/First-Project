@@ -1,0 +1,29 @@
+<resources>
+    <string name="admob_application_id" translatable="false">ca-app-pub-2222869408518511~9607465111</string>
+    <string name="please_wait" translatable="false">Please wait!</string>
+    <string name="app_name" translatable="false">Pion base</string>
+    <string name="loading">Загрузка</string>
+    <string name="home">Дом</string>
+    <string name="language">Язык</string>
+    <string name="loading_ads">Загрузка рекламы</string>
+    <string name="something_error">Что -то ошибка</string>
+    <string name="swipe_to_continue">Пройдите, чтобы продолжить</string>
+    <string name="loading_data">Загрузка данных</string>
+    <string name="setting">Параметр</string>
+    <string name="general_setting">Общая настройка</string>
+    <string name="information_about">Информация о</string>
+    <string name="developer">Разработчик</string>
+    <string name="privacy_policy">политика конфиденциальности</string>
+    <string name="gdpr">GDPR</string>
+    <string name="store_name">Название магазина:</string>
+    <string name="website">Веб -сайт:</string>
+    <string name="why_do_you_see_ads">Почему вы видите рекламу\?</string>
+    <string name="des_advertisement_1">Для производства и развития нам нужно финансирование, один из которых поступает из доходов от рекламы</string>
+    <string name="des_advertisment_2">1. Чтобы удалить рекламу, вы можете поддержать нас, купив премиум-версию или версию с рекламой.</string>
+    <string name="des_advertisement_3">2. Свяжитесь с нами по электронной почте, чтобы быть рассмотренным для участия в пилотной программе, из которой вы можете использовать версии с меньшим количеством рекламы, но не могут быть оптимизированы для производительности.</string>
+    <string name="what_ads_type_do_we_use">Какой тип рекламы мы используем\?</string>
+    <string name="des_advertisement_4">Мы ассоциируемся со многими партнерами по рекламной сети, и самое большое - Google AD для крупных форматов рекламы</string>
+    <string name="des_5">- Объявления с полным экраном вкрапления между экранами</string>
+    <string name="des_6">- Баннер, родная реклама настроена как компонент AD (обычно с желтой этикеткой)</string>
+    <string name="des_7">Мы всегда пытаемся сбалансировать пользовательский опыт и рекламу</string>
+</resources>

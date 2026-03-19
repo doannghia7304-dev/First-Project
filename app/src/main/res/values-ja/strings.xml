@@ -1,0 +1,29 @@
+<resources>
+    <string name="admob_application_id" translatable="false">ca-app-pub-2222869408518511~9607465111</string>
+    <string name="please_wait" translatable="false">Please wait!</string>
+    <string name="app_name" translatable="false">Pion base</string>
+    <string name="loading">読み込み</string>
+    <string name="home">家</string>
+    <string name="language">言語</string>
+    <string name="loading_ads">広告の読み込み</string>
+    <string name="something_error">何かエラー</string>
+    <string name="swipe_to_continue">スワイプして続行します</string>
+    <string name="loading_data">データの読み込み</string>
+    <string name="setting">設定</string>
+    <string name="general_setting">一般的な設定</string>
+    <string name="information_about">の情報</string>
+    <string name="developer">開発者</string>
+    <string name="privacy_policy">プライバシーポリシー</string>
+    <string name="gdpr">GDPR</string>
+    <string name="store_name">ストア名：</string>
+    <string name="website">Webサイト：</string>
+    <string name="why_do_you_see_ads">なぜ広告が見えますか？</string>
+    <string name="des_advertisement_1">生産と開発のためには、資金が必要です。そのうちの1つは広告収益から来ています</string>
+    <string name="des_advertisment_2">1.広告を削除するには、プレミアムバージョンまたは広告削除バージョンを購入することでサポートできます。</string>
+    <string name="des_advertisement_3">2。パイロットプログラムへの参加を検討するために電子メールでお問い合わせください。そこから、広告が少ないが、パフォーマンスに最適化されないバージョンを使用できます。</string>
+    <string name="what_ads_type_do_we_use">どの広告タイプを使用していますか？</string>
+    <string name="des_advertisement_4">私たちは多くの広告ネットワークパートナーに関連付けられており、最大のAD Google広告は主要な広告形式です</string>
+    <string name="des_5">- 画面間に散在するフル画面広告</string>
+    <string name="des_6">- バナー、ネイティブ広告は、広告のコンポーネントとしてカスタマイズされています（通常は黄色のラベル付き）</string>
+    <string name="des_7">私たちは常にユーザーエクスペリエンスと広告のバランスをとろうとしています</string>
+</resources>

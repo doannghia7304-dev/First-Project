@@ -1,0 +1,29 @@
+<resources>
+    <string name="admob_application_id" translatable="false">ca-app-pub-2222869408518511~9607465111</string>
+    <string name="please_wait" translatable="false">Please wait!</string>
+    <string name="app_name" translatable="false">Pion base</string>
+    <string name="loading">Cargando</string>
+    <string name="home">Hogar</string>
+    <string name="language">Idioma</string>
+    <string name="loading_ads">Cargando anuncios</string>
+    <string name="something_error">Algo de error</string>
+    <string name="swipe_to_continue">Deslizar para continuar</string>
+    <string name="loading_data">Carga de datos</string>
+    <string name="setting">Configuración</string>
+    <string name="general_setting">Entorno general</string>
+    <string name="information_about">Información sobre</string>
+    <string name="developer">Revelador</string>
+    <string name="privacy_policy">política de privacidad</string>
+    <string name="gdpr">GDPR</string>
+    <string name="store_name">Nombre de la tienda:</string>
+    <string name="website">Sitio web:</string>
+    <string name="why_do_you_see_ads">¿Por qué ves anuncios\?</string>
+    <string name="des_advertisement_1">Para la producción y el desarrollo, necesitamos fondos, uno de los cuales proviene de los ingresos por anuncios</string>
+    <string name="des_advertisment_2">1. Para eliminar los anuncios, puede apoyarnos comprando la versión premium o la versión removida por anuncios.</string>
+    <string name="des_advertisement_3">2. Contáctenos por correo electrónico para ser considerado para participar en el programa piloto, desde el cual puede usar versiones con menos anuncios, pero puede no estar optimizado para el rendimiento.</string>
+    <string name="what_ads_type_do_we_use">¿Qué tipo de anuncios usamos\?</string>
+    <string name="des_advertisement_4">Estamos asociados con muchos socios de redes publicitarias y el más grande es el anuncio de Google para los principales formatos de anuncios.</string>
+    <string name="des_5">- anuncios de pantalla completa intercalados entre pantallas</string>
+    <string name="des_6">- Banner, los anuncios nativos se personalizan como un componente de AD (generalmente con una etiqueta amarilla)</string>
+    <string name="des_7">Siempre estamos tratando de equilibrar la experiencia del usuario y la publicidad.</string>
+</resources>

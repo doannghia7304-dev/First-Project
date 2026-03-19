@@ -1,0 +1,29 @@
+<resources>
+    <string name="admob_application_id" translatable="false">ca-app-pub-2222869408518511~9607465111</string>
+    <string name="please_wait" translatable="false">Please wait!</string>
+    <string name="app_name" translatable="false">Pion base</string>
+    <string name="loading">การโหลด</string>
+    <string name="home">บ้าน</string>
+    <string name="language">ภาษา</string>
+    <string name="loading_ads">กำลังโหลดโฆษณา</string>
+    <string name="something_error">ข้อผิดพลาดบางอย่าง</string>
+    <string name="swipe_to_continue">ปัดเพื่อดำเนินการต่อ</string>
+    <string name="loading_data">กำลังโหลดข้อมูล</string>
+    <string name="setting">การตั้งค่า</string>
+    <string name="general_setting">การตั้งค่าทั่วไป</string>
+    <string name="information_about">ข้อมูลเกี่ยวกับ</string>
+    <string name="developer">ผู้พัฒนา</string>
+    <string name="privacy_policy">นโยบายความเป็นส่วนตัว</string>
+    <string name="gdpr">GDPR</string>
+    <string name="store_name">ชื่อร้านค้า:</string>
+    <string name="website">เว็บไซต์:</string>
+    <string name="why_do_you_see_ads">ทำไมคุณถึงเห็นโฆษณา\?</string>
+    <string name="des_advertisement_1">สำหรับการผลิตและการพัฒนาเราต้องการเงินทุนซึ่งหนึ่งในนั้นมาจากรายได้จากการโฆษณา</string>
+    <string name="des_advertisment_2">1. ในการลบโฆษณาคุณสามารถรองรับเราได้โดยการซื้อเวอร์ชันพรีเมี่ยมหรือเวอร์ชันที่ถูกลบด้วยโฆษณา</string>
+    <string name="des_advertisement_3">2. ติดต่อเราทางอีเมลเพื่อพิจารณาการเข้าร่วมในโปรแกรมนำร่องซึ่งคุณสามารถใช้เวอร์ชันที่มีโฆษณาน้อยกว่า แต่อาจไม่ได้รับการปรับให้เหมาะสมสำหรับประสิทธิภาพ</string>
+    <string name="what_ads_type_do_we_use">เราใช้ประเภทโฆษณาประเภทใด</string>
+    <string name="des_advertisement_4">เรามีความสัมพันธ์กับพันธมิตรเครือข่ายโฆษณาจำนวนมากและที่ใหญ่ที่สุดคือ Google AD สำหรับรูปแบบโฆษณาที่สำคัญ</string>
+    <string name="des_5">- โฆษณาเต็มหน้าจอสลับระหว่างหน้าจอ</string>
+    <string name="des_6">- แบนเนอร์โฆษณาดั้งเดิมได้รับการปรับแต่งเป็นส่วนประกอบของโฆษณา (โดยปกติจะมีฉลากสีเหลือง)</string>
+    <string name="des_7">เรามักจะพยายามสร้างความสมดุลให้กับประสบการณ์ผู้ใช้และโฆษณา</string>
+</resources>

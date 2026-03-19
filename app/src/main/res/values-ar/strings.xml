@@ -1,0 +1,29 @@
+<resources>
+    <string name="admob_application_id" translatable="false">ca-app-pub-2222869408518511~9607465111</string>
+    <string name="please_wait" translatable="false">Please wait!</string>
+    <string name="app_name" translatable="false">Pion base</string>
+    <string name="loading">تحميل</string>
+    <string name="home">بيت</string>
+    <string name="language">لغة</string>
+    <string name="loading_ads">تحميل الإعلانات</string>
+    <string name="something_error">شيء خطأ</string>
+    <string name="swipe_to_continue">انتقد للمتابعة</string>
+    <string name="loading_data">تحميل البيانات</string>
+    <string name="setting">جلسة</string>
+    <string name="general_setting">الإعداد العام</string>
+    <string name="information_about">معلومات عن</string>
+    <string name="developer">المطور</string>
+    <string name="privacy_policy">سياسة الخصوصية</string>
+    <string name="gdpr">الناتج المحلي الإجمالي</string>
+    <string name="store_name">اسم المتجر:</string>
+    <string name="website">موقع إلكتروني:</string>
+    <string name="why_do_you_see_ads">لماذا ترى الإعلانات؟</string>
+    <string name="des_advertisement_1">للإنتاج والتطوير ، نحتاج إلى تمويل ، أحدهما يأتي من إيرادات الإعلان</string>
+    <string name="des_advertisment_2">1. لإزالة الإعلانات ، يمكنك دعمنا عن طريق شراء الإصدار الممتاز أو الإصدار الذي تم الإعلان عنه.</string>
+    <string name="des_advertisement_3">2. اتصل بنا عن طريق البريد الإلكتروني ليتم مراعاتها للمشاركة في البرنامج التجريبي ، والتي يمكنك من خلالها استخدام الإصدارات مع إعلانات أقل ولكن قد لا يتم تحسينها للأداء.</string>
+    <string name="what_ads_type_do_we_use">ما نوع الإعلانات الذي نستخدمه؟</string>
+    <string name="des_advertisement_4">نحن مرتبطون بالعديد من شركاء شبكة الإعلانات والأكبر هو Google AD لتنسيقات الإعلانات الرئيسية</string>
+    <string name="des_5">- إعلانات ملء الشاشة تتخللها الشاشات</string>
+    <string name="des_6">- لافتة ، يتم تخصيص الإعلانات الأصلية كعنصر مكون من م (عادة مع علامة صفراء)</string>
+    <string name="des_7">نحن نحاول دائمًا موازنة تجربة المستخدم والإعلان</string>
+</resources>

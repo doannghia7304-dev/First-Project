@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:background="#4D000000">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:theme="@style/RoundedCorner.16"
+            android:backgroundTint="@color/white"
+            android:padding="@dimen/_16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.8">
+
+            <ImageView
+                android:id="@+id/ivClose"
+                android:layout_width="@dimen/_24dp"
+                android:layout_height="@dimen/_24dp"
+                android:contentDescription="@null"
+                android:src="@drawable/baseline_close_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvStoreName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/font_300"
+                android:text="@string/store_name"
+                android:textColor="#E38007"
+                android:textSize="@dimen/_16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvStoreNameValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_3dp"
+                android:fontFamily="@font/font_400"
+                android:text="Pion Tech"
+                android:textColor="#0054D3"
+                android:textSize="@dimen/_16sp"
+                app:layout_constraintStart_toEndOf="@id/tvStoreName"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvWebsite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_13dp"
+                android:fontFamily="@font/font_300"
+                android:text="@string/website"
+                android:textColor="#E38007"
+                android:textSize="@dimen/_16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvStoreName" />
+
+            <TextView
+                android:id="@+id/tvWebsiteValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_3dp"
+                android:layout_marginTop="@dimen/_13dp"
+                android:fontFamily="@font/font_400"
+                android:text="https://piontech.co"
+                android:textColor="#0054D3"
+                android:textSize="@dimen/_16sp"
+                app:layout_constraintStart_toEndOf="@+id/tvWebsite"
+                app:layout_constraintTop_toBottomOf="@+id/tvStoreName" />
+
+            <TextView
+                android:id="@+id/tvFacebook"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_13dp"
+                android:fontFamily="@font/font_300"
+                android:text="Facebook:"
+                android:textColor="#E38007"
+                android:textSize="@dimen/_16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvWebsite" />
+
+            <TextView
+                android:id="@+id/tvTelegram"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_13dp"
+                android:fontFamily="@font/font_300"
+                android:text="Telegram:"
+                android:textColor="#E38007"
+                android:textSize="@dimen/_16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvFacebook" />
+
+            <TextView
+                android:id="@+id/tvTelegramValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_3dp"
+                android:layout_marginTop="@dimen/_13dp"
+                android:fontFamily="@font/font_400"
+                android:text="\@piontechglobal"
+                android:textColor="#0054D3"
+                android:textSize="@dimen/_16sp"
+                app:layout_constraintStart_toEndOf="@+id/tvTelegram"
+                app:layout_constraintTop_toBottomOf="@+id/tvFacebook" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <files-path name="files" path="." />
+    <files-path name="files" path="." />
+    <external-files-path name="external_files" path="." />
+    <external-path name="external_files" path="." />
+    <cache-path name="cached_files" path="." />
+    <external-cache-path name="cached_files" path="." />
+    <root-path name="root" path="." />
+    <files-path name="internal_files" path="filedir/" />
+    <external-files-path
+        name="images"
+        path="Pictures/" />
+</paths>

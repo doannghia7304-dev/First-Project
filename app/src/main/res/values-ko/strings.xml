@@ -1,0 +1,29 @@
+<resources>
+    <string name="admob_application_id" translatable="false">ca-app-pub-2222869408518511~9607465111</string>
+    <string name="please_wait" translatable="false">Please wait!</string>
+    <string name="app_name" translatable="false">Pion base</string>
+    <string name="loading">로딩</string>
+    <string name="home">집</string>
+    <string name="language">언어</string>
+    <string name="loading_ads">광고로드</string>
+    <string name="something_error">뭔가 오류</string>
+    <string name="swipe_to_continue">계속해서 스 와이프하십시오</string>
+    <string name="loading_data">데이터로드</string>
+    <string name="setting">환경</string>
+    <string name="general_setting">일반적인 설정</string>
+    <string name="information_about">정보에 대한 정보</string>
+    <string name="developer">개발자</string>
+    <string name="privacy_policy">개인 정보 보호 정책</string>
+    <string name="gdpr">GDPR</string>
+    <string name="store_name">상점 이름 :</string>
+    <string name="website">웹 사이트 :</string>
+    <string name="why_do_you_see_ads">왜 광고가 보이나요\?</string>
+    <string name="des_advertisement_1">생산 및 개발에는 자금이 필요하며 그 중 하나는 광고 수익에서 나옵니다.</string>
+    <string name="des_advertisment_2">1. 광고를 제거하려면 프리미엄 버전 또는 광고 제로 버전을 구매하여 지원할 수 있습니다.</string>
+    <string name="des_advertisement_3">2. 파일럿 프로그램에 참여할 수 있도록 이메일로 문의하십시오.이 프로그램에서 광고가 적은 버전을 사용할 수는 있지만 성능에 최적화되지 않을 수 있습니다.</string>
+    <string name="what_ads_type_do_we_use">우리는 어떤 광고 유형을 사용합니까\?</string>
+    <string name="des_advertisement_4">우리는 많은 광고 네트워크 파트너와 관련이 있으며 가장 큰 것은 주요 광고 형식에 대한 Google 광고입니다.</string>
+    <string name="des_5">- 화면 사이에 산재 된 전체 화면 광고</string>
+    <string name="des_6">- 배너, 기본 광고는 광고의 구성 요소로 사용자 정의됩니다 (일반적으로 노란색 레이블이 있음)</string>
+    <string name="des_7">우리는 항상 사용자 경험과 광고의 균형을 잡으려고 노력하고 있습니다.</string>
+</resources>

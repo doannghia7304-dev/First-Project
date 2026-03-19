@@ -1,0 +1,29 @@
+<resources>
+    <string name="admob_application_id" translatable="false">ca-app-pub-2222869408518511~9607465111</string>
+    <string name="please_wait" translatable="false">Please wait!</string>
+    <string name="app_name" translatable="false">Pion base</string>
+    <string name="loading">Yuklamoq</string>
+    <string name="home">Uy</string>
+    <string name="language">Til</string>
+    <string name="loading_ads">Reklama yuklash</string>
+    <string name="something_error">Qandaydir xato</string>
+    <string name="swipe_to_continue">Davom etish uchun suring</string>
+    <string name="loading_data">Ma\'lumotlarni yuklash</string>
+    <string name="setting">Sozlamoq</string>
+    <string name="general_setting">Umumiy sozlamalar</string>
+    <string name="information_about">Haqida ma\'lumot</string>
+    <string name="developer">Ishlab chiqaruvchi</string>
+    <string name="privacy_policy">Maxfiylik siyosati</string>
+    <string name="gdpr">Gdpr</string>
+    <string name="store_name">Do\'kon nomi:</string>
+    <string name="website">Veb-sayt:</string>
+    <string name="why_do_you_see_ads">Nega reklamalarni ko\'rasiz\?</string>
+    <string name="des_advertisement_1">Ishlab chiqarish va ishlab chiqish uchun bizga mablag \'kerak, ulardan biri reklama daromadidan kelib chiqadi</string>
+    <string name="des_advertisment_2">1. Reklamalarni olib tashlash uchun siz Premium versiyasini yoki reklama olib tashlangan versiyasini sotib olish orqali bizni qo\'llab-quvvatlashingiz mumkin.</string>
+    <string name="des_advertisement_3">2. Filit dasturida qatnashish uchun biz bilan bog\'laning, undan kamroq reklamalar bilan versiyalardan foydalanishingiz mumkin, ammo ishlash uchun optimallashtirilmasligi mumkin.</string>
+    <string name="what_ads_type_do_we_use">Biz qaysi reklama turidan foydalanamiz\?</string>
+    <string name="des_advertisement_4">Biz ko\'plab reklama sheriklari bilan bog\'lanamiz va yirik reklama formatlari uchun Google reklamaidir</string>
+    <string name="des_5">- Ekranlar o\'rtasida kesilgan reklamalarni to\'liq ekran</string>
+    <string name="des_6">- Banner, mahalliy reklamalar reklama tarkibiy qismi sifatida moslashtirilgan (odatda sariq yorliq bilan)</string>
+    <string name="des_7">Biz har doim foydalanuvchi tajribasi va reklamaini muvozanatlashga harakat qilamiz</string>
+</resources>

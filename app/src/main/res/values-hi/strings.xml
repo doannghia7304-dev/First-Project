@@ -1,0 +1,29 @@
+<resources>
+    <string name="admob_application_id" translatable="false">ca-app-pub-2222869408518511~9607465111</string>
+    <string name="please_wait" translatable="false">Please wait!</string>
+    <string name="app_name" translatable="false">Pion base</string>
+    <string name="loading">लोड करना</string>
+    <string name="home">घर</string>
+    <string name="language">भाषा</string>
+    <string name="loading_ads">लोडिंग विज्ञापन</string>
+    <string name="something_error">कुछ त्रुटि</string>
+    <string name="swipe_to_continue">जारी रखने के लिए स्वाइप</string>
+    <string name="loading_data">लोड हो रहा डेटा</string>
+    <string name="setting">सेटिंग</string>
+    <string name="general_setting">सामान्य सेटिंग</string>
+    <string name="information_about">के बारे में जानकारी</string>
+    <string name="developer">डेवलपर</string>
+    <string name="privacy_policy">गोपनीयता नीति</string>
+    <string name="gdpr">जीडीपीआर</string>
+    <string name="store_name">स्टोर नाम:</string>
+    <string name="website">वेबसाइट:</string>
+    <string name="why_do_you_see_ads">आप विज्ञापन क्यों देखते हैं\?</string>
+    <string name="des_advertisement_1">उत्पादन और विकास के लिए, हमें फंडिंग की आवश्यकता है, जिनमें से एक विज्ञापन राजस्व से आता है</string>
+    <string name="des_advertisment_2">1। विज्ञापनों को हटाने के लिए, आप प्रीमियम संस्करण या AD-REMOVED संस्करण खरीदकर हमारा समर्थन कर सकते हैं।</string>
+    <string name="des_advertisement_3">2। पायलट कार्यक्रम में भागीदारी के लिए विचार किए जाने वाले ईमेल द्वारा हमसे संपर्क करें, जिसमें से आप कम विज्ञापनों वाले संस्करणों का उपयोग कर सकते हैं, लेकिन प्रदर्शन के लिए अनुकूलित नहीं हो सकते हैं।</string>
+    <string name="what_ads_type_do_we_use">हम किस विज्ञापन प्रकार का उपयोग करते हैं\?</string>
+    <string name="des_advertisement_4">हम कई विज्ञापन नेटवर्क भागीदारों से जुड़े हैं और प्रमुख विज्ञापन प्रारूपों के लिए सबसे बड़ा Google विज्ञापन है</string>
+    <string name="des_5">- स्क्रीन के बीच पूर्ण स्क्रीन विज्ञापन जोड़ा गया</string>
+    <string name="des_6">- बैनर, देशी विज्ञापनों को एडी के एक घटक के रूप में अनुकूलित किया जाता है (आमतौर पर एक पीले लेबल के साथ)</string>
+    <string name="des_7">हम हमेशा उपयोगकर्ता अनुभव और विज्ञापन को संतुलित करने की कोशिश कर रहे हैं</string>
+</resources>

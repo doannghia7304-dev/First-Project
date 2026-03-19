@@ -7,16 +7,77 @@
 
     <fragment
         android:id="@+id/splashFragment"
-        android:name="pion.tech.pionbase.framework.presentation.splash.SplashFragment"
+        android:name="pion.tech.pionbase.feature.splash.SplashFragment"
         android:label="SplashFragment"
         tools:layout="@layout/fragment_splash">
         <action
+            android:id="@+id/action_splashFragment_to_languageFragment"
+            app:destination="@id/languageFragment"
+            app:popUpTo="@id/splashFragment"
+            app:popUpToInclusive="true" />
+        <action
             android:id="@+id/action_splashFragment_to_homeFragment"
-            app:destination="@id/homeFragment" />
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
-        android:name="pion.tech.pionbase.framework.presentation.home.HomeFragment"
+        android:name="pion.tech.pionbase.feature.home.HomeFragment"
         android:label="HomeFragment"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_settingFragment"
+            app:destination="@id/settingFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/languageFragment"
+        android:name="pion.tech.pionbase.feature.language.LanguageFragment"
+        android:label="LanguageFragment"
+        tools:layout="@layout/fragment_language">
+        <action
+            android:id="@+id/action_languageFragment_to_onboardFragment"
+            app:destination="@id/onboardFragment"
+            app:popUpTo="@id/languageFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_languageFragment_to_splashFragment"
+            app:destination="@id/splashFragment" />
+        <action
+            android:id="@+id/action_languageFragment_to_changeLanguageFragment"
+            app:destination="@id/changeLanguageFragment"
+            app:popUpTo="@id/languageFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/onboardFragment"
+        android:name="pion.tech.pionbase.feature.onboard.OnboardFragment"
+        android:label="OnboardFragment"
+        tools:layout="@layout/fragment_onboard">
+        <action
+            android:id="@+id/action_onboardFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/onboardFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="pion.tech.pionbase.feature.setting.SettingFragment"
+        android:label="SettingFragment"
+        tools:layout="@layout/fragment_setting">
+        <action
+            android:id="@+id/action_settingFragment_to_languageFragment"
+            app:destination="@id/languageFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/changeLanguageFragment"
+        android:name="pion.tech.pionbase.feature.changeLanguage.ChangeLanguageFragment"
+        android:label="ChangeLanguageFragment"
+        tools:layout="@layout/fragment_change_language">
+        <action
+            android:id="@+id/action_changeLanguageFragment_to_onboardFragment"
+            app:destination="@id/onboardFragment"
+            app:popUpTo="@id/changeLanguageFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

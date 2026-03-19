@@ -1,0 +1,29 @@
+<resources>
+    <string name="admob_application_id" translatable="false">ca-app-pub-2222869408518511~9607465111</string>
+    <string name="please_wait" translatable="false">Please wait!</string>
+    <string name="app_name" translatable="false">Pion base</string>
+    <string name="loading">Φόρτωση</string>
+    <string name="home">Σπίτι</string>
+    <string name="language">Γλώσσα</string>
+    <string name="loading_ads">Διαφημίσεις φόρτωσης</string>
+    <string name="something_error">Κάτι λάθος</string>
+    <string name="swipe_to_continue">Σύρετε για να συνεχίσετε</string>
+    <string name="loading_data">Φόρτωση δεδομένων</string>
+    <string name="setting">Σύνθεση</string>
+    <string name="general_setting">Γενική ρύθμιση</string>
+    <string name="information_about">Πληροφορίες σχετικά με</string>
+    <string name="developer">Προγραμματιστής</string>
+    <string name="privacy_policy">Πολιτική απορρήτου</string>
+    <string name="gdpr">GDPR</string>
+    <string name="store_name">Όνομα αποθήκευσης:</string>
+    <string name="website">Δικτυακός τόπος:</string>
+    <string name="why_do_you_see_ads">Γιατί βλέπετε διαφημίσεις;</string>
+    <string name="des_advertisement_1">Για την παραγωγή και την ανάπτυξη, χρειαζόμαστε χρηματοδότηση, ένα από τα οποία προέρχεται από τα έσοδα από διαφημίσεις</string>
+    <string name="des_advertisment_2">1. Για να καταργήσετε τις διαφημίσεις, μπορείτε να μας υποστηρίξετε αγοράζοντας την έκδοση premium ή την έκδοση ad-removed.</string>
+    <string name="des_advertisement_3">2. Επικοινωνήστε μαζί μας μέσω ηλεκτρονικού ταχυδρομείου που θα ληφθεί υπόψη για συμμετοχή στο πιλοτικό πρόγραμμα, από το οποίο μπορείτε να χρησιμοποιήσετε εκδόσεις με λιγότερες διαφημίσεις, αλλά ενδέχεται να μην βελτιστοποιηθούν για την απόδοση.</string>
+    <string name="what_ads_type_do_we_use">Ποιος τύπος διαφημίσεων χρησιμοποιούμε;</string>
+    <string name="des_advertisement_4">Είμαστε συνδεδεμένοι με πολλούς συνεργάτες δικτύου διαφημίσεων και ο μεγαλύτερος είναι η διαφήμιση Google για σημαντικές μορφές διαφημίσεων</string>
+    <string name="des_5">- Διαφημίσεις πλήρους οθόνης που διασκορπίζονται μεταξύ των οθονών</string>
+    <string name="des_6">- Banner, οι εγγενείς διαφημίσεις είναι προσαρμοσμένες ως συστατικό της AD (συνήθως με κίτρινη ετικέτα)</string>
+    <string name="des_7">Προσπαθούμε πάντα να εξισορροπήσουμε την εμπειρία του χρήστη και τη διαφήμιση</string>
+</resources>
