@@ -9,6 +9,7 @@ import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.NavController
@@ -18,11 +19,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import pion.datlt.libads.AdsActivity
-import pion.datlt.libads.iap.IapController
-import pion.datlt.libads.iap.SubscribeInterface
-import pion.datlt.libads.iap.model.ProductModel
-import pion.datlt.libads.utils.AdsConstant
 import pion.tech.pionbase.BuildConfig
 import pion.tech.pionbase.R
 import pion.tech.pionbase.base.firebaseAnalytics.FirebaseAnalyticsLogger
@@ -33,7 +29,7 @@ import pion.tech.pionbase.util.collectFlowOnView
 import timber.log.Timber
 import kotlin.getValue
 
-class MainActivity : AdsActivity() {
+class MainActivity : AppCompatActivity() {
     private val commonViewModel: CommonViewModel by viewModel()
     val logger: FirebaseAnalyticsLogger by inject()
 
@@ -54,8 +50,6 @@ class MainActivity : AdsActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        initAds()
-        initPurchaseIap()
         setupNavigationLogging()
         subscribeObserver()
     }
@@ -65,7 +59,7 @@ class MainActivity : AdsActivity() {
             .map { it.isPremium }
             .distinctUntilChanged()
             .collectFlowOnView(this) {
-                AdsConstant.isPremium = it
+
             }
     }
 
@@ -82,92 +76,6 @@ class MainActivity : AdsActivity() {
             logger.logEvent("${sanitizedName}_show")
             logger.logScreen("${sanitizedName}_view")
         }
-    }
-
-    override fun getListAppId(): List<String> =
-        listOf(
-            getString(R.string.admob_application_id),
-        )
-
-    override fun isDebugAds() = BuildConfig.DEBUG
-
-    override fun getNavHost(): NavController {
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.fragmentContainerMain) as NavHostFragment
-        return navHostFragment.navController
-    }
-
-    override fun getNativeAfterInterInfo(): Pair<String, List<String>> {
-        // Trả về list id của quảng cáo native sau inter
-        return Pair(
-            "afterinterstitial",
-            listOf("afterinterstitial_native1", "afterinterstitial_native2"),
-        ) // k: configName || v: list id native
-    }
-
-    override fun getAppResumeInfo(): Pair<String, List<String>> {
-        // Trả về list id của quảng cáo app resume
-        return Pair(
-            "appresume",
-            listOf("appresume_openad1", "appresume_openad2"),
-        ) // k: configName || v: list id native
-    }
-
-    override fun getListNotShowAppResumeFragmentId(): List<Int> {
-        // Trả về list id của các fragment không hiển thị quảng cáo app resume
-        return listOf(
-            R.id.splashFragment,
-            R.id.onboardFragment,
-        )
-    }
-
-    override fun onRemoteConfigSuccess(isSuccess: Boolean) {
-        AppRemoteConfig.setRemoteConfigSuccess(isSuccess)
-    }
-
-    override fun onGetRemoteConfigDone(remoteConfig: FirebaseRemoteConfig) {
-        AppRemoteConfig.init(remoteConfig)
-    }
-
-    override fun getAppFlyerKey() = "4Ti9yuyaVb6BJMoy25gWUP"
-
-    override fun onGetIapDone(isSuccess: Boolean) {
-        super.onGetIapDone(isSuccess)
-        val tag = "onGetIapDone"
-        if (isSuccess) {
-            val productModel =
-                IapController
-                    .getListAllProduct()
-                    .find { it.isPurchase }
-            Timber.tag(tag).d("onGetIapDone: $productModel")
-            if (productModel != null) {
-                commonViewModel.setPremium(productModel.isPurchase)
-            } else {
-                commonViewModel.setPremium(false)
-            }
-        }
-    }
-
-    private fun initPurchaseIap() {
-        IapController.setIAPListener(
-            object : SubscribeInterface {
-                override fun subscribeSuccess(productModel: ProductModel) {
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        val intent =
-                            baseContext.packageManager.getLaunchIntentForPackage(
-                                baseContext.packageName,
-                            )
-                        intent!!.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                        startActivity(intent)
-                    }, RESTART_DELAY_MS)
-                }
-
-                override fun subscribeError(error: String) {
-                    Timber.e("Subscribe error: $error")
-                }
-            },
-        )
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {

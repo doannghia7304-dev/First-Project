@@ -146,7 +146,7 @@
                 android:layout_marginStart="@dimen/_16dp"
                 android:layout_weight="1"
                 android:fontFamily="@font/font_400"
-                android:text="@string/advertisement"
+                android:text="Advertisement"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_16sp" />
 

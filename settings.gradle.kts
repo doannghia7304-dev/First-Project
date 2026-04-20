@@ -31,4 +31,3 @@ dependencyResolutionManagement {
 
 include(":app")
 rootProject.name = "PionBase"
-include(":LibAds")

@@ -99,8 +99,6 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    implementation(project(":LibAds"))
-
     // Crash recovery
     implementation(libs.lib.recovery)
 

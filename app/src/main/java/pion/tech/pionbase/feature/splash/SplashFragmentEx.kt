@@ -1,7 +1,6 @@
 package pion.tech.pionbase.feature.splash
 
 import android.animation.ValueAnimator
-import pion.datlt.libads.utils.AdsConstant
 import pion.tech.pionbase.R
 
 fun SplashFragment.onBackEvent() {
@@ -39,8 +38,15 @@ fun SplashFragment.initView() {
 }
 
 fun SplashFragment.goToNextScreen() {
+    //TODO : check logic AdsConstant.isPremium
+//    val destination =
+//        if (AdsConstant.isPremium || isCameFromLanguage()) {
+//            R.id.action_splashFragment_to_homeFragment
+//        } else {
+//            R.id.action_splashFragment_to_languageFragment
+//        }
     val destination =
-        if (AdsConstant.isPremium || isCameFromLanguage()) {
+        if (isCameFromLanguage()) {
             R.id.action_splashFragment_to_homeFragment
         } else {
             R.id.action_splashFragment_to_languageFragment

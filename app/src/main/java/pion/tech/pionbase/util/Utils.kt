@@ -11,7 +11,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import pion.datlt.libads.utils.DialogNative
 import pion.tech.pionbase.base.BaseBottomSheetDialogFragment
 import pion.tech.pionbase.base.BaseDialogFragment
 import pion.tech.pionbase.base.doActionWhenResume
@@ -22,10 +21,8 @@ fun Fragment.safeShowDialog(
     fragmentManager: FragmentManager = childFragmentManager,
 ) {
     if (dialog == null) return
-    DialogNative.runWhenNativeDismiss {
-        doActionWhenResume {
-            dialog.show(fragmentManager)
-        }
+    doActionWhenResume {
+        dialog.show(fragmentManager)
     }
 }
 
@@ -34,10 +31,8 @@ fun Fragment.safeShowBottomSheet(
     fragmentManager: FragmentManager = childFragmentManager,
 ) {
     if (dialog == null) return
-    DialogNative.runWhenNativeDismiss {
-        doActionWhenResume {
-            dialog.show(fragmentManager)
-        }
+    doActionWhenResume {
+        dialog.show(fragmentManager)
     }
 }
 

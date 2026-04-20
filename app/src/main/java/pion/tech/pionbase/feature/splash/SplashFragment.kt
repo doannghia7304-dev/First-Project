@@ -20,11 +20,7 @@ class SplashFragment :
     }
 
     override fun subscribeObserver(view: View) {
-        (activity as? MainActivity)?.isAllInitDone?.collectFlowOnView(viewLifecycleOwner) {
-            if (it) {
-                showAds()
-            }
-        }
+        showAds()
     }
 
     override fun onDestroyView() {

@@ -4,12 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
-import androidx.navigation.fragment.findNavController
-import pion.datlt.libads.iap.IapController
-import pion.datlt.libads.AdsController
-import pion.datlt.libads.utils.isNeedToShowConsent
-import pion.datlt.libads.utils.resetConsent
-import pion.datlt.libads.utils.showPolicyForm
 import pion.tech.pionbase.BuildConfig
 import pion.tech.pionbase.R
 import pion.tech.pionbase.feature.setting.dialog.AdvertisementDialog
@@ -86,29 +80,32 @@ fun SettingFragment.policyEvent() {
 fun SettingFragment.resetIapEvent() {
     binding.btnResetIap.isVisible = BuildConfig.DEBUG
     binding.btnResetIap.setPreventDoubleClick {
-        IapController.resetIap(requireActivity())
+        //TODO : check iap
+//        IapController.resetIap(requireActivity())
     }
 }
 
 fun SettingFragment.gdprEvent() {
     binding.btnGdpr.setPreventDoubleClickScaleView {
         runCatching {
-            AdsController.getInstance().showPolicyForm(
-                onShow = {
-                    // do nothing
-                },
-                onError = {
-                    // do nothing
-                },
-            )
+            //TODO : show policy form
+//            AdsController.getInstance().showPolicyForm(
+//                onShow = {
+//                    // do nothing
+//                },
+//                onError = {
+//                    // do nothing
+//                },
+//            )
         }
     }
 
-    if (AdsController.getInstance().isNeedToShowConsent() || BuildConfig.DEBUG) {
-        binding.btnGdpr.isVisible = true
-    } else {
-        binding.btnGdpr.isVisible = false
-    }
+    //TODO : check isNeedToShowConsent
+//    if (AdsController.getInstance().isNeedToShowConsent() || BuildConfig.DEBUG) {
+//        binding.btnGdpr.isVisible = true
+//    } else {
+//        binding.btnGdpr.isVisible = false
+//    }
 }
 
 fun SettingFragment.resetGDPR() {
@@ -116,7 +113,8 @@ fun SettingFragment.resetGDPR() {
         binding.btnResetGdpr.isVisible = true
         binding.btnResetGdpr.setPreventDoubleClickScaleView {
             runCatching {
-                AdsController.getInstance().resetConsent()
+                //TODO : reset consent
+//                AdsController.getInstance().resetConsent()
             }
         }
     } else {

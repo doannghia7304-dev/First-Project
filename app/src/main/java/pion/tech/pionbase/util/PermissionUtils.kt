@@ -3,7 +3,6 @@ package pion.tech.pionbase.util
 import android.content.Intent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.Fragment
-import pion.datlt.libads.AdsController
 import pion.tech.pionbase.R
 import pion.tech.pionbase.base.doActionWhenStop
 
@@ -12,7 +11,8 @@ fun Fragment.requestPermissionInSetting(
     intent: Intent,
 ) {
     doActionWhenStop {
-        AdsController.isBlockOpenAds = true
+        //TODO : AdsController
+//        AdsController.isBlockOpenAds = true
     }
     runCatching {
         launcher.launch(intent)

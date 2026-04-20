@@ -7,8 +7,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withTimeoutOrNull
-import pion.datlt.libads.callback.PreloadCallback
-import pion.datlt.libads.utils.adsuntils.safePreloadAds
 import pion.tech.pionbase.R
 import pion.tech.pionbase.base.launchMain
 import pion.tech.pionbase.util.AppRemoteConfig
@@ -107,21 +105,21 @@ private suspend fun ChangeLanguageFragment.loadAdSuspend(
     spaceName: String,
 ): Boolean =
     suspendCancellableCoroutine { cont ->
-        safePreloadAds(
-            configName = configName,
-            spaceName = spaceName,
-            includeHasBeenOpened = true,
-            preloadCallback =
-                object : PreloadCallback {
-                    override fun onLoadDone() {
-                        if (cont.isActive) cont.resume(true)
-                    }
-
-                    override fun onLoadFail(error: String) {
-                        if (cont.isActive) cont.resume(false)
-                    }
-                },
-        )
+//        safePreloadAds(
+//            configName = configName,
+//            spaceName = spaceName,
+//            includeHasBeenOpened = true,
+//            preloadCallback =
+//                object : PreloadCallback {
+//                    override fun onLoadDone() {
+//                        if (cont.isActive) cont.resume(true)
+//                    }
+//
+//                    override fun onLoadFail(error: String) {
+//                        if (cont.isActive) cont.resume(false)
+//                    }
+//                },
+//        )
     }
 
 fun ChangeLanguageFragment.goToNextScreen() {
