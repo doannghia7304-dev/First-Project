@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.khaipv.recovery.core.Recovery
-import io.kotzilla.sdk.analytics.koin.analytics
 import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -21,7 +20,6 @@ class MyApplication : Application() {
 
         startKoin {
             androidContext(this@MyApplication)
-            analytics()
             modules(appModules)
         }
         setupRemoteConfig()

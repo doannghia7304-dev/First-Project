@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.google.devtools.ksp)
     alias(libs.plugins.gms.google.services)
     alias(libs.plugins.google.firebase.crashlytics)
-    alias(libs.plugins.kotzilla)
     id("kotlin-parcelize")
     id("kotlin-kapt")
     id("kotlin-android")
@@ -86,7 +85,6 @@ android {
 }
 
 dependencies {
-    implementation(libs.kotzilla.sdk)
 
     implementation(libs.kotlin.stdlib)
     implementation(libs.androidx.core.ktx)
