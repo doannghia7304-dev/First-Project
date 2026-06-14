@@ -72,4 +72,5 @@ lint/tmp/
 app/release/output.json
 .idea/codeStyles/
 .claude/
+.agents/
 /.serena/
