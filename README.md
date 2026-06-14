@@ -1,6 +1,8 @@
 # Pion-Base
 
-Android template project sử dụng kiến trúc MVVM 2 lớp (UI + Data), single-Activity với Navigation Component.
+Android template project sử dụng kiến trúc MVVM 3 lớp (UI + Domain + Data), single-Activity với Navigation Component.
+
+Luồng dữ liệu: `Fragment → ViewModel → UseCase → Repository → (API/DB)`. ViewModel không gọi repository trực tiếp, mà thông qua các UseCase đơn lẻ.
 
 ![Kiến trúc ứng dụng](https://developer.android.com/static/topic/libraries/architecture/images/mad-arch-overview.png)
 
@@ -66,11 +68,13 @@ Cung cấp sẵn: `binding`, `viewModel`, `commonViewModel`, `navigator`, `dataS
 State quản lý qua `uiState` (StateFlow), event one-shot qua `uiEvent` (Channel):
 
 ```kotlin
-class HomeViewModel(...) : BaseViewModel<HomeUiState, Nothing>(HomeUiState()) {
+class HomeViewModel(
+    private val getDataUseCase: GetDataUseCase,
+) : BaseViewModel<HomeUiState, Nothing>(HomeUiState()) {
     fun load() {
         setState { copy(isLoading = true) }
         handleApiCall(
-            apiCall = { repo.getData() },
+            apiCall = { getDataUseCase() },
             onSuccess = { setState { copy(data = it, isLoading = false) } },
             onError = { setState { copy(error = it, isLoading = false) } },
         )
@@ -92,6 +96,25 @@ Override: `getLayoutRes(viewType)`, `bindView(binding, item, position)`. Dùng `
 Splash ──→ Language (lần đầu) ──→ Onboard ──→ Home
 Splash ──→ Home (đã dùng)
 Home ──→ Setting ──→ ChangeLanguage
+```
+
+## Domain Layer (UseCase)
+
+> **Bắt buộc**: ViewModel phụ thuộc vào UseCase, **không** gọi Repository trực tiếp.
+
+- **Vị trí**: `domain/usecase/{featureName}/`
+- **Naming**: `{Action}{Entity}UseCase` (vd: `GetInstalledAppsUseCase`, `GetLanguageUseCase`)
+- **Đơn lẻ (Single Responsibility)**: mỗi UseCase chỉ làm đúng MỘT việc, expose qua một `operator fun invoke(...)`
+- **Trả về**: `Flow<Result<T>>` (giống Repository, để tương thích với `handleApiCall`)
+- UseCase nhận Repository qua constructor, không tham chiếu tới tầng UI/ViewModel.
+
+```kotlin
+class GetInstalledAppsUseCase(
+    private val installedAppsRepository: InstalledAppsRepository,
+) {
+    operator fun invoke(): Flow<Result<List<InstalledAppDtoModel>>> =
+        installedAppsRepository.getInstalledApps()
+}
 ```
 
 ## Data Layer
@@ -138,11 +161,13 @@ viewModel.uiState
 | `networkModule` | Gson, OkHttp, Retrofit, ApiInterface |
 | `databaseModule` | Room, DAOs |
 | `repositoryModule` | Repository bindings |
+| `useCaseModule` | UseCase registrations (`factoryOf(::XxxUseCase)`) |
 | `platformModule` | Firebase Analytics |
 | `viewModelModule` | ViewModel registrations |
 
 Thêm mới:
 - ViewModel: `viewModelOf(::NewVM)` trong `viewModelModule`
+- UseCase: `factoryOf(::NewUseCase)` trong `useCaseModule`
 - Repository: `singleOf(::NewRepoImpl) bind NewRepo::class` trong `repositoryModule`
 
 ## Quy Tắc Bắt Buộc
@@ -155,6 +180,7 @@ Thêm mới:
 | Adapter listener | `adapter.setListener(this)` | Constructor lambda |
 | Navigation | `navigator.navigateTo(actionId)` | `findNavController()` trực tiếp |
 | Coroutines | `launchIO { }` / `launchMain { }` / `launchDefault { }` | `viewModelScope.launch()` / `lifecycleScope.launch()` |
+| Gọi dữ liệu | ViewModel dùng `UseCase` đơn lẻ | ViewModel gọi `Repository` trực tiếp |
 
 ## Hình Ảnh Minh Họa
 

@@ -26,7 +26,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Architecture Overview
 
-**Pion-Base** is an Android template project using a 2-layer architecture (UI Layer + Data Layer, no Domain Layer) with MVVM pattern. Built with Kotlin, ViewBinding/DataBinding, Koin DI, and Navigation Component (single-Activity).
+**Pion-Base** is an Android template project using a 3-layer architecture (UI Layer + Domain Layer + Data Layer) with MVVM pattern. Built with Kotlin, ViewBinding/DataBinding, Koin DI, and Navigation Component (single-Activity).
+
+Data flow: `Fragment -> ViewModel -> UseCase -> Repository -> (API/DB)`. ViewModels never call repositories directly; they depend on single-responsibility UseCases.
 
 ### Modules
 
@@ -153,6 +155,41 @@ viewModel.uiState
     .collectFlowOnView(viewLifecycleOwner) { value -> /* handle */ }
 ```
 
+## Domain Layer (UseCase)
+
+ViewModels depend on UseCases, **never on Repositories directly**.
+
+- **Location**: `domain/usecase/{featureName}/`
+- **Naming**: `{Action}{Entity}UseCase` (e.g. `GetInstalledAppsUseCase`, `GetLanguageUseCase`)
+- **Single Responsibility**: each UseCase does exactly ONE operation, exposed via a single `operator fun invoke(...)`
+- **Return type**: `Flow<Result<T>>` (same shape as Repository, so it stays compatible with `handleApiCall`)
+- A UseCase depends on one or more Repositories via constructor injection. It must NOT reference the UI/ViewModel layer.
+
+```kotlin
+// domain/usecase/home/GetInstalledAppsUseCase.kt
+class GetInstalledAppsUseCase(
+    private val installedAppsRepository: InstalledAppsRepository,
+) {
+    operator fun invoke(): Flow<Result<List<InstalledAppDtoModel>>> =
+        installedAppsRepository.getInstalledApps()
+}
+```
+
+```kotlin
+// ViewModel depends on the UseCase, not the Repository
+class HomeViewModel(
+    private val getInstalledAppsUseCase: GetInstalledAppsUseCase,
+) : BaseViewModel<HomeUiState, Nothing>(HomeUiState()) {
+    fun getInstalledApps() {
+        handleApiCall(
+            apiCall = { getInstalledAppsUseCase() },
+            onSuccess = { dtoList -> setState { copy(installedApps = dtoList.map { it.toPresentation() }) } },
+            onError = { throwable -> setState { copy(error = throwable) } },
+        )
+    }
+}
+```
+
 ## Data Layer Patterns
 
 ### Repository
@@ -169,18 +206,18 @@ viewModel.uiState
 
 ### API Call Handling
 
-Use `handleApiCall` extensions from `ApiExtensions.kt`:
+Use `handleApiCall` extensions from `ApiExtensions.kt`. In a ViewModel, `apiCall` invokes a UseCase (not a Repository):
 
 ```kotlin
 // With manual state management (preferred for screen-level state):
 handleApiCall(
-    apiCall = { repository.getData() },
+    apiCall = { getDataUseCase() },
     onSuccess = { data -> setState { copy(items = data.map { it.toPresentation() }) } },
     onError = { throwable -> setState { copy(error = throwable) } },
 )
 
 // With automatic UiState<T> management:
-handleApiCall(stateFlow, apiCall = { repository.getData() })
+handleApiCall(stateFlow, apiCall = { getDataUseCase() })
 ```
 
 ## Dependency Injection (Koin)
@@ -191,10 +228,14 @@ Modules defined in `di/` package, aggregated in `AppModule.kt`:
 - `networkModule` - Gson, OkHttp, Retrofit, ApiInterface
 - `databaseModule` - Room database + DAOs
 - `repositoryModule` - Repository bindings (Impl bind Interface)
+- `useCaseModule` - UseCase registrations via `factoryOf(::XxxUseCase)`
 - `platformModule` - Firebase Analytics
 - `viewModelModule` - ViewModel registrations via `viewModelOf(::XxxViewModel)`
 
+The `useCaseModule` is registered in `appModules` between `repositoryModule` and `viewModelModule`.
+
 Register new ViewModel: add `viewModelOf(::NewViewModel)` in `viewModelModule`.
+Register new UseCase: add `factoryOf(::NewUseCase)` in `useCaseModule`.
 Register new Repository: add `singleOf(::NewRepositoryImpl) bind NewRepository::class` in `repositoryModule`.
 
 ## Critical Conventions
@@ -204,4 +245,5 @@ Register new Repository: add `singleOf(::NewRepositoryImpl) bind NewRepository::
 - **Fragment params**: Never pass via constructor. Use `arguments` Bundle or shared ViewModel
 - **Adapter listeners**: Never pass via constructor. Use `setListener()` method
 - **Navigation**: Use `navigator.navigateTo(actionId)` / `navigator.navigateUp()` (Navigator interface wraps NavController)
+- **UseCase over Repository**: ViewModels must depend on single-responsibility UseCases, never inject or call a Repository directly
 - **CommonViewModel**: Shared across all fragments via `activityViewModel()`, manages app-wide state (categories, templates, premium status)
