@@ -1,0 +1,97 @@
+---
+description: Fragment, FragmentEx, and ViewModel patterns - 3-file structure, state observation, coroutines
+globs: ["**/*Fragment.kt", "**/*FragmentEx.kt", "**/*ViewModel.kt"]
+alwaysApply: false
+---
+
+# Fragment / ViewModel Patterns
+
+## Feature Structure (3-file pattern)
+
+```
+feature/{featureName}/
+├── {Feature}Fragment.kt      # UI + observer subscriptions
+├── {Feature}FragmentEx.kt    # Extension functions for click events, view init
+├── {Feature}ViewModel.kt     # State management + business logic
+├── adapter/                  # RecyclerView adapters
+├── dialog/                   # DialogFragments
+└── bottomSheet/              # BottomSheetDialogFragments
+```
+
+## Fragment
+
+- Extend `BaseFragment<ViewBinding, ViewModel>(inflate, vmClass)`.
+- Override `init(view)` for setup (call `initView()` / `settingEvent()` from FragmentEx).
+- Override `subscribeObserver(view)` for Flow collection.
+- Available: `binding`, `viewModel`, `commonViewModel`, `navigator`, `dataStoreRepository`, `logger`, `showHideLoading(Boolean)`, `onSystemBack { }`.
+
+```kotlin
+class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(
+    FragmentHomeBinding::inflate,
+    HomeViewModel::class,
+) {
+    override fun init(view: View) {
+        initView()        // from FragmentEx
+        settingEvent()    // from FragmentEx
+    }
+    override fun subscribeObserver(view: View) {
+        viewModel.uiState
+            .map { it.someField }
+            .distinctUntilChanged()
+            .collectFlowOnView(viewLifecycleOwner) { value -> /* update UI */ }
+    }
+}
+```
+
+## FragmentEx
+
+Put click/view-init logic in extension functions on the Fragment:
+
+```kotlin
+fun HomeFragment.initView() {
+    adapter.setListener(this)
+    binding.rvMain.adapter = adapter
+}
+fun HomeFragment.settingEvent() {
+    binding.btnSetting.setPreventDoubleClickScaleView { navigator.navigateTo(R.id.action_...) }
+}
+```
+
+## ViewModel
+
+- Extend `BaseViewModel<State, Event>(initialState)`.
+- Each screen defines its own `data class XxxUiState(...)`.
+- Use `setState { copy(...) }` to update state, `setEvent(event)` for one-shot events.
+- Built-in `uiState` (StateFlow) and `uiEvent` (Channel).
+- **Inject UseCases via the constructor, never Repositories.** `handleApiCall`'s `apiCall` invokes a UseCase:
+
+```kotlin
+class HomeViewModel(
+    private val getInstalledAppsUseCase: GetInstalledAppsUseCase,
+) : BaseViewModel<HomeUiState, Nothing>(HomeUiState()) {
+    fun getInstalledApps() {
+        handleApiCall(
+            apiCall = { getInstalledAppsUseCase() },
+            onSuccess = { dtoList -> setState { copy(installedApps = dtoList.map { it.toPresentation() }) } },
+            onError = { throwable -> setState { copy(error = throwable) } },
+        )
+    }
+}
+```
+
+## State Observation
+
+Always observe specific fields with `map + distinctUntilChanged + collectFlowOnView`:
+
+```kotlin
+viewModel.uiState
+    .map { it.fieldName }
+    .distinctUntilChanged()
+    .collectFlowOnView(viewLifecycleOwner) { value -> /* handle */ }
+```
+
+`CommonViewModel` is shared via `activityViewModel()` (categories, templates, premium status).
+
+## Coroutines
+
+Use `launchIO { }` / `launchMain { }` / `launchDefault { }` (they include exception handling). Do NOT use `viewModelScope.launch()` or `lifecycleScope.launch()` directly.

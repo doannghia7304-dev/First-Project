@@ -1,0 +1,27 @@
+---
+description: Koin dependency injection module map and registration steps
+globs: ["**/di/**/*.kt"]
+alwaysApply: false
+---
+
+# Dependency Injection (Koin)
+
+Pion-Base uses Koin (NOT Hilt/Dagger). Modules are defined in the `di/` package and aggregated in `AppModule.kt`.
+
+| Module | Contents |
+|--------|----------|
+| `coreModule` | Firebase RemoteConfig, DataStore |
+| `networkModule` | Gson, OkHttp, Retrofit, ApiInterface |
+| `databaseModule` | Room database + DAOs |
+| `repositoryModule` | Repository bindings (Impl bind Interface) |
+| `useCaseModule` | UseCase registrations via `factoryOf(::XxxUseCase)` |
+| `platformModule` | Firebase Analytics |
+| `viewModelModule` | ViewModel registrations via `viewModelOf(::XxxViewModel)` |
+
+The `useCaseModule` is registered in `appModules` between `repositoryModule` and `viewModelModule`.
+
+## Registering new dependencies
+
+- New ViewModel: add `viewModelOf(::NewViewModel)` in `viewModelModule`.
+- New UseCase: add `factoryOf(::NewUseCase)` in `useCaseModule`.
+- New Repository: add `singleOf(::NewRepositoryImpl) bind NewRepository::class` in `repositoryModule`.
