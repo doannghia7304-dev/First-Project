@@ -1,5 +1,7 @@
 package pion.tech.pionbase.feature.home.adapter
 
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import pion.tech.pionbase.R
 import pion.tech.pionbase.base.BaseListAdapter
 import pion.tech.pionbase.base.createDiffCallback
@@ -24,7 +26,13 @@ class InstallAppAdapter :
         this.listener = listener
     }
 
-    override fun getLayoutRes(viewType: Int): Int = R.layout.item_app
+    override fun inflateBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup,
+        viewType: Int
+    ): ItemAppBinding {
+        return ItemAppBinding.inflate(inflater, parent, false)
+    }
 
     override fun bindView(
         binding: ItemAppBinding,

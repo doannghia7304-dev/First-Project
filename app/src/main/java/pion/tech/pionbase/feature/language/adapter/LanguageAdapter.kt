@@ -1,5 +1,7 @@
 package pion.tech.pionbase.feature.language.adapter
 
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import pion.tech.pionbase.R
 import pion.tech.pionbase.base.BaseListAdapter
 import pion.tech.pionbase.base.createDiffCallback
@@ -28,7 +30,13 @@ class LanguageAdapter :
         this.listener = listener
     }
 
-    override fun getLayoutRes(viewType: Int): Int = R.layout.item_language
+    override fun inflateBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup,
+        viewType: Int
+    ): ItemLanguageBinding {
+        return ItemLanguageBinding.inflate(inflater, parent, false)
+    }
 
     override fun bindView(
         binding: ItemLanguageBinding,

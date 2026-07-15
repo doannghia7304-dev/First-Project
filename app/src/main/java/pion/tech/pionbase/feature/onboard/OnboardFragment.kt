@@ -1,5 +1,6 @@
 package pion.tech.pionbase.feature.onboard
 
+import android.os.Bundle
 import android.view.View
 import pion.tech.pionbase.base.BaseFragment
 import pion.tech.pionbase.databinding.FragmentOnboardBinding
@@ -12,7 +13,7 @@ class OnboardFragment :
     ) {
     var adapter: OnboardFragmentStateAdapter? = null
 
-    override fun init(view: View) {
+    override fun init(view: View, savedInstanceState: Bundle?) {
         initView()
         onBackEvent()
     }

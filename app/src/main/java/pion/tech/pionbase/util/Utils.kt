@@ -2,7 +2,7 @@ package pion.tech.pionbase.util
 
 import android.os.Handler
 import android.os.Looper
-import androidx.databinding.ViewDataBinding
+import androidx.viewbinding.ViewBinding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
@@ -17,7 +17,7 @@ import pion.tech.pionbase.base.doActionWhenResume
 import java.lang.Exception
 
 fun Fragment.safeShowDialog(
-    dialog: BaseDialogFragment<out ViewDataBinding>?,
+    dialog: BaseDialogFragment<out ViewBinding>?,
     fragmentManager: FragmentManager = childFragmentManager,
 ) {
     if (dialog == null) return
@@ -27,7 +27,7 @@ fun Fragment.safeShowDialog(
 }
 
 fun Fragment.safeShowBottomSheet(
-    dialog: BaseBottomSheetDialogFragment<out ViewDataBinding>?,
+    dialog: BaseBottomSheetDialogFragment<out ViewBinding>?,
     fragmentManager: FragmentManager = childFragmentManager,
 ) {
     if (dialog == null) return

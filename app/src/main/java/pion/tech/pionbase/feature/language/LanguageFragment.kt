@@ -1,5 +1,6 @@
 package pion.tech.pionbase.feature.language
 
+import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -18,7 +19,7 @@ class LanguageFragment :
     LanguageAdapter.Listener {
     val adapter = LanguageAdapter()
 
-    override fun init(view: View) {
+    override fun init(view: View, savedInstanceState: Bundle?) {
         initView()
         applyEvent()
         onBackEvent()

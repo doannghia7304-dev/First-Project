@@ -1,6 +1,8 @@
 package pion.tech.pionbase.feature.home.adapter
 
-import androidx.databinding.ViewDataBinding
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.viewbinding.ViewBinding
 import pion.tech.pionbase.R
 import pion.tech.pionbase.base.BaseListAdapter
 import pion.tech.pionbase.base.createDiffCallback
@@ -8,7 +10,7 @@ import pion.tech.pionbase.databinding.ItemDummy2Binding
 import pion.tech.pionbase.databinding.ItemDummyBinding
 
 class DemoMultipleAdapter :
-    BaseListAdapter<String, ViewDataBinding>(
+    BaseListAdapter<String, ViewBinding>(
         createDiffCallback(
             areItemsTheSame = { oldItem, newItem -> oldItem == newItem },
             areContentsTheSame = { oldItem, newItem -> false },
@@ -24,10 +26,20 @@ class DemoMultipleAdapter :
         return VIEW_TYPE_2
     }
 
-    override fun getLayoutRes(viewType: Int): Int = if (viewType == VIEW_TYPE_1) R.layout.item_dummy else R.layout.item_dummy_2
+    override fun inflateBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup,
+        viewType: Int
+    ): ViewBinding {
+        return if (viewType == VIEW_TYPE_1) {
+            ItemDummyBinding.inflate(inflater, parent, false)
+        } else {
+            ItemDummy2Binding.inflate(inflater, parent, false)
+        }
+    }
 
     override fun bindView(
-        binding: ViewDataBinding,
+        binding: ViewBinding,
         item: String,
         position: Int,
     ) {

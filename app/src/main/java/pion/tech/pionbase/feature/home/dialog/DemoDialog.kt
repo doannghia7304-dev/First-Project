@@ -1,14 +1,13 @@
 package pion.tech.pionbase.feature.home.dialog
 
 import android.os.Bundle
-import pion.tech.pionbase.R
 import pion.tech.pionbase.base.BaseDialogFragment
 import pion.tech.pionbase.databinding.DialogDemoBinding
 import pion.tech.pionbase.util.BundleKey
 
 class DemoDialog :
     BaseDialogFragment<DialogDemoBinding>(
-        R.layout.dialog_demo,
+        DialogDemoBinding::inflate,
     ) {
     private var listener: Listener? = null
 

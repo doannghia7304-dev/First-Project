@@ -1,5 +1,6 @@
 package pion.tech.pionbase.feature.home
 
+import android.os.Bundle
 import android.view.View
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -22,7 +23,7 @@ class HomeFragment :
     //    val adapter = DemoMultipleAdapter()
     val adapter = InstallAppAdapter()
 
-    override fun init(view: View) {
+    override fun init(view: View, savedInstanceState: Bundle?) {
         initView()
         settingEvent()
         showDemoDialogEvent()

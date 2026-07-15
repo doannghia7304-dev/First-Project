@@ -1,5 +1,6 @@
 package pion.tech.pionbase.feature.onboard.viewpager
 
+import android.os.Bundle
 import android.view.View
 import pion.tech.pionbase.base.BaseFragment
 import pion.tech.pionbase.databinding.FragmentOnboardScreen4Binding
@@ -13,7 +14,7 @@ class OnboardScreen4Fragment :
         FragmentOnboardScreen4Binding::inflate,
         OnboardViewModel::class,
     ) {
-    override fun init(view: View) {
+    override fun init(view: View, savedInstanceState: Bundle?) {
         nextEvent()
     }
 

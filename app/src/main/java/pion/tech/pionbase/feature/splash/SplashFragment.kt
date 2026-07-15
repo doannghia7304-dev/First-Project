@@ -1,6 +1,7 @@
 package pion.tech.pionbase.feature.splash
 
 import android.animation.ValueAnimator
+import android.os.Bundle
 import android.view.View
 import pion.tech.pionbase.app.MainActivity
 import pion.tech.pionbase.base.BaseFragment
@@ -14,7 +15,7 @@ class SplashFragment :
     ) {
     var progressAnimator: ValueAnimator? = null
 
-    override fun init(view: View) {
+    override fun init(view: View, savedInstanceState: Bundle?) {
         initView()
         onBackEvent()
     }
