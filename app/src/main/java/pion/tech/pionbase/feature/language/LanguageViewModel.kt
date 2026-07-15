@@ -3,12 +3,12 @@ package pion.tech.pionbase.feature.language
 import pion.tech.pionbase.base.BaseViewModel
 import pion.tech.pionbase.data.model.language.LanguageUIModel
 import pion.tech.pionbase.data.model.language.toPresentation
-import pion.tech.pionbase.data.repository.languageRepository.LanguageRepository
+import pion.tech.pionbase.domain.usecase.language.GetLanguagesUseCase
 import pion.tech.pionbase.util.UiState
 import pion.tech.pionbase.util.handleApiCall
 
 class LanguageViewModel(
-    private val repository: LanguageRepository,
+    private val getLanguagesUseCase: GetLanguagesUseCase,
 ) : BaseViewModel<LanguageUiState, Nothing>(LanguageUiState()) {
 
     init {
@@ -18,7 +18,7 @@ class LanguageViewModel(
     private fun loadLanguages() {
         setState { copy(languagesUiState = UiState.Loading) }
         handleApiCall(
-            apiCall = { repository.getLanguage() },
+            apiCall = { getLanguagesUseCase() },
             onSuccess = { dtoList ->
                 val languages = dtoList.map { it.toPresentation() }
                 setState {

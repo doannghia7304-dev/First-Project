@@ -3,11 +3,11 @@ package pion.tech.pionbase.feature.home
 import pion.tech.pionbase.base.BaseViewModel
 import pion.tech.pionbase.data.model.installedApp.InstalledAppUIModel
 import pion.tech.pionbase.data.model.installedApp.toPresentation
-import pion.tech.pionbase.data.repository.installedAppRepository.InstalledAppsRepository
+import pion.tech.pionbase.domain.usecase.home.GetInstalledAppsUseCase
 import pion.tech.pionbase.util.handleApiCall
 
 class HomeViewModel(
-    private val installedAppsRepository: InstalledAppsRepository,
+    private val getInstalledAppsUseCase: GetInstalledAppsUseCase,
 ) : BaseViewModel<HomeUiState, Nothing>(HomeUiState()) {
 
     init {
@@ -18,7 +18,7 @@ class HomeViewModel(
         setState { copy(isLoading = true, error = null) }
 
         handleApiCall(
-            apiCall = { installedAppsRepository.getInstalledApps() },
+            apiCall = { getInstalledAppsUseCase() },
             onSuccess = { dtoList ->
                 val installedApps = dtoList.map { it.toPresentation() }
                 setState { copy(isLoading = false, installedApps = installedApps, error = null) }

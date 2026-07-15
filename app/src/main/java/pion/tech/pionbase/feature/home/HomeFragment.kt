@@ -30,7 +30,7 @@ class HomeFragment :
         onBackEvent()
 
         // Try to load templates for Template category when Home is initialized
-        commonViewModel.loadTemplateFromTemplateCategoryName()
+        apiViewModel.loadTemplateFromTemplateCategoryName()
     }
 
     override fun subscribeObserver(view: View) {
@@ -60,8 +60,8 @@ class HomeFragment :
                 }
             }
 
-        // Observe CommonViewModel state for template loading if needed
-//        commonViewModel.uiState
+        // Observe ApiViewModel state for template loading if needed
+//        apiViewModel.uiState
 //            .map { it.templateState.isLoading }
 //            .distinctUntilChanged()
 //            .collectFlowOnView(viewLifecycleOwner) { isLoadingTemplate ->
