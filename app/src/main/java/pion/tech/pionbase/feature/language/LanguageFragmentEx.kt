@@ -23,14 +23,13 @@ fun LanguageFragment.applyEvent() {
             displayToast(getString(R.string.please_select_language))
             return@setPreventDoubleClick
         }
-        if (isCameFromSetting()) {
-            applySelectedLanguage()
-            navigateToNextScreen()
-            return@setPreventDoubleClick
-        }
-        applySelectedLanguage()
-        navigateToNextScreen()
+        handleApplyEvent()
     }
+}
+
+fun LanguageFragment.handleApplyEvent() {
+    applySelectedLanguage()
+    navigateToNextScreen()
 }
 
 fun LanguageFragment.applySelectedLanguage() {

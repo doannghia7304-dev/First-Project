@@ -4,6 +4,7 @@ import pion.tech.pionbase.base.BaseViewModel
 import pion.tech.pionbase.data.model.language.LanguageUIModel
 import pion.tech.pionbase.data.model.language.toPresentation
 import pion.tech.pionbase.data.repository.languageRepository.LanguageRepository
+import pion.tech.pionbase.util.UiState
 import pion.tech.pionbase.util.handleApiCall
 
 class LanguageViewModel(
@@ -15,31 +16,31 @@ class LanguageViewModel(
     }
 
     private fun loadLanguages() {
-        setState { copy(isLoading = true, error = null) }
-
+        setState { copy(languagesUiState = UiState.Loading) }
         handleApiCall(
             apiCall = { repository.getLanguage() },
             onSuccess = { dtoList ->
                 val languages = dtoList.map { it.toPresentation() }
-                setState { copy(isLoading = false, languages = languages, error = null) }
+                setState {
+                    copy(
+                        languagesUiState = UiState.Success(languages)
+                    )
+                }
             },
             onError = { throwable ->
-                setState { copy(isLoading = false, error = throwable) }
+                setState {
+                    copy(
+                        languagesUiState = UiState.Error(throwable)
+                    )
+                }
             },
         )
     }
 
     fun selectLanguage(item: LanguageUIModel) {
-        val current = uiState.value.languages ?: return
-        val updatedList =
-            current.map { language ->
-                language.copy(isSelected = language.localeCode == item.localeCode)
-            }
-
         setState {
             copy(
-                languages = updatedList,
-                selectedLanguage = updatedList.firstOrNull { it.isSelected },
+                selectedLanguage = item,
             )
         }
     }
@@ -48,8 +49,26 @@ class LanguageViewModel(
 }
 
 data class LanguageUiState(
-    val isLoading: Boolean = false,
-    val languages: List<LanguageUIModel>? = null,
+    val languagesUiState: UiState<List<LanguageUIModel>> = UiState.None,
     val selectedLanguage: LanguageUIModel? = null,
-    val error: Throwable? = null,
 )
+
+fun LanguageUiState.getSelectedLanguageListUiState(): UiState<List<LanguageUIModel>> {
+    return when (languagesUiState) {
+        is UiState.Success -> {
+            UiState.Success(languagesUiState.data.map {
+                if (it.localeCode == selectedLanguage?.localeCode) {
+                    it.copy(
+                        isSelected = true,
+                    )
+                } else {
+                    it.copy(
+                        isSelected = false,
+                    )
+                }
+            })
+        }
+
+        else -> languagesUiState
+    }
+}

@@ -4,7 +4,7 @@ data class LanguageUIModel(
     val thumbnail: String,
     val nameCountry: String,
     val localeCode: String,
-    var isSelected: Boolean,
+    val isSelected: Boolean = false,
 )
 
 fun LanguageDtoModel.toPresentation() =

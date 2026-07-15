@@ -10,13 +10,12 @@ import pion.tech.pionbase.data.model.language.LanguageUIModel
 import pion.tech.pionbase.databinding.FragmentLanguageBinding
 import pion.tech.pionbase.feature.language.adapter.LanguageAdapter
 import pion.tech.pionbase.util.collectFlowOnView
+import pion.tech.pionbase.util.handleUiState
 
-class LanguageFragment :
-    BaseFragment<FragmentLanguageBinding, LanguageViewModel>(
-        FragmentLanguageBinding::inflate,
-        LanguageViewModel::class,
-    ),
-    LanguageAdapter.Listener {
+class LanguageFragment : BaseFragment<FragmentLanguageBinding, LanguageViewModel>(
+    FragmentLanguageBinding::inflate,
+    LanguageViewModel::class,
+), LanguageAdapter.Listener {
     val adapter = LanguageAdapter()
 
     override fun init(view: View, savedInstanceState: Bundle?) {
@@ -27,15 +26,16 @@ class LanguageFragment :
 
     override fun subscribeObserver(view: View) {
         viewModel.uiState
-            .map { it.languages }
+            .map { it.getSelectedLanguageListUiState() }
             .distinctUntilChanged()
-            .collectFlowOnView(viewLifecycleOwner) { languages ->
-                adapter.submitList(languages)
+            .collectFlowOnView(viewLifecycleOwner) { uiState ->
+                uiState.handleUiState(
+                    onSuccess = { languages ->
+                        adapter.submitList(languages)
+                    })
             }
 
-        viewModel.uiState
-            .map { it.selectedLanguage }
-            .distinctUntilChanged()
+        viewModel.uiState.map { it.selectedLanguage }.distinctUntilChanged()
             .collectFlowOnView(viewLifecycleOwner) { selectedLanguage ->
                 binding.ivDone.isVisible = selectedLanguage != null
             }
