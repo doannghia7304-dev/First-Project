@@ -7,17 +7,19 @@ import androidx.room.Query
 import androidx.room.Update
 import pion.tech.pionbase.data.model.dummy.DummyEntity
 
+import kotlinx.coroutines.flow.Flow
+
 @Dao
 interface DummyDAO {
     @Insert
-    fun insert(vararg scale: DummyEntity)
+    suspend fun insert(vararg scale: DummyEntity)
 
     @Update
-    fun update(vararg string: DummyEntity)
+    suspend fun update(vararg string: DummyEntity)
 
     @Delete
-    fun delete(scale: DummyEntity)
+    suspend fun delete(scale: DummyEntity)
 
     @Query("SELECT * FROM ${DummyEntity.Companion.TABLE_NAME} ORDER BY ${DummyEntity.Companion.ID} DESC")
-    fun getAllDummies(): List<DummyEntity>?
+    fun getAllDummies(): Flow<List<DummyEntity>>
 }

@@ -19,10 +19,10 @@ class DataStoreRepositoryImpl(
 
     override fun getIsPremium(): Flow<Result<Boolean>> =
         dataStore.data
-            .map { prefs ->
-                Result.Success(prefs[isPremiumKey] ?: false) as Result<Boolean>
+            .map<Preferences, Result<Boolean>> { prefs ->
+                Result.Success(prefs[isPremiumKey] ?: false)
             }.catch { exception ->
-                emit(Result.Error<Boolean>(exception) as Result<Boolean>)
+                emit(Result.Error(exception))
             }
 
     override fun setIsPremium(isPremium: Boolean): Flow<Result<Unit>> =
@@ -37,10 +37,10 @@ class DataStoreRepositoryImpl(
 
     override fun getToken(): Flow<Result<String?>> =
         dataStore.data
-            .map { prefs ->
-                Result.Success(prefs[tokenKey]) as Result<String?>
+            .map<Preferences, Result<String?>> { prefs ->
+                Result.Success(prefs[tokenKey])
             }.catch { exception ->
-                emit(Result.Error<String?>(exception) as Result<String?>)
+                emit(Result.Error(exception))
             }
 
     override fun setToken(token: String): Flow<Result<Unit>> =
