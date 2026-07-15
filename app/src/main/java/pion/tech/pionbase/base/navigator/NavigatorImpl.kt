@@ -90,8 +90,12 @@ class NavigatorImpl(
         safeAction { navController.navigateUp() }
     }
 
-    override fun addOnDestinationChangedListener(listener: (NavController, NavDestination?, Bundle?) -> Unit) {
+    override fun addOnDestinationChangedListener(listener: NavController.OnDestinationChangedListener) {
         navController.addOnDestinationChangedListener(listener)
+    }
+
+    override fun removeOnDestinationChangedListener(listener: NavController.OnDestinationChangedListener) {
+        navController.removeOnDestinationChangedListener(listener)
     }
 
     override fun isCameFrom(destinationId: Int): Boolean = navController.previousBackStackEntry?.destination?.id == destinationId

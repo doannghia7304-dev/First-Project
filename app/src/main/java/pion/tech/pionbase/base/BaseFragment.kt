@@ -67,7 +67,7 @@ abstract class BaseFragment<Binding : ViewBinding, VM : ViewModel>(
     private var isInit = false
     private var saveView = false
 
-    private var destChangeListener: (NavController, NavDestination?, Bundle?) -> Unit = { _: NavController, _: NavDestination?, _: Bundle? ->
+    private var destChangeListener = NavController.OnDestinationChangedListener { _, _, _ ->
         showHideLoading(false)
     }
 
@@ -108,6 +108,7 @@ abstract class BaseFragment<Binding : ViewBinding, VM : ViewModel>(
 
     override fun onDestroyView() {
         hideLoading()
+        _navigator?.removeOnDestinationChangedListener(destChangeListener)
         _binding = null
         super.onDestroyView()
     }

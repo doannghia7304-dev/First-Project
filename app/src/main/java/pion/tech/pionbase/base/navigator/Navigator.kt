@@ -32,7 +32,12 @@ interface Navigator {
     /**
      * Add listener for navigation events
      */
-    fun addOnDestinationChangedListener(listener: (NavController, NavDestination?, Bundle?) -> Unit)
+    fun addOnDestinationChangedListener(listener: NavController.OnDestinationChangedListener)
+
+    /**
+     * Remove listener for navigation events
+     */
+    fun removeOnDestinationChangedListener(listener: NavController.OnDestinationChangedListener)
 
     /**
      * Check if current screen was navigated from specific destination
