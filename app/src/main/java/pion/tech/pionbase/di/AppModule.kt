@@ -10,6 +10,8 @@ val appModules: List<Module> =
         networkModule,
         databaseModule,
         repositoryModule,
+        // Domain layer
+        useCaseModule,
         // Platform services
         platformModule,
         // UI layer
