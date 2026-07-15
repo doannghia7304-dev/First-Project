@@ -4,7 +4,6 @@ plugins {
     alias(libs.plugins.gms.google.services)
     alias(libs.plugins.google.firebase.crashlytics)
     id("kotlin-parcelize")
-    id("kotlin-kapt")
     id("kotlin-android")
 }
 
@@ -27,17 +26,9 @@ android {
         versionCode = 1
         versionName = "1.0.0-debug"
 
-        setProperty("archivesBaseName", "pionbase_$versionName")
+        base.archivesName.set("pionbase_$versionName")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        javaCompileOptions {
-            annotationProcessorOptions {
-                argument("room.schemaLocation", "$projectDir/schemas")
-                argument("room.incremental", "true")
-                argument("room.expandProjection", "true")
-            }
-        }
     }
 
     buildTypes {
@@ -58,17 +49,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = "17"
+        sourceCompatibility = JavaVersion.VERSION_19
+        targetCompatibility = JavaVersion.VERSION_19
     }
 
     buildFeatures {
         viewBinding = true
-        dataBinding = true
         buildConfig = true
     }
 
@@ -82,6 +68,16 @@ android {
         // Disable problematic lint detectors that cause crashes
         disable += "NullSafeMutableLiveData"
     }
+}
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+    arg("room.incremental", "true")
+    arg("room.expandProjection", "true")
+}
+
+kotlin {
+    jvmToolchain(19)
 }
 
 dependencies {
