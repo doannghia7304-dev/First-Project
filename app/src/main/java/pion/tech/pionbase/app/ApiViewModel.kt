@@ -6,6 +6,7 @@ import pion.tech.pionbase.data.model.appCategory.toPresentation
 import pion.tech.pionbase.data.model.template.TemplateUIModel
 import pion.tech.pionbase.data.model.template.toPresentation
 import pion.tech.pionbase.data.repository.apiRepository.ApiRepository
+import pion.tech.pionbase.util.UiState
 import pion.tech.pionbase.util.handleApiCall
 
 class ApiViewModel(
@@ -13,58 +14,42 @@ class ApiViewModel(
 ) : BaseViewModel<ApiUiState, Nothing>(ApiUiState()) {
 
     fun getAppId() {
-        setState { copy(categoryState = categoryState.copy(isLoading = true, error = null)) }
+        setState { copy(categoryUiState = UiState.Loading) }
 
         handleApiCall(
             apiCall = { apiRepository.getAppCategory() },
             onSuccess = { data ->
                 val categories = data.map { item -> item.toPresentation() }
-                setState {
-                    copy(
-                        categoryState = categoryState.copy(
-                            isLoading = false,
-                            categories = categories,
-                            error = null,
-                        ),
-                    )
-                }
+                setState { copy(categoryUiState = UiState.Success(categories)) }
             },
             onError = { throwable ->
-                setState { copy(categoryState = categoryState.copy(isLoading = false, error = throwable)) }
+                setState { copy(categoryUiState = UiState.Error(throwable)) }
             },
         )
     }
 
     fun getTemplate(categoryId: String) {
-        setState { copy(templateState = templateState.copy(isLoading = true, error = null)) }
+        setState { copy(templateUiState = UiState.Loading) }
 
         handleApiCall(
             apiCall = { apiRepository.getTemplateData(categoryId) },
             onSuccess = { data ->
                 val templates = data.map { item -> item.toPresentation() }
-                setState {
-                    copy(
-                        templateState = templateState.copy(
-                            isLoading = false,
-                            templates = templates,
-                            error = null,
-                        ),
-                    )
-                }
+                setState { copy(templateUiState = UiState.Success(templates)) }
             },
             onError = { throwable ->
-                setState { copy(templateState = templateState.copy(isLoading = false, error = throwable)) }
+                setState { copy(templateUiState = UiState.Error(throwable)) }
             },
         )
     }
 
     fun loadTemplateFromTemplateCategoryName(name: String = "Template") {
-        val categories = uiState.value.categoryState.categories
-
-        val templateCategoryId =
-            categories?.firstOrNull { item -> item.name == name }?.id
-        if (templateCategoryId != null) {
-            getTemplate(templateCategoryId)
+        val categoryUiState = uiState.value.categoryUiState
+        if (categoryUiState is UiState.Success) {
+            val templateCategoryId = categoryUiState.data.firstOrNull { item -> item.name == name }?.id
+            if (templateCategoryId != null) {
+                getTemplate(templateCategoryId)
+            }
         }
     }
 
@@ -73,19 +58,7 @@ class ApiViewModel(
     }
 }
 
-data class CategoryUiState(
-    val isLoading: Boolean = false,
-    val categories: List<AppCategoryUIModel>? = null,
-    val error: Throwable? = null,
-)
-
-data class TemplateUiState(
-    val isLoading: Boolean = false,
-    val templates: List<TemplateUIModel>? = null,
-    val error: Throwable? = null,
-)
-
 data class ApiUiState(
-    val categoryState: CategoryUiState = CategoryUiState(),
-    val templateState: TemplateUiState = TemplateUiState(),
+    val categoryUiState: UiState<List<AppCategoryUIModel>> = UiState.None,
+    val templateUiState: UiState<List<TemplateUIModel>> = UiState.None,
 )

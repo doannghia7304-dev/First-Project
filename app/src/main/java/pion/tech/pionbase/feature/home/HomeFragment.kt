@@ -11,6 +11,7 @@ import pion.tech.pionbase.feature.home.adapter.InstallAppAdapter
 import pion.tech.pionbase.feature.home.dialog.DemoDialog
 import pion.tech.pionbase.util.collectFlowOnView
 import pion.tech.pionbase.util.displayToast
+import pion.tech.pionbase.util.handleUiState
 import timber.log.Timber
 
 class HomeFragment :
@@ -36,29 +37,25 @@ class HomeFragment :
     override fun subscribeObserver(view: View) {
         // Observe installed apps list
         viewModel.uiState
-            .map { it.installedApps }
+            .map { it.installedAppsUiState }
             .distinctUntilChanged()
-            .collectFlowOnView(viewLifecycleOwner) { installedApps ->
-                adapter.submitList(installedApps)
+            .collectFlowOnView(viewLifecycleOwner) { uiState ->
+                uiState.handleUiState(
+                    onSuccess = { installedApps ->
+                        adapter.submitList(installedApps)
+                    },
+                    onError = {
+                        displayToast("Failed to load installed apps")
+                    },
+                    onLoading = {
+                        // showHideLoading(true) - if needed
+                    },
+                    onNone = {
+                        // showHideLoading(false) - if needed
+                    }
+                )
             }
 
-        // Observe loading state
-//        viewModel.uiState
-//            .map { it.isLoading }
-//            .distinctUntilChanged()
-//            .collectFlowOnView(viewLifecycleOwner) { isLoading ->
-//                showHideLoading(isLoading)
-//            }
-
-        // Observe error state
-        viewModel.uiState
-            .map { it.error }
-            .distinctUntilChanged()
-            .collectFlowOnView(viewLifecycleOwner) { error ->
-                if (error != null) {
-                    displayToast("Failed to load installed apps")
-                }
-            }
 
         // Observe ApiViewModel state for template loading if needed
 //        apiViewModel.uiState
