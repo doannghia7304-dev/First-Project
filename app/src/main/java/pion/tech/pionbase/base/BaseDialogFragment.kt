@@ -11,23 +11,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
-import androidx.annotation.LayoutRes
 import androidx.core.graphics.drawable.toDrawable
-import androidx.databinding.DataBindingComponent
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
+import androidx.viewbinding.ViewBinding
 import org.koin.android.ext.android.inject
 import pion.tech.pionbase.base.firebaseAnalytics.FirebaseAnalyticsLogger
 import timber.log.Timber
 
-abstract class BaseDialogFragment<T : ViewDataBinding>(
-    @param:LayoutRes private val contentLayoutId: Int,
+abstract class BaseDialogFragment<T : ViewBinding>(
+    private val inflate: (LayoutInflater, ViewGroup?, Boolean) -> T
 ) : DialogFragment() {
     val logger: FirebaseAnalyticsLogger by inject()
-
-    private var bindingComponent: DataBindingComponent? = DataBindingUtil.getDefaultComponent()
 
     private var _binding: T? = null
 
@@ -55,8 +50,7 @@ abstract class BaseDialogFragment<T : ViewDataBinding>(
         savedInstanceState: Bundle?,
     ): View {
         Timber.d("${this::class.simpleName} onCreateView")
-        _binding =
-            DataBindingUtil.inflate(inflater, contentLayoutId, container, false, bindingComponent)
+        _binding = inflate(inflater, container, false)
         return binding.root
     }
 
@@ -144,7 +138,6 @@ abstract class BaseDialogFragment<T : ViewDataBinding>(
         Timber.d("${this::class.simpleName} onDestroyView")
         // Remove touch listener to prevent memory leak
         dialog?.window?.decorView?.setOnTouchListener(null)
-        _binding?.unbind()
         _binding = null
         super.onDestroyView()
     }

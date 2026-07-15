@@ -1,5 +1,6 @@
 package pion.tech.pionbase.base
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
@@ -12,19 +13,19 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 abstract class BaseViewModel<State, Event>(
     initialState: State,
+    val savedStateHandle: SavedStateHandle = SavedStateHandle(),
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(initialState)
     val uiState = _uiState.asStateFlow()
 
     private val _uiEvent = Channel<Event>(Channel.BUFFERED)
     val uiEvent = _uiEvent.receiveAsFlow()
-
+    protected fun getCurrentState() = _uiState.value
     protected fun setState(reduce: State.() -> State) {
         _uiState.update { it.reduce() }
     }

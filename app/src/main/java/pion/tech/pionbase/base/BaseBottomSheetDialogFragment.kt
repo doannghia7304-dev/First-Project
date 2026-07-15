@@ -7,23 +7,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.LayoutRes
-import androidx.databinding.DataBindingComponent
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.FragmentManager
+import androidx.viewbinding.ViewBinding
 import com.google.android.material.R
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.koin.android.ext.android.inject
 import pion.tech.pionbase.base.firebaseAnalytics.FirebaseAnalyticsLogger
 import timber.log.Timber
 
-abstract class BaseBottomSheetDialogFragment<T : ViewDataBinding>(
-    @param:LayoutRes private val contentLayoutId: Int,
+abstract class BaseBottomSheetDialogFragment<T : ViewBinding>(
+    private val inflate: (LayoutInflater, ViewGroup?, Boolean) -> T
 ) : BottomSheetDialogFragment() {
     val logger: FirebaseAnalyticsLogger by inject()
-
-    private var bindingComponent: DataBindingComponent? = DataBindingUtil.getDefaultComponent()
 
     private var _binding: T? = null
 
@@ -51,8 +46,7 @@ abstract class BaseBottomSheetDialogFragment<T : ViewDataBinding>(
         savedInstanceState: Bundle?,
     ): View {
         Timber.d("${this::class.simpleName} onCreateView")
-        _binding =
-            DataBindingUtil.inflate(inflater, contentLayoutId, container, false, bindingComponent)
+        _binding = inflate(inflater, container, false)
         return binding.root
     }
 
@@ -107,7 +101,6 @@ abstract class BaseBottomSheetDialogFragment<T : ViewDataBinding>(
     override fun onDestroyView() {
         Timber.d("${this::class.simpleName} onDestroyView")
         super.onDestroyView()
-        _binding?.unbind()
         _binding = null
     }
 

@@ -55,12 +55,19 @@ abstract class BaseFragment<Binding : ViewBinding, VM : ViewModel>(
                 "Fragment $this binding cannot be accessed before onCreateView() or after onDestroyView()"
             }
 
+    protected val bindingOrNull: Binding?
+        get() = _binding
+
     val commonViewModel: CommonViewModel by activityViewModel()
 
-    val viewModel: VM by viewModelForClass(viewModelClass)
+    open val viewModel: VM by viewModelForClass(viewModelClass)
 
     private var isInit = false
     private var saveView = false
+
+    private var destChangeListener: (NavController, NavDestination?, Bundle?) -> Unit = { _: NavController, _: NavDestination?, _: Bundle? ->
+        showHideLoading(false)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -88,14 +95,12 @@ abstract class BaseFragment<Binding : ViewBinding, VM : ViewModel>(
         super.onViewCreated(view, savedInstanceState)
         val currentDestinationId = findNavController().currentDestination?.id ?: 0
         _navigator = NavigatorImpl(findNavController(), lifecycle, currentDestinationId)
-        _navigator?.addOnDestinationChangedListener(listener = { controller: NavController, destination: NavDestination?, bundle: Bundle? ->
-            showHideLoading(false)
-        })
-        init(view)
+        _navigator?.addOnDestinationChangedListener(listener = destChangeListener)
+        init(view, savedInstanceState)
         subscribeObserver(view)
     }
 
-    abstract fun init(view: View)
+    abstract fun init(view: View, savedInstanceState: Bundle?)
 
     abstract fun subscribeObserver(view: View)
 

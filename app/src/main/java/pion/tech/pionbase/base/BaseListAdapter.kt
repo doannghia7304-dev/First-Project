@@ -2,12 +2,11 @@ package pion.tech.pionbase.base
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -23,17 +22,13 @@ private val diffExecutor: ExecutorService by lazy {
     }
 }
 
-private interface BaseRecyclerAdapter<Item : Any, ViewBinding : ViewDataBinding> {
-    /**
-     * get layout res based on view type
-     */
-    fun getLayoutRes(viewType: Int): Int
+interface BaseRecyclerAdapter<Item : Any, VB : ViewBinding> {
 
     /**
      * bind view
      */
     fun bindView(
-        binding: ViewBinding,
+        binding: VB,
         item: Item,
         position: Int,
     )
@@ -42,43 +37,40 @@ private interface BaseRecyclerAdapter<Item : Any, ViewBinding : ViewDataBinding>
 /**
  * base recycler view adapter
  */
-abstract class BaseListAdapter<Item : Any, ViewBinding : ViewDataBinding>(
+abstract class BaseListAdapter<Item : Any, Binding : ViewBinding>(
     diffCallback: DiffUtil.ItemCallback<Item>,
-) : ListAdapter<Item, BaseViewHolder<ViewBinding>>(
+) : ListAdapter<Item, BaseViewHolder<Binding>>(
         AsyncDifferConfig
             .Builder(diffCallback)
             .setBackgroundThreadExecutor(diffExecutor)
             .build(),
     ),
-    BaseRecyclerAdapter<Item, ViewBinding> {
+    BaseRecyclerAdapter<Item, Binding> {
+        
+    abstract fun inflateBinding(inflater: LayoutInflater, parent: ViewGroup, viewType: Int): Binding
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int,
-    ): BaseViewHolder<ViewBinding> {
-        val binding: ViewBinding =
-            DataBindingUtil.inflate(
-                LayoutInflater.from(parent.context),
-                getLayoutRes(viewType),
-                parent,
-                false,
-            )
+    ): BaseViewHolder<Binding> {
+        val inflater = LayoutInflater.from(parent.context)
+        val binding = inflateBinding(inflater, parent, viewType)
         return BaseViewHolder(binding)
     }
 
     override fun onBindViewHolder(
-        holder: BaseViewHolder<ViewBinding>,
+        holder: BaseViewHolder<Binding>,
         position: Int,
     ) {
         val item = getItem(position)
         if (item != null) {
             bindView(holder.binding, item, position)
         }
-        holder.binding.executePendingBindings()
     }
 }
 
-open class BaseViewHolder<ViewBinding : ViewDataBinding>(
-    val binding: ViewBinding,
+open class BaseViewHolder<Binding : ViewBinding>(
+    val binding: Binding,
 ) : RecyclerView.ViewHolder(binding.root)
 
 inline fun <T> createDiffCallback(
