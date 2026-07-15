@@ -23,6 +23,7 @@ import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModelForClass
+import pion.tech.pionbase.app.ApiViewModel
 import pion.tech.pionbase.app.CommonViewModel
 import pion.tech.pionbase.base.firebaseAnalytics.FirebaseAnalyticsLogger
 import pion.tech.pionbase.base.navigator.Navigator
@@ -59,6 +60,7 @@ abstract class BaseFragment<Binding : ViewBinding, VM : ViewModel>(
         get() = _binding
 
     val commonViewModel: CommonViewModel by activityViewModel()
+    val apiViewModel: ApiViewModel by activityViewModel()
 
     open val viewModel: VM by viewModelForClass(viewModelClass)
 
