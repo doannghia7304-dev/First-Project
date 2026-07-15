@@ -144,6 +144,7 @@ dependencies {
 
     // Chucker
     debugImplementation(libs.chucker.library)
+    //debugImplementation(libs.leakcanary)
     releaseImplementation(libs.chucker.library.no.op)
 
     // Room
