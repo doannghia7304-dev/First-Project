@@ -27,4 +27,8 @@ class OnboardScreen3Fragment :
     override fun subscribeObserver(view: View) {
         // Subscribe to any observers if needed
     }
+
+    companion object {
+        fun newInstance() = OnboardScreen3Fragment()
+    }
 }
