@@ -54,21 +54,25 @@ data class LanguageUiState(
 )
 
 fun LanguageUiState.getSelectedLanguageListUiState(): UiState<List<LanguageUIModel>> {
-    return when (languagesUiState) {
+    // 1. Dùng biến trung gian để smart cast và tránh gọi getter nhiều lần
+    return when (val state = languagesUiState) {
         is UiState.Success -> {
-            UiState.Success(languagesUiState.data.map {
-                if (it.localeCode == selectedLanguage?.localeCode) {
-                    it.copy(
-                        isSelected = true,
-                    )
+            // 2. Đưa phép tính không đổi ra ngoài vòng lặp
+            val targetLocaleCode = selectedLanguage?.localeCode
+
+            UiState.Success(state.data.map { item ->
+                // 3. Gán trực tiếp kết quả biểu thức logic
+                val shouldBeSelected = (item.localeCode == targetLocaleCode)
+
+                // 4. Chỉ copy (tạo object mới) khi trạng thái thực sự thay đổi
+                if (item.isSelected == shouldBeSelected) {
+                    item
                 } else {
-                    it.copy(
-                        isSelected = false,
-                    )
+                    item.copy(isSelected = shouldBeSelected)
                 }
             })
         }
 
-        else -> languagesUiState
+        else -> state
     }
 }
