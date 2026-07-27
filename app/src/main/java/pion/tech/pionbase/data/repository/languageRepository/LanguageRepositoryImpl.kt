@@ -1,14 +1,11 @@
 package pion.tech.pionbase.data.repository.languageRepository
 
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import pion.tech.pionbase.data.model.language.LanguageDtoModel
+import pion.tech.pionbase.data.repository.BaseRepository
 import pion.tech.pionbase.util.Result
 
-class LanguageRepositoryImpl : LanguageRepository {
+class LanguageRepositoryImpl : BaseRepository(), LanguageRepository {
     private val cachedLanguages by lazy {
         listOf(
             LanguageDtoModel("https://flagcdn.com/w320/us.png", "English", "en"),
@@ -39,9 +36,7 @@ class LanguageRepositoryImpl : LanguageRepository {
     }
 
     override fun getLanguage(): Flow<Result<List<LanguageDtoModel>>> =
-        flow<Result<List<LanguageDtoModel>>> {
-            emit(Result.Success(cachedLanguages))
-        }.catch {
-            emit(Result.Error(it))
-        }.flowOn(Dispatchers.IO)
+        executeDataCall {
+            cachedLanguages
+        }
 }
