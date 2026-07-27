@@ -17,6 +17,10 @@ fun OnboardFragment.onBackEvent() {
 fun OnboardFragment.backEvent() {
 }
 
+fun OnboardFragment.previousPage() {
+    binding.vpMain.currentItem -= 1
+}
+
 fun OnboardFragment.nextPage() {
     if (binding.vpMain.currentItem == adapter?.itemCount?.minus(1)) {
         goToHomeEvent()
