@@ -38,15 +38,11 @@ fun SplashFragment.initView() {
 }
 
 fun SplashFragment.goToNextScreen() {
-    //TODO : check logic AdsConstant.isPremium
-//    val destination =
-//        if (AdsConstant.isPremium || isCameFromLanguage()) {
-//            R.id.action_splashFragment_to_homeFragment
-//        } else {
-//            R.id.action_splashFragment_to_languageFragment
-//        }
+    // Lấy giá trị thực tế từ ViewModel sau khi đã delay xong
+    val actualSelected = viewModel.uiState.value.isLanguageSelected ?: false
+    
     val destination =
-        if (isCameFromLanguage()) {
+        if (actualSelected || isCameFromLanguage()) {
             R.id.action_splashFragment_to_homeFragment
         } else {
             R.id.action_splashFragment_to_languageFragment
@@ -56,44 +52,11 @@ fun SplashFragment.goToNextScreen() {
 
 fun SplashFragment.isCameFromLanguage(): Boolean = navigator.isCameFrom(R.id.languageFragment)
 
-fun SplashFragment.showAds() {
-//    safePreloadAds(
-//        spaceNameConfig = "Splash",
-//        spaceNameAds = "Splash_Interstitial2",
-//    )
-//    safePreloadAds(
-//        spaceNameConfig = "Splash",
-//        spaceNameAds = "Splash_Interstitial3",
-//    )
-//    safePreloadAds(
-//        spaceNameConfig = "Splash",
-//        spaceNameAds = "Splash_Openad",
-//    )
-//    preloadLanguageAds()
-//    var isTimeOut = false
-//    val handler = Handler(Looper.getMainLooper())
-//    val timeOutRunnable =
-//        Runnable {
-//            isTimeOut = true
-//            goToNextScreen()
-//        }
-//    handler.postDelayed(timeOutRunnable, 15000L)
-//    showSplashInter(
-//        spaceNameConfig = "Splash",
-//        spaceNameInter1 = "Splash_Interstitial2",
-//        spaceNameInter2 = "Splash_Interstitial3",
-//        spaceNameOpenAds = "Splash_Openad",
-//        timeOut = 15000L,
-//        destinationToShowAds = R.id.splashFragment,
-//        navOrBack = {
-//            if (!isTimeOut) {
-//                handler.removeCallbacks(timeOutRunnable)
-//                goToNextScreen()
-//            }
-//        },
-//    )
+fun SplashFragment.showAds(isLanguageSelected: Boolean) {
 
-    goToNextScreen()
+    android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+        goToNextScreen()
+    }, 3000L)
 }
 
 fun SplashFragment.preloadLanguageAds() {

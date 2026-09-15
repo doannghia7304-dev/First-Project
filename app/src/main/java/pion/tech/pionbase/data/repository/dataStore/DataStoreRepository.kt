@@ -11,4 +11,12 @@ interface DataStoreRepository {
     fun getToken(): Flow<Result<String?>>
 
     fun setToken(token: String): Flow<Result<Unit>>
+
+    fun getIsLanguageSelected(): Flow<Result<Boolean>>
+
+    fun setIsLanguageSelected(isSelected: Boolean): Flow<Result<Unit>>
+
+    fun getLanguageCode(): Flow<Result<String?>>
+
+    fun setLanguageCode(code: String): Flow<Result<Unit>>
 }

@@ -4,11 +4,13 @@ import pion.tech.pionbase.base.BaseViewModel
 import pion.tech.pionbase.data.model.language.LanguageUIModel
 import pion.tech.pionbase.data.model.language.toPresentation
 import pion.tech.pionbase.domain.usecase.language.GetLanguagesUseCase
+import pion.tech.pionbase.domain.usecase.language.SetLanguageSelectedUseCase
 import pion.tech.pionbase.util.UiState
 import pion.tech.pionbase.util.handleApiCall
 
 class LanguageViewModel(
     private val getLanguagesUseCase: GetLanguagesUseCase,
+    private val setLanguageSelectedUseCase: SetLanguageSelectedUseCase,
 ) : BaseViewModel<LanguageUiState, Nothing>(LanguageUiState()) {
 
     init {
@@ -43,6 +45,10 @@ class LanguageViewModel(
                 selectedLanguage = item,
             )
         }
+    }
+
+    fun saveLanguageSelected() {
+        handleApiCall(apiCall = { setLanguageSelectedUseCase(true) })
     }
 
     fun getSelectedLanguage(): LanguageUIModel? = uiState.value.selectedLanguage

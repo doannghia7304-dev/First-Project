@@ -21,7 +21,7 @@ class SplashFragment :
     }
 
     override fun subscribeObserver(view: View) {
-        showAds()
+        showAds(false)
     }
 
     override fun onDestroyView() {
