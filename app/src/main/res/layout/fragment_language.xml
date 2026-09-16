@@ -27,7 +27,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="28dp"
         android:fontFamily="@font/font_600"
-        android:text="WELCOME"
+        android:text="@string/welcome_upper"
         android:textColor="@color/purple_primary"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -40,7 +40,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="4dp"
         android:fontFamily="@font/font_700"
-        android:text="Choose your language"
+        android:text="@string/choose_your_language"
         android:textColor="@color/white"
         android:textSize="26sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -54,7 +54,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
         android:fontFamily="@font/font_400"
-        android:text="Select the language you'd like to use in Wallpaper Master."
+        android:text="@string/select_language_subtitle"
         android:textColor="@color/text_secondary"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -74,7 +74,6 @@
         app:layout_constraintTop_toBottomOf="@+id/tvSubtitle"
         tools:listitem="@layout/item_language" />
 
-    <!-- Figma Style Button: "Save & Continue" -->
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/ivDone"
         android:layout_width="match_parent"
@@ -83,14 +82,13 @@
         android:layout_marginBottom="24dp"
         android:background="@drawable/bg_btn_continue"
         android:fontFamily="@font/font_700"
-        android:text="→  Save &amp; Continue"
+        android:text="@string/save_and_continue"
         android:textAllCaps="false"
         android:textColor="#0A0416"
         android:textSize="16sp"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/layoutAds" />
 
-    <!-- Ads Container Block -->
     <FrameLayout
         android:id="@+id/layoutAds"
         android:layout_width="match_parent"

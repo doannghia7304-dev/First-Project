@@ -32,4 +32,8 @@
     <string name="please_select_language">Please select language</string>
     <string name="do_you_want_to_exit">Do you want to exit?</string>
     <string name="exit">Exit</string>
+    <string name="welcome_upper" translatable="false">WELCOME</string>
+    <string name="choose_your_language" translatable="false">Choose your language</string>
+    <string name="select_language_subtitle" translatable="false">Select the language you\'d like to use in Wallpaper Master.</string>
+    <string name="save_and_continue" translatable="false">→  Save &amp; Continue</string>
 </resources>

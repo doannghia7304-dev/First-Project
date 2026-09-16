@@ -2,6 +2,7 @@ package pion.tech.pionbase.feature.splash
 
 import android.animation.ValueAnimator
 import pion.tech.pionbase.R
+import pion.tech.pionbase.util.safeDelay
 
 fun SplashFragment.onBackEvent() {
     onSystemBack {
@@ -24,9 +25,10 @@ fun SplashFragment.initView() {
         progress = 0
     }
 
+    // Đồng bộ thời gian chạy ProgressBar khớp với 3 giây của màn hình Splash
     progressAnimator =
         ValueAnimator.ofInt(0, 100).apply {
-            duration = 15000L
+            duration = 3000L
 
             addUpdateListener { animation ->
                 runCatching {
@@ -53,31 +55,11 @@ fun SplashFragment.goToNextScreen() {
 fun SplashFragment.isCameFromLanguage(): Boolean = navigator.isCameFrom(R.id.languageFragment)
 
 fun SplashFragment.showAds(isLanguageSelected: Boolean) {
-
-    android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+    safeDelay(3000L) {
         goToNextScreen()
-    }, 3000L)
+    }
 }
 
 fun SplashFragment.preloadLanguageAds() {
     if (isCameFromLanguage()) return
-//    safePreloadAds(
-//        configName = LanguageAds.NATIVE_11_CONFIG,
-//        spaceName = LanguageAds.NATIVE_11_SPACE1,
-//    )
-//    safePreloadAds(
-//        configName = LanguageAds.NATIVE_11_CONFIG,
-//        spaceName = LanguageAds.NATIVE_11_SPACE2,
-//    )
-//
-//    if (AdsConstant.listConfigAds[LanguageAds.NATIVE_11_CONFIG]?.isOn == true) {
-//        safePreloadAds(
-//            configName = LanguageAds.NATIVE_12_CONFIG,
-//            spaceName = LanguageAds.NATIVE_12_SPACE1,
-//        )
-//        safePreloadAds(
-//            configName = LanguageAds.NATIVE_12_CONFIG,
-//            spaceName = LanguageAds.NATIVE_12_SPACE2,
-//        )
-//    }
 }

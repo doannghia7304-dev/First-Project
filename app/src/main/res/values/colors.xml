@@ -7,11 +7,10 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <!-- App Color Theme-->
+    <color name="ads_background">#E8E6E6</color>
     <color name="bg_splash">#0A0416</color>
     <color name="bg_item_language">#1B152A</color>
     <color name="purple_primary">#E199FF</color>
     <color name="text_primary">#FFFFFF</color>
     <color name="text_secondary">#A59BB5</color>
-    <color name="ads_background">#E8E6E6</color>
 </resources>
