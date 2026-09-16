@@ -13,4 +13,8 @@
     <color name="purple_primary">#E199FF</color>
     <color name="text_primary">#FFFFFF</color>
     <color name="text_secondary">#A59BB5</color>
+    <color name="bg_category_unselected">#241B38</color>
+    <color name="text_category_unselected">#A59BB5</color>
+    <color name="bg_home">#0A0416</color>
+    <color name="bg_bottom_nav">#160D27</color>
 </resources>
