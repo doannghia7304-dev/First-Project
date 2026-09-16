@@ -14,7 +14,7 @@
         android:gravity="center"
         android:paddingHorizontal="24dp"
         android:paddingVertical="10dp"
-        android:text="Trending"
+        android:text="@string/trending"
         android:textColor="@color/text_secondary"
         android:textSize="14sp" />
 </FrameLayout>
