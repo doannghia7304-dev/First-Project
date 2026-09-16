@@ -32,15 +32,16 @@
     <string name="please_select_language">Please select language</string>
     <string name="do_you_want_to_exit">Do you want to exit?</string>
     <string name="exit">Exit</string>
-    <string name="good_evening" translatable="false">Good evening</string>
-    <string name="categories" translatable="false">Categories</string>
-    <string name="trending" translatable="false">Trending</string>
-    <string name="live_gif" translatable="false">Live GIF</string>
-    <string name="live_video" translatable="false">Live Video</string>
-    <string name="favorites" translatable="false">Favorites</string>
-    <string name="search_hint" translatable="false">Search wallpapers…</string>
-    <string name="welcome_upper" translatable="false">WELCOME</string>
-    <string name="choose_your_language" translatable="false">Choose your language</string>
-    <string name="select_language_subtitle" translatable="false">Select the language you\'d like to use in Wallpaper Master.</string>
-    <string name="save_and_continue" translatable="false">→  Save &amp; Continue</string>
+    <string name="good_evening" >Good evening</string>
+    <string name="categories" >Categories</string>
+    <string name="trending" >Trending</string>
+    <string name="live_gif" >Live GIF</string>
+    <string name="live_video" >Live Video</string>
+    <string name="favorites" >Favorites</string>
+    <string name="search_hint" >Search wallpapers…</string>
+    <string name="welcome_upper" >WELCOME</string>
+    <string name="choose_your_language" >Choose your language</string>
+    <string name="select_language_subtitle" >Select the language you\'d like to use in Wallpaper Master.</string>
+    <string name="save_and_continue" >→  Save &amp; Continue</string>
+    <string name="error_categories">Error caterogies: %1$s</string>
 </resources>

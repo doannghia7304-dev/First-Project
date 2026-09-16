@@ -7,6 +7,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import pion.tech.pionbase.R
 import pion.tech.pionbase.base.BaseFragment
 import pion.tech.pionbase.data.model.appCategory.AppCategoryUIModel
 import pion.tech.pionbase.data.model.template.TemplateUIModel
@@ -44,14 +45,16 @@ class HomeFragment :
             .collectFlowOnView(viewLifecycleOwner) { uiState ->
                 uiState.handleUiState(
                     onSuccess = { categories ->
+                        // submitList sẽ tự động Diff dữ liệu nhờ vào isSelected trong Model
                         categoryAdapter.submitList(categories)
 
-                        if (categories.isNotEmpty()) {
-                            apiViewModel.getTemplate(categories[0].id)
+                        // Tự động load wallpapers cho category đầu tiên nếu chưa có cái nào được chọn
+                        if (categories.isNotEmpty() && categories.none { it.isSelected }) {
+                            apiViewModel.selectCategory(categories[0].id)
                         }
                     },
                     onError = { throwable ->
-                        displayToast("Error categories: ${throwable.message}")
+                        displayToast(msg = getString(R.string.error_categories,throwable.message?:""))
                     }
                 )
             }
@@ -73,9 +76,9 @@ class HomeFragment :
     }
 
     override fun onClickCategory(item: AppCategoryUIModel, position: Int) {
-        // Khi người dùng click vào một category khác trên giao diện, 
-        // Gọi API lấy danh sách hình nền mới tương ứng với ID của category đó.
-        apiViewModel.getTemplate(item.id)
+        // Gọi thẳng vào ViewModel để cập nhật trạng thái chọn
+        // Luồng dữ liệu sẽ chảy ngược lại: ViewModel update State -> Fragment Observe -> Adapter submitList
+        apiViewModel.selectCategory(item.id)
     }
 
     override fun onClickTemplate(item: TemplateUIModel, position: Int) {

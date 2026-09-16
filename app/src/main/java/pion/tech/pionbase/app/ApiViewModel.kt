@@ -53,6 +53,19 @@ class ApiViewModel(
         }
     }
 
+    fun selectCategory(categoryId: String) {
+        val currentState = uiState.value.categoryUiState
+        if (currentState is UiState.Success) {
+            val newList = currentState.data.map { 
+                it.copy(isSelected = it.id == categoryId)
+            }
+            setState { copy(categoryUiState = UiState.Success(newList)) }
+            
+            // Gọi API lấy templates mới cho category vừa chọn
+            getTemplate(categoryId)
+        }
+    }
+
     init {
         getAppId()
     }

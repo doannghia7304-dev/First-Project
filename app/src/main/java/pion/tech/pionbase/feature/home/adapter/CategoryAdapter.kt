@@ -22,7 +22,6 @@ class CategoryAdapter :
     }
 
     private var listener: Listener? = null
-    private var selectedPosition = 0
 
     fun setListener(listener: Listener) {
         this.listener = listener
@@ -43,8 +42,9 @@ class CategoryAdapter :
     ) {
         binding.tvCategoryName.text = item.name
         
-        val context = binding.root.context
-        if (position == selectedPosition) {
+        val context = binding.tvCategoryName.context
+        // Dùng thuộc tính isSelected trực tiếp từ Model để quy định giao diện
+        if (item.isSelected) {
             binding.tvCategoryName.setBackgroundResource(R.drawable.bg_category_selected)
             binding.tvCategoryName.setTextColor(ContextCompat.getColor(context, R.color.black))
         } else {
@@ -53,10 +53,6 @@ class CategoryAdapter :
         }
 
         binding.root.setPreventDoubleClick {
-            val oldPos = selectedPosition
-            selectedPosition = position
-            notifyItemChanged(oldPos)
-            notifyItemChanged(selectedPosition)
             listener?.onClickCategory(item, position)
         }
     }
