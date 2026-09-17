@@ -43,15 +43,14 @@ class LanguageAdapter :
         item: LanguageUIModel,
         position: Int,
     ) {
-        fun loadBackground() {
-            if (item.isSelected) {
-                binding.root.setBackgroundResource(R.drawable.bg_language_selected)
-            } else {
-                binding.root.setBackgroundResource(R.drawable.bg_language_unselected)
-            }
+        if (item.isSelected) {
+            binding.root.setBackgroundResource(R.drawable.bg_language_selected)
+            binding.viewRadio.setBackgroundResource(R.drawable.bg_language_selected)
+        } else {
+            binding.root.setBackgroundResource(R.drawable.bg_language_unselected)
+            binding.viewRadio.setBackgroundResource(R.drawable.bg_language_unselected)
         }
 
-        loadBackground()
         binding.tvName.text = item.nameCountry
         binding.ivFlag.loadImage(item.thumbnail)
         binding.root.setPreventDoubleClick {

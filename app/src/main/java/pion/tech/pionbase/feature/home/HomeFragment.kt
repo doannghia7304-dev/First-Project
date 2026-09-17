@@ -2,81 +2,100 @@ package pion.tech.pionbase.feature.home
 
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.isVisible
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import pion.tech.pionbase.R
 import pion.tech.pionbase.base.BaseFragment
-import pion.tech.pionbase.data.model.installedApp.InstalledAppUIModel
+import pion.tech.pionbase.data.model.appCategory.AppCategoryUIModel
+import pion.tech.pionbase.data.model.template.TemplateUIModel
 import pion.tech.pionbase.databinding.FragmentHomeBinding
-import pion.tech.pionbase.feature.home.adapter.InstallAppAdapter
-import pion.tech.pionbase.feature.home.dialog.DemoDialog
+import pion.tech.pionbase.feature.home.adapter.CategoryAdapter
+import pion.tech.pionbase.feature.home.adapter.TemplateAdapter
 import pion.tech.pionbase.util.collectFlowOnView
 import pion.tech.pionbase.util.displayToast
 import pion.tech.pionbase.util.handleUiState
-import timber.log.Timber
+import pion.tech.pionbase.util.loadImage
+import pion.tech.pionbase.util.setPreventDoubleClick
 
 class HomeFragment :
     BaseFragment<FragmentHomeBinding, HomeViewModel>(
         FragmentHomeBinding::inflate,
         HomeViewModel::class,
     ),
-    DemoDialog.Listener,
-    InstallAppAdapter.Listener {
-    //    val adapter = DemoMultipleAdapter()
-    val adapter = InstallAppAdapter()
+    CategoryAdapter.Listener,
+    TemplateAdapter.Listener {
+    
+    val categoryAdapter = CategoryAdapter()
+    val templateAdapter = TemplateAdapter()
 
     override fun init(view: View, savedInstanceState: Bundle?) {
         initView()
         settingEvent()
-        showDemoDialogEvent()
+        initPickMedia()
         onBackEvent()
-
-        // Try to load templates for Template category when Home is initialized
-        apiViewModel.loadTemplateFromTemplateCategoryName()
     }
-
     override fun subscribeObserver(view: View) {
-        // Observe installed apps list
-        viewModel.uiState
-            .map { it.installedAppsUiState }
+        // Observe danh sách Categories từ API thật thông qua activityViewModel (apiViewModel)
+        apiViewModel.uiState
+            .map { it.categoryUiState }
             .distinctUntilChanged()
             .collectFlowOnView(viewLifecycleOwner) { uiState ->
                 uiState.handleUiState(
-                    onSuccess = { installedApps ->
-                        adapter.submitList(installedApps)
+                    onSuccess = { categories ->
+                        // submitList sẽ tự động Diff dữ liệu nhờ vào isSelected trong Model
+                        categoryAdapter.submitList(categories)
+
+                        // Tự động load wallpapers cho category đầu tiên nếu chưa có cái nào được chọn
+                        if (categories.isNotEmpty() && categories.none { it.isSelected }) {
+                            apiViewModel.selectCategory(categories[0].id)
+                        }
                     },
-                    onError = {
-                        displayToast("Failed to load installed apps")
-                    },
-                    onLoading = {
-                        // showHideLoading(true) - if needed
-                    },
-                    onNone = {
-                        // showHideLoading(false) - if needed
+                    onError = { throwable ->
+                        displayToast(msg = getString(R.string.error_categories,throwable.message?:""))
                     }
                 )
             }
 
-
-        // Observe ApiViewModel state for template loading if needed
-//        apiViewModel.uiState
-//            .map { it.templateState.isLoading }
-//            .distinctUntilChanged()
-//            .collectFlowOnView(viewLifecycleOwner) { isLoadingTemplate ->
-//                if (isLoadingTemplate) {
-//                    showHideLoading(true)
-//                }
-//            }
+        // Observe danh sách Wallpapers từ API thật
+        apiViewModel.uiState
+            .map { it.templateUiState }
+            .distinctUntilChanged()
+            .collectFlowOnView(viewLifecycleOwner) { uiState ->
+                uiState.handleUiState(
+                    onSuccess = { templates ->
+                        templateAdapter.submitList(templates)
+                    },
+                    onError = { throwable ->
+                        displayToast("Error wallpapers: ${throwable.message}")
+                    }
+                )
+            }
     }
 
-    override fun onDialogPositiveClick() {
+    override fun onClickCategory(item: AppCategoryUIModel, position: Int) {
+        // Gọi thẳng vào ViewModel để cập nhật trạng thái chọn
+        // Luồng dữ liệu sẽ chảy ngược lại: ViewModel update State -> Fragment Observe -> Adapter submitList
+        apiViewModel.selectCategory(item.id)
     }
 
-    override fun onDialogNegativeClick() {
-        displayToast("Hello")
+    override fun onClickTemplate(item: TemplateUIModel, position: Int) {
+        displayToast("Opening wallpaper details...")
     }
 
-    override fun onClickApp(item: InstalledAppUIModel) {
-        val tag = "onClickApp"
-        Timber.tag(tag).d("onClickApp: ${item.appName}")
+    // Photo Picker Integration (Security & Privacy focused)
+    private val pickMediaLauncher = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        if (uri != null) {
+            binding.ivSelectedMedia.isVisible = true
+            binding.ivSelectedMedia.loadImage(uri)
+        }
+    }
+    
+    private fun initPickMedia() {
+        binding.btnPickMedia.setPreventDoubleClick {
+            pickMediaLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo))
+        }
     }
 }

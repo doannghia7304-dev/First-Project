@@ -2,7 +2,9 @@
 <resources>
     <string name="admob_application_id" translatable="false">ca-app-pub-2222869408518511~9607465111</string>
     <string name="please_wait" translatable="false">Please wait!</string>
-    <string name="app_name" translatable="false">Pion base</string>
+    <string name="app_name" translatable="false">Wallpaper Master</string>
+    <string name="splash_subtitle" translatable="false">Make every screen yours</string>
+    <string name="loading_inspiration" translatable="false">Loading your inspiration…</string>
     <string name="loading">Loading</string>
     <string name="home">Home</string>
     <string name="language">Language</string>
@@ -30,4 +32,16 @@
     <string name="please_select_language">Please select language</string>
     <string name="do_you_want_to_exit">Do you want to exit?</string>
     <string name="exit">Exit</string>
+    <string name="good_evening" >Good evening</string>
+    <string name="categories" >Categories</string>
+    <string name="trending" >Trending</string>
+    <string name="live_gif" >Live GIF</string>
+    <string name="live_video" >Live Video</string>
+    <string name="favorites" >Favorites</string>
+    <string name="search_hint" >Search wallpapers…</string>
+    <string name="welcome_upper" >WELCOME</string>
+    <string name="choose_your_language" >Choose your language</string>
+    <string name="select_language_subtitle" >Select the language you\'d like to use in Wallpaper Master.</string>
+    <string name="save_and_continue" >→  Save &amp; Continue</string>
+    <string name="error_categories">Error caterogies: %1$s</string>
 </resources>

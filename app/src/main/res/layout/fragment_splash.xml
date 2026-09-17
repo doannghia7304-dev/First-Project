@@ -3,63 +3,72 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
+    android:layout_height="match_parent"
+    android:background="@color/bg_splash">
 
     <ImageView
         android:id="@+id/iconApp"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:backgroundTint="#123123"
+        android:layout_width="@dimen/_206dp"
+        android:layout_height="@dimen/_149dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/ic_app"
+        android:src="@drawable/wallpaper"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.281"
-        app:layout_constraintWidth_percent="0.31" />
+        app:layout_constraintVertical_bias="0.355"
+        android:contentDescription="@null" />
 
     <TextView
+        android:id="@+id/tvAppName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_28dp"
         android:fontFamily="@font/font_700"
         android:text="@string/app_name"
-        android:backgroundTint="#A5B3D9"
-        android:textColor="#218380"
-        android:theme="@style/RoundedCorner.20"
-        android:paddingHorizontal="@dimen/_20dp"
+        android:textColor="@color/white"
         android:textSize="@dimen/_32sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iconApp" />
 
     <TextView
-        android:id="@+id/txvLoading"
+        android:id="@+id/tvSubtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/_8dp"
-        android:fontFamily="@font/font_700"
-        android:text="@string/loading"
-        android:textColor="#218380"
-        android:textSize="@dimen/_16sp"
-        app:layout_constraintBottom_toTopOf="@id/progress_bar"
+        android:layout_marginTop="@dimen/_8dp"
+        android:fontFamily="@font/font_400"
+        android:text="@string/splash_subtitle"
+        android:textColor="@color/text_secondary"
+        android:textSize="@dimen/_14sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvAppName" />
 
     <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/progress_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/_20dp"
-        android:layout_marginBottom="@dimen/_20dp"
-        app:indicatorColor="#218380"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:trackColor="#D3D3D3"
-        app:trackCornerRadius="@dimen/_10dp"
+        android:layout_marginHorizontal="@dimen/_48dp"
+        android:layout_marginBottom="@dimen/_24dp"
+        app:indicatorColor="@color/purple_primary"
+        app:layout_constraintBottom_toTopOf="@id/txvLoading"
+        app:trackColor="#1B152A"
+        app:trackCornerRadius="@dimen/_4dp"
         app:trackThickness="@dimen/_4dp" />
 
+    <TextView
+        android:id="@+id/txvLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/_48dp"
+        android:fontFamily="@font/font_400"
+        android:text="@string/loading_inspiration"
+        android:textColor="@color/text_secondary"
+        android:textSize="@dimen/_12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

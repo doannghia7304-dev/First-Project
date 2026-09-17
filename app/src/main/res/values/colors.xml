@@ -8,4 +8,13 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="ads_background">#E8E6E6</color>
+    <color name="bg_splash">#0A0416</color>
+    <color name="bg_item_language">#1B152A</color>
+    <color name="purple_primary">#E199FF</color>
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#A59BB5</color>
+    <color name="bg_category_unselected">#241B38</color>
+    <color name="text_category_unselected">#A59BB5</color>
+    <color name="bg_home">#0A0416</color>
+    <color name="bg_bottom_nav">#160D27</color>
 </resources>

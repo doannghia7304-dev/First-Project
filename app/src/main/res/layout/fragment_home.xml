@@ -1,44 +1,209 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/bg_home">
+
+    <!-- Header Section -->
+    <TextView
+        android:id="@+id/tvGreeting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_24dp"
+        android:layout_marginTop="@dimen/_24dp"
+        android:fontFamily="@font/font_400"
+        android:text="@string/good_evening"
+        android:textColor="@color/text_secondary"
+        android:textSize="@dimen/_14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_home"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_100dp"
-        android:text="@string/home"
-        android:textSize="@dimen/_20sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="@dimen/_24dp"
+        android:layout_marginTop="@dimen/_4dp"
+        android:fontFamily="@font/font_700"
+        android:text="@string/app_name"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_28sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/tvGreeting" />
 
-    <Button
-        android:id="@+id/btn_show_dialog"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Show dialog"
+    <ImageView
+        android:id="@+id/ivSearch"
+        android:layout_width="@dimen/_40dp"
+        android:layout_height="@dimen/_40dp"
+        android:layout_marginEnd="@dimen/_16dp"
+        android:padding="@dimen/_8dp"
+        android:src="@drawable/ic_search"
+        app:layout_constraintBottom_toBottomOf="@id/tv_home"
+        app:layout_constraintEnd_toStartOf="@id/ivProfile"
+        app:layout_constraintTop_toTopOf="@id/tvGreeting"
+        android:contentDescription="@null" />
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/ivProfile"
+        android:layout_width="@dimen/_40dp"
+        android:layout_height="@dimen/_40dp"
+        android:layout_marginEnd="@dimen/_24dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_user"
+        app:layout_constraintBottom_toBottomOf="@id/tv_home"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_home" />
+        app:layout_constraintTop_toTopOf="@id/tvGreeting"
+        app:riv_corner_radius="@dimen/_20dp" />
 
-
-    <Button
-        android:id="@+id/btn_setting"
-        android:layout_width="wrap_content"
+    <!-- Categories Horizontal List -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvCategories"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Setting"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginTop="@dimen/_24dp"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/_16dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@id/tv_home"
+        tools:listitem="@layout/item_category" />
 
+    <!-- Main Wallpaper Staggered Grid -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_main"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:orientation="vertical"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:layout_marginTop="@dimen/_16dp"
+        android:clipToPadding="false"
+        android:paddingHorizontal="@dimen/_12dp"
+        app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+        app:layout_constraintBottom_toTopOf="@id/bottomNav"
+        app:layout_constraintTop_toBottomOf="@id/rvCategories"
+        app:spanCount="2"
+        tools:listitem="@layout/item_template" />
+
+    <!-- Custom Bottom Navigation (Simulated Figma style) -->
+    <LinearLayout
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_72dp"
+        android:background="@color/bg_bottom_nav"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_show_dialog" />
+        android:baselineAligned="false">
+
+        <LinearLayout
+            android:id="@+id/btnHome"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="@dimen/_24dp"
+                android:layout_height="@dimen/_24dp"
+                android:src="@drawable/ic_home"
+                app:tint="@color/purple_primary"
+                android:contentDescription="@null" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/home"
+                android:textColor="@color/purple_primary"
+                android:textSize="@dimen/_10sp"
+                android:fontFamily="@font/font_700" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btnCategories"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="@dimen/_24dp"
+                android:layout_height="@dimen/_24dp"
+                android:src="@drawable/ic_categories"
+                app:tint="@color/text_secondary"
+                android:contentDescription="@null" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/categories"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/_10sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btnFavorites"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="@dimen/_24dp"
+                android:layout_height="@dimen/_24dp"
+                android:src="@drawable/ic_favorites"
+                app:tint="@color/text_secondary"
+                android:contentDescription="@null" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/favorites"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/_10sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btnSetting"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="@dimen/_24dp"
+                android:layout_height="@dimen/_24dp"
+                android:src="@drawable/ic_settings"
+                app:tint="@color/text_secondary"
+                android:contentDescription="@null" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/setting"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/_10sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Pick Media Button (Maintained for functionality as requested earlier) -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_pick_media"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_16dp"
+        android:src="@android:drawable/ic_menu_add"
+        app:backgroundTint="@color/purple_primary"
+        app:layout_constraintBottom_toTopOf="@id/bottomNav"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="@color/black"
+        android:contentDescription="@null" />
+
+    <ImageView
+        android:id="@+id/iv_selected_media"
+        android:layout_width="@dimen/_60dp"
+        android:layout_height="@dimen/_60dp"
+        android:layout_margin="@dimen/_16dp"
+        android:scaleType="centerCrop"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/btn_pick_media"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:contentDescription="@null" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

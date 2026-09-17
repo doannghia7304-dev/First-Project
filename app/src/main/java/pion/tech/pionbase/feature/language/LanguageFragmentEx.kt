@@ -28,6 +28,7 @@ fun LanguageFragment.applyEvent() {
 }
 
 fun LanguageFragment.handleApplyEvent() {
+    viewModel.saveLanguageSelected()
     applySelectedLanguage()
     navigateToNextScreen()
 }
@@ -39,7 +40,8 @@ fun LanguageFragment.applySelectedLanguage() {
 
 fun LanguageFragment.navigateToNextScreen() {
     if (isCameFromSetting()) {
-        navigator.navigateTo(R.id.action_languageFragment_to_splashFragment)
+        // Thay vì quay lại SplashFragment chịu delay 3 giây, đi thẳng về màn Setting hoặc màn Home
+        navigator.navigateUp()
     } else {
         if (AppRemoteConfig.maxTimeShowChangeLanguageScreen > 0L) {
             navigator.navigateTo(R.id.action_languageFragment_to_changeLanguageFragment)
