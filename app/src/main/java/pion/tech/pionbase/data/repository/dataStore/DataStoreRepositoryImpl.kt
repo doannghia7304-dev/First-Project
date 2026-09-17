@@ -16,6 +16,7 @@ class DataStoreRepositoryImpl(
     private val tokenKey = stringPreferencesKey("tokenKey")
     private val isLanguageSelectedKey = booleanPreferencesKey("isLanguageSelectedKey")
     private val languageCodeKey = stringPreferencesKey("languageCodeKey")
+    private val liveWallpaperPathKey = stringPreferencesKey("liveWallpaperPathKey")
 
     override fun getIsPremium(): Flow<Result<Boolean>> =
         dataStore.data.executeDataWithFlowCall { prefs ->
@@ -62,6 +63,18 @@ class DataStoreRepositoryImpl(
         executeDataCall {
             dataStore.edit {
                 it[languageCodeKey] = code
+            }
+        }
+
+    override fun getLiveWallpaperPath(): Flow<Result<String?>> =
+        dataStore.data.executeDataWithFlowCall { prefs ->
+            prefs[liveWallpaperPathKey]
+        }
+
+    override fun setLiveWallpaperPath(path: String): Flow<Result<Unit>> =
+        executeDataCall {
+            dataStore.edit {
+                it[liveWallpaperPathKey] = path
             }
         }
 }

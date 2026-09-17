@@ -44,4 +44,10 @@
     <string name="select_language_subtitle" >Select the language you\'d like to use in Wallpaper Master.</string>
     <string name="save_and_continue" >→  Save &amp; Continue</string>
     <string name="error_categories">Error caterogies: %1$s</string>
+    <string name="wallpaper_description">Live GIF Wallpaper</string>
+    <string name="preview_wallpaper" >Preview Wallpaper</string>
+    <string name="set_wallpaper" >Set Wallpaper</string>
+    <string name="error_load_gif" >Failed to process GIF file</string>
+    <string name="success_set_wallpaper" >Wallpaper updated successfully!</string>
+    <string name="select_gif_only" >Please select a valid GIF file</string>
 </resources>
