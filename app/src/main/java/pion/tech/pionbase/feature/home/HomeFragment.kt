@@ -9,8 +9,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import pion.tech.pionbase.R
 import pion.tech.pionbase.base.BaseFragment
-import pion.tech.pionbase.base.launchIO
-import pion.tech.pionbase.base.launchMain
 import pion.tech.pionbase.data.model.appCategory.AppCategoryUIModel
 import pion.tech.pionbase.data.model.template.TemplateUIModel
 import pion.tech.pionbase.databinding.FragmentHomeBinding
@@ -40,6 +38,33 @@ class HomeFragment :
         onBackEvent()
     }
     override fun subscribeObserver(view: View) {
+        // Lắng nghe sự kiện chuyển đổi màn hình từ HomeViewModel
+        viewModel.uiEvent.collectFlowOnView(viewLifecycleOwner) { event ->
+            when (event) {
+                is HomeUiEvent.NavigateToPreview -> {
+                    val bundle = Bundle().apply {
+                        putString("wallpaperPath", event.path)
+                    }
+                    navigator.navigateTo(R.id.action_homeFragment_to_previewWallpaperFragment, bundle)
+                }
+            }
+        }
+
+        // Lắng nghe trạng thái lưu file GIF để hiển thị Loading nếu cần
+        viewModel.uiState
+            .map { it.saveGifState }
+            .distinctUntilChanged()
+            .collectFlowOnView(viewLifecycleOwner) { saveState ->
+                saveState.handleUiState(
+                    onLoading = { showHideLoading(true) },
+                    onSuccess = { showHideLoading(false) },
+                    onError = { throwable ->
+                        showHideLoading(false)
+                        displayToast(getString(R.string.error_load_gif))
+                    }
+                )
+            }
+
         // Observe danh sách Categories từ API thật thông qua activityViewModel (apiViewModel)
         apiViewModel.uiState
             .map { it.categoryUiState }
@@ -90,28 +115,7 @@ class HomeFragment :
     // Photo Picker Integration (Security & Privacy focused for GIF)
     private val pickMediaLauncher = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) {
-            launchIO {
-                try {
-                    val context = requireContext()
-                    val inputStream = context.contentResolver.openInputStream(uri)
-                    if (inputStream != null) {
-                        val localFile = java.io.File(context.filesDir, "selected_wallpaper.gif")
-                        localFile.outputStream().use { outputStream ->
-                            inputStream.copyTo(outputStream)
-                        }
-                        launchMain {
-                            val bundle = Bundle().apply {
-                                putString("wallpaperPath", localFile.absolutePath)
-                            }
-                            navigator.navigateTo(R.id.action_homeFragment_to_previewWallpaperFragment, bundle)
-                        }
-                    }
-                } catch (e: Exception) {
-                    launchMain {
-                        displayToast(getString(R.string.error_load_gif))
-                    }
-                }
-            }
+            viewModel.saveSelectedGif(uri)
         }
     }
     

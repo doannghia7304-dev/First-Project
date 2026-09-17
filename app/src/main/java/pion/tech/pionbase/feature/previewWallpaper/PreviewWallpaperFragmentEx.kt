@@ -12,15 +12,21 @@ fun PreviewWallpaperFragment.initView() {
     }
 }
 
-fun PreviewWallpaperFragment.settingEvent() {
-    binding.btnBack.setPreventDoubleClick {
-        navigator.navigateUp()
-    }
-
+fun PreviewWallpaperFragment.applyEvent() {
     binding.btnSetWallpaper.setPreventDoubleClickScaleView {
         val path = arguments?.getString("wallpaperPath") ?: ""
         if (path.isNotEmpty()) {
             viewModel.setWallpaperPath(path)
         }
+    }
+}
+
+fun PreviewWallpaperFragment.onBackEvent() {
+    onSystemBack {
+        navigator.navigateUp()
+    }
+    
+    binding.btnBack.setPreventDoubleClick {
+        navigator.navigateUp()
     }
 }

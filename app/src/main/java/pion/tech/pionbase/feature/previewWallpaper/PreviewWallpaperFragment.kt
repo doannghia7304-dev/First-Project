@@ -20,7 +20,8 @@ class PreviewWallpaperFragment : BaseFragment<FragmentPreviewWallpaperBinding, P
 
     override fun init(view: View, savedInstanceState: Bundle?) {
         initView()
-        settingEvent()
+        applyEvent()
+        onBackEvent()
     }
 
     override fun subscribeObserver(view: View) {
