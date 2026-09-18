@@ -7,6 +7,7 @@ import pion.tech.pionbase.app.CommonViewModel
 import pion.tech.pionbase.feature.home.HomeViewModel
 import pion.tech.pionbase.feature.language.LanguageViewModel
 import pion.tech.pionbase.feature.onboard.OnboardViewModel
+import pion.tech.pionbase.feature.previewWallpaper.PreviewWallpaperViewModel
 import pion.tech.pionbase.feature.setting.SettingViewModel
 import pion.tech.pionbase.feature.splash.SplashViewModel
 
@@ -19,4 +20,5 @@ val viewModelModule =
         viewModelOf(::SplashViewModel)
         viewModelOf(::SettingViewModel)
         viewModelOf(::OnboardViewModel)
+        viewModelOf(::PreviewWallpaperViewModel)
     }

@@ -38,6 +38,33 @@ class HomeFragment :
         onBackEvent()
     }
     override fun subscribeObserver(view: View) {
+        // Lắng nghe sự kiện chuyển đổi màn hình từ HomeViewModel
+        viewModel.uiEvent.collectFlowOnView(viewLifecycleOwner) { event ->
+            when (event) {
+                is HomeUiEvent.NavigateToPreview -> {
+                    val bundle = Bundle().apply {
+                        putString("wallpaperPath", event.path)
+                    }
+                    navigator.navigateTo(R.id.action_homeFragment_to_previewWallpaperFragment, bundle)
+                }
+            }
+        }
+
+        // Lắng nghe trạng thái lưu file GIF để hiển thị Loading nếu cần
+        viewModel.uiState
+            .map { it.saveGifState }
+            .distinctUntilChanged()
+            .collectFlowOnView(viewLifecycleOwner) { saveState ->
+                saveState.handleUiState(
+                    onLoading = { showHideLoading(true) },
+                    onSuccess = { showHideLoading(false) },
+                    onError = { throwable ->
+                        showHideLoading(false)
+                        displayToast(getString(R.string.error_load_gif))
+                    }
+                )
+            }
+
         // Observe danh sách Categories từ API thật thông qua activityViewModel (apiViewModel)
         apiViewModel.uiState
             .map { it.categoryUiState }
@@ -85,17 +112,16 @@ class HomeFragment :
         displayToast("Opening wallpaper details...")
     }
 
-    // Photo Picker Integration (Security & Privacy focused)
+    // Photo Picker Integration (Security & Privacy focused for GIF)
     private val pickMediaLauncher = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) {
-            binding.ivSelectedMedia.isVisible = true
-            binding.ivSelectedMedia.loadImage(uri)
+            viewModel.saveSelectedGif(uri)
         }
     }
     
     private fun initPickMedia() {
         binding.btnPickMedia.setPreventDoubleClick {
-            pickMediaLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo))
+            pickMediaLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.SingleMimeType("image/gif")))
         }
     }
 }

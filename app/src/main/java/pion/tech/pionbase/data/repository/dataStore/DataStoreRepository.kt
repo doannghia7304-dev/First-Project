@@ -19,4 +19,8 @@ interface DataStoreRepository {
     fun getLanguageCode(): Flow<Result<String?>>
 
     fun setLanguageCode(code: String): Flow<Result<Unit>>
+
+    fun getLiveWallpaperPath(): Flow<Result<String?>>
+
+    fun setLiveWallpaperPath(path: String): Flow<Result<Unit>>
 }
