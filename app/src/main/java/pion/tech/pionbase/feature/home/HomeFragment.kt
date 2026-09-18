@@ -44,13 +44,14 @@ class HomeFragment :
                 is HomeUiEvent.NavigateToPreview -> {
                     val bundle = Bundle().apply {
                         putString("wallpaperPath", event.path)
+                        putBoolean("isVideo", event.isVideo)
                     }
                     navigator.navigateTo(R.id.action_homeFragment_to_previewWallpaperFragment, bundle)
                 }
             }
         }
 
-        // Lắng nghe trạng thái lưu file GIF để hiển thị Loading nếu cần
+        // Lắng nghe trạng thái lưu file GIF để hiển thị Loading
         viewModel.uiState
             .map { it.saveGifState }
             .distinctUntilChanged()
@@ -61,6 +62,21 @@ class HomeFragment :
                     onError = { throwable ->
                         showHideLoading(false)
                         displayToast(getString(R.string.error_load_gif))
+                    }
+                )
+            }
+
+        // Lắng nghe trạng thái lưu file Video để hiển thị Loading
+        viewModel.uiState
+            .map { it.saveVideoState }
+            .distinctUntilChanged()
+            .collectFlowOnView(viewLifecycleOwner) { saveState ->
+                saveState.handleUiState(
+                    onLoading = { showHideLoading(true) },
+                    onSuccess = { showHideLoading(false) },
+                    onError = { throwable ->
+                        showHideLoading(false)
+                        displayToast(getString(R.string.error_load_video))
                     }
                 )
             }
@@ -112,16 +128,21 @@ class HomeFragment :
         displayToast("Opening wallpaper details...")
     }
 
-    // Photo Picker Integration (Security & Privacy focused for GIF)
+    // Photo Picker Integration (Security & Privacy focused for GIF and Video MP4)
     private val pickMediaLauncher = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) {
-            viewModel.saveSelectedGif(uri)
+            val mimeType = requireContext().contentResolver.getType(uri) ?: ""
+            if (mimeType.contains("video", ignoreCase = true)) {
+                viewModel.saveSelectedVideo(uri)
+            } else {
+                viewModel.saveSelectedGif(uri)
+            }
         }
     }
     
     private fun initPickMedia() {
         binding.btnPickMedia.setPreventDoubleClick {
-            pickMediaLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.SingleMimeType("image/gif")))
+            pickMediaLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo))
         }
     }
 }

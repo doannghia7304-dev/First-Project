@@ -15,8 +15,9 @@ fun PreviewWallpaperFragment.initView() {
 fun PreviewWallpaperFragment.applyEvent() {
     binding.btnSetWallpaper.setPreventDoubleClickScaleView {
         val path = arguments?.getString("wallpaperPath") ?: ""
+        val isVideo = arguments?.getBoolean("isVideo") ?: false
         if (path.isNotEmpty()) {
-            viewModel.setWallpaperPath(path)
+            viewModel.setWallpaperPath(path, isVideo)
         }
     }
 }

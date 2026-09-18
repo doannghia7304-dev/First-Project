@@ -154,6 +154,9 @@ dependencies {
     // Data store
     implementation(libs.androidx.datastore.preferences)
 
+    // ExoPlayer Media3
+    implementation(libs.androidx.media3.exoplayer)
+
     // Roundable layout
     implementation(libs.roundablelayout)
 }

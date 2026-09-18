@@ -8,6 +8,7 @@ import android.view.View
 import pion.tech.pionbase.base.BaseFragment
 import pion.tech.pionbase.databinding.FragmentPreviewWallpaperBinding
 import pion.tech.pionbase.service.GifWallpaperService
+import pion.tech.pionbase.service.VideoWallpaperService
 import pion.tech.pionbase.util.collectFlowOnView
 import pion.tech.pionbase.util.displayToast
 import pion.tech.pionbase.util.loadImage
@@ -29,18 +30,20 @@ class PreviewWallpaperFragment : BaseFragment<FragmentPreviewWallpaperBinding, P
             when (event) {
                 is PreviewWallpaperUiEvent.WallpaperSavedSuccessfully -> {
                     displayToast(getString(R.string.success_set_wallpaper))
-                    openWallpaperPicker()
+                    openWallpaperPicker(event.isVideo)
                 }
             }
         }
     }
 
-    private fun openWallpaperPicker() {
+    private fun openWallpaperPicker(isVideo: Boolean) {
+        val component = if (isVideo) {
+            ComponentName(requireContext(), VideoWallpaperService::class.java)
+        } else {
+            ComponentName(requireContext(), GifWallpaperService::class.java)
+        }
         val intent = Intent(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER).apply {
-            putExtra(
-                WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
-                ComponentName(requireContext(), GifWallpaperService::class.java)
-            )
+            putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT, component)
         }
         startActivity(intent)
     }
