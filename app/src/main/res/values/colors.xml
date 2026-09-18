@@ -17,4 +17,5 @@
     <color name="text_category_unselected">#A59BB5</color>
     <color name="bg_home">#0A0416</color>
     <color name="bg_bottom_nav">#160D27</color>
+    <color name="calendar_box_background">#80000000</color>
 </resources>

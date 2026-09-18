@@ -7,8 +7,11 @@ import pion.tech.pionbase.domain.usecase.language.GetLanguagesUseCase
 import pion.tech.pionbase.domain.usecase.language.GetLanguageSelectedUseCase
 import pion.tech.pionbase.domain.usecase.language.SetLanguageSelectedUseCase
 import pion.tech.pionbase.domain.usecase.wallpaper.GetLiveWallpaperPathUseCase
+import pion.tech.pionbase.domain.usecase.wallpaper.GetVideoWallpaperPathUseCase
 import pion.tech.pionbase.domain.usecase.wallpaper.SaveGifWallpaperUseCase
+import pion.tech.pionbase.domain.usecase.wallpaper.SaveVideoWallpaperUseCase
 import pion.tech.pionbase.domain.usecase.wallpaper.SetLiveWallpaperPathUseCase
+import pion.tech.pionbase.domain.usecase.wallpaper.SetVideoWallpaperPathUseCase
 
 val homeUseCaseModule = module {
     factoryOf(::GetInstalledAppsUseCase)
@@ -18,6 +21,9 @@ val wallpaperUseCaseModule = module {
     factoryOf(::GetLiveWallpaperPathUseCase)
     factoryOf(::SetLiveWallpaperPathUseCase)
     factoryOf(::SaveGifWallpaperUseCase)
+    factoryOf(::GetVideoWallpaperPathUseCase)
+    factoryOf(::SetVideoWallpaperPathUseCase)
+    factoryOf(::SaveVideoWallpaperUseCase)
 }
 
 val languageUseCaseModule = module {

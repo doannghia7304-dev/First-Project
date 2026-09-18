@@ -92,5 +92,9 @@
         <argument
             android:name="wallpaperPath"
             app:argType="string" />
+        <argument
+            android:name="isVideo"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
 </navigation>

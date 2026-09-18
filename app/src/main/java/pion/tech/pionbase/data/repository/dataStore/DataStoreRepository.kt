@@ -23,4 +23,8 @@ interface DataStoreRepository {
     fun getLiveWallpaperPath(): Flow<Result<String?>>
 
     fun setLiveWallpaperPath(path: String): Flow<Result<Unit>>
+
+    fun getVideoWallpaperPath(): Flow<Result<String?>>
+
+    fun setVideoWallpaperPath(path: String): Flow<Result<Unit>>
 }
