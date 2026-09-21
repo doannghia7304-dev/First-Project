@@ -22,10 +22,17 @@ fun PreviewWallpaperFragment.initView() {
 }
 
 fun PreviewWallpaperFragment.applyEvent() {
+    val path = arguments?.getString("wallpaperPath") ?: ""
+    val isVideo = arguments?.getBoolean("isVideo") ?: false
+    val isStatic = arguments?.getBoolean("isStatic") ?: false
+
+    binding.btnFavorite.setPreventDoubleClickScaleView {
+        if (path.isNotEmpty()) {
+            viewModel.toggleFavorite(path, isVideo, isStatic)
+        }
+    }
+
     binding.btnSetWallpaper.setPreventDoubleClickScaleView {
-        val path = arguments?.getString("wallpaperPath") ?: ""
-        val isVideo = arguments?.getBoolean("isVideo") ?: false
-        val isStatic = arguments?.getBoolean("isStatic") ?: false
         if (path.isNotEmpty()) {
             if (isStatic) {
                 showHideLoading(true)

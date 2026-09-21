@@ -37,6 +37,18 @@
         <action
             android:id="@+id/action_homeFragment_to_previewWallpaperFragment"
             app:destination="@id/previewWallpaperFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_favoritesFragment"
+            app:destination="@id/favoritesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/favoritesFragment"
+        android:name="pion.tech.pionbase.feature.favorites.FavoritesFragment"
+        android:label="FavoritesFragment"
+        tools:layout="@layout/fragment_favorites">
+        <action
+            android:id="@+id/action_favoritesFragment_to_previewWallpaperFragment"
+            app:destination="@id/previewWallpaperFragment" />
     </fragment>
     <fragment
         android:id="@+id/languageFragment"

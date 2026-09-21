@@ -2,6 +2,10 @@ package pion.tech.pionbase.di
 
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
+import pion.tech.pionbase.domain.usecase.favorite.AddFavoriteUseCase
+import pion.tech.pionbase.domain.usecase.favorite.CheckIsFavoriteUseCase
+import pion.tech.pionbase.domain.usecase.favorite.GetFavoritesUseCase
+import pion.tech.pionbase.domain.usecase.favorite.RemoveFavoriteUseCase
 import pion.tech.pionbase.domain.usecase.home.GetInstalledAppsUseCase
 import pion.tech.pionbase.domain.usecase.language.GetLanguagesUseCase
 import pion.tech.pionbase.domain.usecase.language.GetLanguageSelectedUseCase
@@ -42,11 +46,19 @@ val onboardUseCaseModule = module {
     factoryOf(::SetOnboardingCompletedUseCase)
 }
 
+val favoriteUseCaseModule = module {
+    factoryOf(::GetFavoritesUseCase)
+    factoryOf(::AddFavoriteUseCase)
+    factoryOf(::RemoveFavoriteUseCase)
+    factoryOf(::CheckIsFavoriteUseCase)
+}
+
 val useCaseModule = module {
     includes(
         homeUseCaseModule,
         wallpaperUseCaseModule,
         languageUseCaseModule,
-        onboardUseCaseModule
+        onboardUseCaseModule,
+        favoriteUseCaseModule
     )
 }

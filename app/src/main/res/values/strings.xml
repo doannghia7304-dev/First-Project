@@ -76,4 +76,5 @@
     <string name="live_wallpapers_desc" >Bring your screen to life with subtle motion.</string>
     <string name="calendar_theme_overlays" >Calendar Theme Overlays</string>
     <string name="calendar_theme_desc" >Keep your month in view, beautifully.</string>
+    <string name="no_favorites_yet" translatable="false">No favorites yet</string>
 </resources>
