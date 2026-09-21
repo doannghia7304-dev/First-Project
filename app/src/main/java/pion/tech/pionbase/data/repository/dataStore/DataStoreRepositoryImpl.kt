@@ -18,6 +18,7 @@ class DataStoreRepositoryImpl(
     private val languageCodeKey = stringPreferencesKey("languageCodeKey")
     private val liveWallpaperPathKey = stringPreferencesKey("liveWallpaperPathKey")
     private val videoWallpaperPathKey = stringPreferencesKey("videoWallpaperPathKey")
+    private val isOnboardingCompletedKey = booleanPreferencesKey("isOnboardingCompletedKey")
 
     override fun getIsPremium(): Flow<Result<Boolean>> =
         dataStore.data.executeDataWithFlowCall { prefs ->
@@ -88,6 +89,18 @@ class DataStoreRepositoryImpl(
         executeDataCall {
             dataStore.edit {
                 it[videoWallpaperPathKey] = path
+            }
+        }
+
+    override fun getIsOnboardingCompleted(): Flow<Result<Boolean>> =
+        dataStore.data.executeDataWithFlowCall { prefs ->
+            prefs[isOnboardingCompletedKey] ?: false
+        }
+
+    override fun setIsOnboardingCompleted(isCompleted: Boolean): Flow<Result<Unit>> =
+        executeDataCall {
+            dataStore.edit {
+                it[isOnboardingCompletedKey] = isCompleted
             }
         }
 }

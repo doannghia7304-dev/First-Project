@@ -27,4 +27,8 @@ interface DataStoreRepository {
     fun getVideoWallpaperPath(): Flow<Result<String?>>
 
     fun setVideoWallpaperPath(path: String): Flow<Result<Unit>>
+
+    fun getIsOnboardingCompleted(): Flow<Result<Boolean>>
+
+    fun setIsOnboardingCompleted(isCompleted: Boolean): Flow<Result<Unit>>
 }

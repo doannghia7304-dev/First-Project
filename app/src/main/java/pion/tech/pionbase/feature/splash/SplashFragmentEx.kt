@@ -40,16 +40,22 @@ fun SplashFragment.initView() {
 }
 
 fun SplashFragment.goToNextScreen() {
-    // Lấy giá trị thực tế từ ViewModel sau khi đã delay xong
-    val actualSelected = viewModel.uiState.value.isLanguageSelected ?: false
+    val uiState = viewModel.uiState.value
+    val isLanguageSelected = uiState.isLanguageSelected ?: false
+    val isOnboardingCompleted = uiState.isOnboardingCompleted ?: false
+
+    val destination = when {
+        isLanguageSelected && isOnboardingCompleted -> R.id.action_splashFragment_to_homeFragment
+        isLanguageSelected && !isOnboardingCompleted -> R.id.action_splashFragment_to_onboardFragment
+        else -> R.id.action_splashFragment_to_languageFragment
+    }
     
-    val destination =
-        if (actualSelected || isCameFromLanguage()) {
-            R.id.action_splashFragment_to_homeFragment
-        } else {
-            R.id.action_splashFragment_to_languageFragment
-        }
-    navigator.navigateTo(destination)
+    // Nếu quay về từ màn hình chọn ngôn ngữ thì đi thẳng vào Home
+    if (isCameFromLanguage()) {
+        navigator.navigateTo(R.id.action_splashFragment_to_homeFragment)
+    } else {
+        navigator.navigateTo(destination)
+    }
 }
 
 fun SplashFragment.isCameFromLanguage(): Boolean = navigator.isCameFrom(R.id.languageFragment)
