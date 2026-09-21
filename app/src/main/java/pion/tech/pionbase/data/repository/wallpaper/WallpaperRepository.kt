@@ -7,4 +7,6 @@ import pion.tech.pionbase.util.Result
 interface WallpaperRepository {
     fun saveGifToInternalStorage(uri: Uri): Flow<Result<String>>
     fun saveVideoToInternalStorage(uri: Uri): Flow<Result<String>>
+    fun saveImageToInternalStorage(uri: Uri): Flow<Result<String>>
+    fun saveUrlToInternalStorage(urlString: String, isVideo: Boolean): Flow<Result<String>>
 }

@@ -7,10 +7,10 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface ApiInterface {
-    @GET("api/v5.0/public/categories?app_id=56ba3e1f-27a4-4acd-b420-1b33600ac495")
+    @GET("https://raw.githubusercontent.com/doannghia7304-dev/fake-api/refs/heads/main/categories.json")
     suspend fun getAppCategory(): ApiObjectResponseData<List<AppCategoryDtoModel>>
 
-    @GET("api/v5.0/public/items/get-all?region_code=%7Bregion_code%7D")
+    @GET("https://raw.githubusercontent.com/doannghia7304-dev/fake-api/refs/heads/main/templates.json")
     suspend fun getAllTemplate(
         @Query("category_id") categoryId: String,
     ): ApiObjectResponseData<List<TemplateResponseDtoModel>>

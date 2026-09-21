@@ -43,11 +43,7 @@ fun LanguageFragment.navigateToNextScreen() {
         // Thay vì quay lại SplashFragment chịu delay 3 giây, đi thẳng về màn Setting hoặc màn Home
         navigator.navigateUp()
     } else {
-        if (AppRemoteConfig.maxTimeShowChangeLanguageScreen > 0L) {
-            navigator.navigateTo(R.id.action_languageFragment_to_changeLanguageFragment)
-        } else {
-            navigator.navigateTo(R.id.action_languageFragment_to_onboardFragment)
-        }
+        navigator.navigateTo(R.id.action_languageFragment_to_onboardFragment)
     }
 }
 

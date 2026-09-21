@@ -2,6 +2,7 @@ package pion.tech.pionbase.feature.previewWallpaper
 
 import pion.tech.pionbase.base.BaseViewModel
 import pion.tech.pionbase.base.launchMain
+import pion.tech.pionbase.domain.usecase.wallpaper.SaveUrlWallpaperUseCase
 import pion.tech.pionbase.domain.usecase.wallpaper.SetLiveWallpaperPathUseCase
 import pion.tech.pionbase.domain.usecase.wallpaper.SetVideoWallpaperPathUseCase
 import pion.tech.pionbase.util.UiState
@@ -9,7 +10,8 @@ import pion.tech.pionbase.util.handleApiCall
 
 class PreviewWallpaperViewModel(
     private val setLiveWallpaperPathUseCase: SetLiveWallpaperPathUseCase,
-    private val setVideoWallpaperPathUseCase: SetVideoWallpaperPathUseCase
+    private val setVideoWallpaperPathUseCase: SetVideoWallpaperPathUseCase,
+    private val saveUrlWallpaperUseCase: SaveUrlWallpaperUseCase
 ) : BaseViewModel<PreviewWallpaperUiState, PreviewWallpaperUiEvent>(PreviewWallpaperUiState()) {
 
     fun setWallpaperPath(path: String, isVideo: Boolean) {
@@ -27,6 +29,19 @@ class PreviewWallpaperViewModel(
                 launchMain {
                     setEvent(PreviewWallpaperUiEvent.WallpaperSavedSuccessfully(isVideo))
                 }
+            },
+            onError = { throwable ->
+                setState { copy(setWallpaperState = UiState.Error(throwable)) }
+            }
+        )
+    }
+
+    fun setWallpaperUrl(url: String, isVideo: Boolean) {
+        setState { copy(setWallpaperState = UiState.Loading) }
+        handleApiCall(
+            apiCall = { saveUrlWallpaperUseCase(url, isVideo) },
+            onSuccess = { localPath ->
+                setWallpaperPath(localPath, isVideo)
             },
             onError = { throwable ->
                 setState { copy(setWallpaperState = UiState.Error(throwable)) }

@@ -6,6 +6,7 @@ import pion.tech.pionbase.data.model.installedApp.InstalledAppUIModel
 import pion.tech.pionbase.data.model.installedApp.toPresentation
 import pion.tech.pionbase.domain.usecase.home.GetInstalledAppsUseCase
 import pion.tech.pionbase.domain.usecase.wallpaper.SaveGifWallpaperUseCase
+import pion.tech.pionbase.domain.usecase.wallpaper.SaveImageWallpaperUseCase
 import pion.tech.pionbase.domain.usecase.wallpaper.SaveVideoWallpaperUseCase
 import pion.tech.pionbase.base.launchMain
 import pion.tech.pionbase.util.UiState
@@ -15,6 +16,7 @@ class HomeViewModel(
     private val getInstalledAppsUseCase: GetInstalledAppsUseCase,
     private val saveGifWallpaperUseCase: SaveGifWallpaperUseCase,
     private val saveVideoWallpaperUseCase: SaveVideoWallpaperUseCase,
+    private val saveImageWallpaperUseCase: SaveImageWallpaperUseCase,
 ) : BaseViewModel<HomeUiState, HomeUiEvent>(HomeUiState()) {
 
     init {
@@ -28,7 +30,7 @@ class HomeViewModel(
             onSuccess = { path ->
                 setState { copy(saveGifState = UiState.Success(path)) }
                 launchMain {
-                    setEvent(HomeUiEvent.NavigateToPreview(path, isVideo = false))
+                    setEvent(HomeUiEvent.NavigateToPreview(path, isVideo = false, isStatic = false))
                 }
             },
             onError = { throwable ->
@@ -44,11 +46,27 @@ class HomeViewModel(
             onSuccess = { path ->
                 setState { copy(saveVideoState = UiState.Success(path)) }
                 launchMain {
-                    setEvent(HomeUiEvent.NavigateToPreview(path, isVideo = true))
+                    setEvent(HomeUiEvent.NavigateToPreview(path, isVideo = true, isStatic = false))
                 }
             },
             onError = { throwable ->
                 setState { copy(saveVideoState = UiState.Error(throwable)) }
+            }
+        )
+    }
+
+    fun saveSelectedImage(uri: Uri) {
+        setState { copy(saveGifState = UiState.Loading) }
+        handleApiCall(
+            apiCall = { saveImageWallpaperUseCase(uri) },
+            onSuccess = { path ->
+                setState { copy(saveGifState = UiState.Success(path)) }
+                launchMain {
+                    setEvent(HomeUiEvent.NavigateToPreview(path, isVideo = false, isStatic = true))
+                }
+            },
+            onError = { throwable ->
+                setState { copy(saveGifState = UiState.Error(throwable)) }
             }
         )
     }
@@ -76,5 +94,5 @@ data class HomeUiState(
 )
 
 sealed interface HomeUiEvent {
-    data class NavigateToPreview(val path: String, val isVideo: Boolean) : HomeUiEvent
+    data class NavigateToPreview(val path: String, val isVideo: Boolean, val isStatic: Boolean = false) : HomeUiEvent
 }

@@ -46,4 +46,40 @@ class WallpaperRepositoryImpl(
         }
         localFile.absolutePath
     }
+
+    override fun saveImageToInternalStorage(uri: Uri): Flow<Result<String>> = executeDataCall {
+        val inputStream = context.contentResolver.openInputStream(uri)
+            ?: throw java.io.FileNotFoundException("Could not open input stream for Uri: $uri")
+
+        val fileName = "selected_wallpaper_${System.currentTimeMillis()}.jpg"
+        val localFile = File(context.filesDir, fileName)
+
+        context.filesDir.listFiles { _, name -> name.startsWith("selected_wallpaper_") && (name.endsWith(".jpg") || name.endsWith(".png") || name.endsWith(".jpeg")) }
+            ?.forEach { it.delete() }
+
+        localFile.outputStream().use { outputStream ->
+            inputStream.copyTo(outputStream)
+        }
+        localFile.absolutePath
+    }
+
+    override fun saveUrlToInternalStorage(urlString: String, isVideo: Boolean): Flow<Result<String>> = executeDataCall {
+        val url = java.net.URL(urlString)
+        val connection = url.openConnection() as java.net.HttpURLConnection
+        connection.doInput = true
+        connection.connect()
+        val inputStream = connection.inputStream
+
+        val extension = if (isVideo) "mp4" else "gif"
+        val fileName = "api_wallpaper_${System.currentTimeMillis()}.$extension"
+        val localFile = File(context.filesDir, fileName)
+
+        context.filesDir.listFiles { _, name -> name.startsWith("api_wallpaper_") }
+            ?.forEach { it.delete() }
+
+        localFile.outputStream().use { outputStream ->
+            inputStream.copyTo(outputStream)
+        }
+        localFile.absolutePath
+    }
 }

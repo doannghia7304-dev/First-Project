@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
     <string name="admob_application_id" translatable="false">ca-app-pub-2222869408518511~9607465111</string>
     <string name="please_wait" translatable="false">Please wait!</string>
     <string name="app_name" translatable="false">Wallpaper Master</string>
@@ -21,7 +22,7 @@
     <string name="store_name">Store Name:</string>
     <string name="website">Website:</string>
     <string name="why_do_you_see_ads">Why do you see Ads?</string>
-    <string name="des_advertisement_1">For production and development, we need funding, one of which comes from advertisment revenue</string>
+    <string name="des_advertisement_1">For production and development, we need funding, one of which comes from advertisement revenue</string>
     <string name="des_advertisment_2">1. To remove ads, you can support us by purchasing the premium version or the ad-removed version.</string>
     <string name="des_advertisement_3">2. Contact us by email to be considered for participation in the pilot program, from which you can use versions with less ads but may not be optimized for performance.</string>
     <string name="what_ads_type_do_we_use">What Ads type do we use?</string>
@@ -52,4 +53,27 @@
     <string name="error_load_video" >Failed to process Video file</string>
     <string name="success_set_wallpaper" >Wallpaper updated successfully!</string>
     <string name="select_gif_only" >Please select a valid GIF file</string>
+    <string name="calendar_overlay_theme" >CALENDAR OVERLAY THEME!</string>
+    <string name="calendar_overlay">Calendar Overlay</string>
+    <string name="on" >ON</string>
+    <string name="off" >OFF</string>
+    <string name="calendar_position" >Calendar position</string>
+    <string name="top" >Top</string>
+    <string name="center" >Center</string>
+    <string name="bottom" >Bottom</string>
+    <string name="font_colors" >Font colors</string>
+    <string name="your_media" >YOUR MEDIA</string>
+    <string name="pick_custom_media" >Pick Custom Photo/Video</string>
+    <string name="pick_media_description" >Choose from your device gallery. Photos, videos, and GIFs supported.</string>
+    <string name="dark_mode" >Dark mode</string>
+    <string name="system_default" >System default</string>
+    <string name="get_started" >Get Started</string>
+    <string name="onboarding_title_1" >Your screen, reimagined</string>
+    <string name="onboarding_subtitle_1" >Discover more than a wallpaper. Make it personal, useful, and alive.</string>
+    <string name="hd_wallpapers" >HD Wallpapers</string>
+    <string name="hd_wallpapers_desc" >Crystal clear art curated for every mood.</string>
+    <string name="live_wallpapers_title" >Live Video &amp; GIF Wallpapers</string>
+    <string name="live_wallpapers_desc" >Bring your screen to life with subtle motion.</string>
+    <string name="calendar_theme_overlays" >Calendar Theme Overlays</string>
+    <string name="calendar_theme_desc" >Keep your month in view, beautifully.</string>
 </resources>

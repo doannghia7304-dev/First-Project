@@ -45,6 +45,7 @@ class HomeFragment :
                     val bundle = Bundle().apply {
                         putString("wallpaperPath", event.path)
                         putBoolean("isVideo", event.isVideo)
+                        putBoolean("isStatic", event.isStatic)
                     }
                     navigator.navigateTo(R.id.action_homeFragment_to_previewWallpaperFragment, bundle)
                 }
@@ -125,7 +126,20 @@ class HomeFragment :
     }
 
     override fun onClickTemplate(item: TemplateUIModel, position: Int) {
-        displayToast("Opening wallpaper details...")
+        val path = item.imageModel ?: item.thumbnail ?: ""
+        if (path.isNotEmpty()) {
+            val isVideo = item.templateType?.contains("video", ignoreCase = true) == true || item.videoPreview != null || path.endsWith(".mp4", true)
+            val isGif = item.templateType?.contains("gif", ignoreCase = true) == true || path.endsWith(".gif", true)
+            val isStatic = !isVideo && !isGif
+            val bundle = Bundle().apply {
+                putString("wallpaperPath", path)
+                putBoolean("isVideo", isVideo)
+                putBoolean("isStatic", isStatic)
+            }
+            navigator.navigateTo(R.id.action_homeFragment_to_previewWallpaperFragment, bundle)
+        } else {
+            displayToast("Invalid wallpaper")
+        }
     }
 
     // Photo Picker Integration (Security & Privacy focused for GIF and Video MP4)
@@ -134,8 +148,10 @@ class HomeFragment :
             val mimeType = requireContext().contentResolver.getType(uri) ?: ""
             if (mimeType.contains("video", ignoreCase = true)) {
                 viewModel.saveSelectedVideo(uri)
-            } else {
+            } else if (mimeType.contains("gif", ignoreCase = true) || uri.toString().endsWith(".gif", true)) {
                 viewModel.saveSelectedGif(uri)
+            } else {
+                viewModel.saveSelectedImage(uri)
             }
         }
     }
