@@ -21,6 +21,10 @@ val homeUseCaseModule = module {
 val wallpaperUseCaseModule = module {
     factoryOf(::GetLiveWallpaperPathUseCase)
     factoryOf(::SetLiveWallpaperPathUseCase)
+    factoryOf(::GetStaticWallpaperPathUseCase)
+    factoryOf(::SetStaticWallpaperPathUseCase)
+    factoryOf(::GetActiveWallpaperTypeUseCase)
+    factoryOf(::SetActiveWallpaperTypeUseCase)
     factoryOf(::SaveGifWallpaperUseCase)
     factoryOf(::SaveImageWallpaperUseCase)
     factoryOf(::SaveUrlWallpaperUseCase)

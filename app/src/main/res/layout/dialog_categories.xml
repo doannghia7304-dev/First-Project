@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/bg_bottom_nav"
+    android:padding="@dimen/_16dp">
+
+    <View
+        android:id="@+id/vIndicator"
+        android:layout_width="@dimen/_32dp"
+        android:layout_height="@dimen/_4dp"
+        android:background="@drawable/bg_rounded"
+        android:backgroundTint="@color/text_secondary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_12dp"
+        android:fontFamily="@font/font_700"
+        android:text="@string/categories"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/vIndicator" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvCategoriesDialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_16dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle"
+        tools:listitem="@layout/item_category" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,7 +3,6 @@ package pion.tech.pionbase.feature.language
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import androidx.core.view.isVisible
-import androidx.navigation.fragment.findNavController
 import pion.tech.pionbase.R
 import pion.tech.pionbase.util.AppRemoteConfig
 import pion.tech.pionbase.util.displayToast

@@ -19,6 +19,8 @@ class DataStoreRepositoryImpl(
     private val languageCodeKey = stringPreferencesKey("languageCodeKey")
     private val liveWallpaperPathKey = stringPreferencesKey("liveWallpaperPathKey")
     private val videoWallpaperPathKey = stringPreferencesKey("videoWallpaperPathKey")
+    private val staticWallpaperPathKey = stringPreferencesKey("staticWallpaperPathKey")
+    private val activeWallpaperTypeKey = intPreferencesKey("activeWallpaperTypeKey")
     private val isOnboardingCompletedKey = booleanPreferencesKey("isOnboardingCompletedKey")
     private val isCalendarOverlayEnabledKey = booleanPreferencesKey("isCalendarOverlayEnabledKey")
     private val calendarPositionKey = intPreferencesKey("calendarPositionKey")
@@ -96,6 +98,30 @@ class DataStoreRepositoryImpl(
             }
         }
 
+    override fun getStaticWallpaperPath(): Flow<Result<String?>> =
+        dataStore.data.executeDataWithFlowCall { prefs ->
+            prefs[staticWallpaperPathKey]
+        }
+
+    override fun setStaticWallpaperPath(path: String): Flow<Result<Unit>> =
+        executeDataCall {
+            dataStore.edit {
+                it[staticWallpaperPathKey] = path
+            }
+        }
+
+    override fun getActiveWallpaperType(): Flow<Result<Int>> =
+        dataStore.data.executeDataWithFlowCall { prefs ->
+            prefs[activeWallpaperTypeKey] ?: DataStoreRepository.WALLPAPER_TYPE_NONE
+        }
+
+    override fun setActiveWallpaperType(type: Int): Flow<Result<Unit>> =
+        executeDataCall {
+            dataStore.edit {
+                it[activeWallpaperTypeKey] = type
+            }
+        }
+
     override fun getIsOnboardingCompleted(): Flow<Result<Boolean>> =
         dataStore.data.executeDataWithFlowCall { prefs ->
             prefs[isOnboardingCompletedKey] ?: false
@@ -122,7 +148,7 @@ class DataStoreRepositoryImpl(
 
     override fun getCalendarPosition(): Flow<Result<Int>> =
         dataStore.data.executeDataWithFlowCall { prefs ->
-            prefs[calendarPositionKey] ?: 2 // Default to Bottom
+            prefs[calendarPositionKey] ?: 2
         }
 
     override fun setCalendarPosition(position: Int): Flow<Result<Unit>> =
@@ -134,7 +160,7 @@ class DataStoreRepositoryImpl(
 
     override fun getCalendarFontColor(): Flow<Result<Int>> =
         dataStore.data.executeDataWithFlowCall { prefs ->
-            prefs[calendarFontColorKey] ?: -1 // Default to White
+            prefs[calendarFontColorKey] ?: -1
         }
 
     override fun setCalendarFontColor(color: Int): Flow<Result<Unit>> =

@@ -13,7 +13,7 @@
         android:layout_marginHorizontal="@dimen/_24dp"
         android:layout_marginTop="@dimen/_24dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/home3"
+        android:src="@drawable/cat"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

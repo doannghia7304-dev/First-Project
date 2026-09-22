@@ -3,11 +3,17 @@ package pion.tech.pionbase.feature.previewWallpaper
 import pion.tech.pionbase.base.BaseViewModel
 import pion.tech.pionbase.base.launchMain
 import pion.tech.pionbase.data.model.template.TemplateDtoModel
+import pion.tech.pionbase.data.repository.dataStore.DataStoreRepository
 import pion.tech.pionbase.domain.usecase.favorite.AddFavoriteUseCase
 import pion.tech.pionbase.domain.usecase.favorite.CheckIsFavoriteUseCase
 import pion.tech.pionbase.domain.usecase.favorite.RemoveFavoriteUseCase
+import pion.tech.pionbase.domain.usecase.wallpaper.GetCalendarFontColorUseCase
+import pion.tech.pionbase.domain.usecase.wallpaper.GetCalendarOverlayEnabledUseCase
+import pion.tech.pionbase.domain.usecase.wallpaper.GetCalendarPositionUseCase
 import pion.tech.pionbase.domain.usecase.wallpaper.SaveUrlWallpaperUseCase
+import pion.tech.pionbase.domain.usecase.wallpaper.SetActiveWallpaperTypeUseCase
 import pion.tech.pionbase.domain.usecase.wallpaper.SetLiveWallpaperPathUseCase
+import pion.tech.pionbase.domain.usecase.wallpaper.SetStaticWallpaperPathUseCase
 import pion.tech.pionbase.domain.usecase.wallpaper.SetVideoWallpaperPathUseCase
 import pion.tech.pionbase.util.UiState
 import pion.tech.pionbase.util.handleApiCall
@@ -15,11 +21,44 @@ import pion.tech.pionbase.util.handleApiCall
 class PreviewWallpaperViewModel(
     private val setLiveWallpaperPathUseCase: SetLiveWallpaperPathUseCase,
     private val setVideoWallpaperPathUseCase: SetVideoWallpaperPathUseCase,
+    private val setStaticWallpaperPathUseCase: SetStaticWallpaperPathUseCase,
+    private val setActiveWallpaperTypeUseCase: SetActiveWallpaperTypeUseCase,
     private val saveUrlWallpaperUseCase: SaveUrlWallpaperUseCase,
     private val addFavoriteUseCase: AddFavoriteUseCase,
     private val removeFavoriteUseCase: RemoveFavoriteUseCase,
     private val checkIsFavoriteUseCase: CheckIsFavoriteUseCase,
+    private val getCalendarOverlayEnabledUseCase: GetCalendarOverlayEnabledUseCase,
+    private val getCalendarPositionUseCase: GetCalendarPositionUseCase,
+    private val getCalendarFontColorUseCase: GetCalendarFontColorUseCase,
 ) : BaseViewModel<PreviewWallpaperUiState, PreviewWallpaperUiEvent>(PreviewWallpaperUiState()) {
+
+    init {
+        loadCalendarSettings()
+    }
+
+    private fun loadCalendarSettings() {
+        handleApiCall(
+            apiCall = { getCalendarOverlayEnabledUseCase() },
+            onSuccess = { isEnabled -> setState { copy(isCalendarEnabled = isEnabled) } }
+        )
+        handleApiCall(
+            apiCall = { getCalendarPositionUseCase() },
+            onSuccess = { pos -> setState { copy(calendarPosition = pos) } }
+        )
+        handleApiCall(
+            apiCall = { getCalendarFontColorUseCase() },
+            onSuccess = { color -> setState { copy(calendarColor = color) } }
+        )
+    }
+
+    fun saveStaticWallpaperPath(path: String) {
+        handleApiCall(
+            apiCall = { setStaticWallpaperPathUseCase(path) },
+            onSuccess = {
+                handleApiCall(apiCall = { setActiveWallpaperTypeUseCase(DataStoreRepository.WALLPAPER_TYPE_STATIC) })
+            }
+        )
+    }
 
     fun checkFavorite(wallpaperId: String) {
         handleApiCall(
@@ -58,6 +97,10 @@ class PreviewWallpaperViewModel(
 
     fun setWallpaperPath(path: String, isVideo: Boolean) {
         setState { copy(setWallpaperState = UiState.Loading) }
+        val type = if (isVideo) DataStoreRepository.WALLPAPER_TYPE_VIDEO else DataStoreRepository.WALLPAPER_TYPE_GIF
+        handleApiCall(
+            apiCall = { setActiveWallpaperTypeUseCase(type) }
+        )
         handleApiCall(
             apiCall = { 
                 if (isVideo) {
@@ -95,6 +138,9 @@ class PreviewWallpaperViewModel(
 data class PreviewWallpaperUiState(
     val setWallpaperState: UiState<Unit> = UiState.None,
     val isFavorite: Boolean = false,
+    val isCalendarEnabled: Boolean = false,
+    val calendarPosition: Int = 2,
+    val calendarColor: Int = -1
 )
 
 sealed interface PreviewWallpaperUiEvent {
