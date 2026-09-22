@@ -66,6 +66,9 @@ class WallpaperRepositoryImpl(
     override fun saveUrlToInternalStorage(urlString: String, isVideo: Boolean): Flow<Result<String>> = executeDataCall {
         val url = java.net.URL(urlString)
         val connection = url.openConnection() as java.net.HttpURLConnection
+        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36")
+        connection.connectTimeout = 15000
+        connection.readTimeout = 15000
         connection.doInput = true
         connection.connect()
         val inputStream = connection.inputStream

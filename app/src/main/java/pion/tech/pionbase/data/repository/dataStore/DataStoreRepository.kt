@@ -28,6 +28,14 @@ interface DataStoreRepository {
 
     fun setVideoWallpaperPath(path: String): Flow<Result<Unit>>
 
+    fun getStaticWallpaperPath(): Flow<Result<String?>>
+
+    fun setStaticWallpaperPath(path: String): Flow<Result<Unit>>
+
+    fun getActiveWallpaperType(): Flow<Result<Int>>
+
+    fun setActiveWallpaperType(type: Int): Flow<Result<Unit>>
+
     fun getIsOnboardingCompleted(): Flow<Result<Boolean>>
 
     fun setIsOnboardingCompleted(isCompleted: Boolean): Flow<Result<Unit>>
@@ -43,4 +51,11 @@ interface DataStoreRepository {
     fun getCalendarFontColor(): Flow<Result<Int>>
 
     fun setCalendarFontColor(color: Int): Flow<Result<Unit>>
+
+    companion object {
+        const val WALLPAPER_TYPE_NONE = 0
+        const val WALLPAPER_TYPE_STATIC = 1
+        const val WALLPAPER_TYPE_GIF = 2
+        const val WALLPAPER_TYPE_VIDEO = 3
+    }
 }

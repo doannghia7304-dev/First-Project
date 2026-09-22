@@ -2,7 +2,6 @@ package pion.tech.pionbase.feature.setting
 
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
-import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
@@ -26,15 +25,15 @@ fun SettingFragment.initView() {
 
 fun SettingFragment.applyEvent() {
     binding.switchCalendar.setOnCheckedChangeListener { _, isChecked ->
-        viewModel.toggleCalendarOverlay(isChecked)
+        viewModel.toggleCalendarOverlay(requireContext(), isChecked)
     }
 
-    binding.btnPosTop.setPreventDoubleClickScaleView { viewModel.setCalendarPosition(0) }
-    binding.btnPosCenter.setPreventDoubleClickScaleView { viewModel.setCalendarPosition(1) }
-    binding.btnPosBottom.setPreventDoubleClickScaleView { viewModel.setCalendarPosition(2) }
+    binding.btnPosTop.setPreventDoubleClickScaleView { viewModel.setCalendarPosition(requireContext(), 0) }
+    binding.btnPosCenter.setPreventDoubleClickScaleView { viewModel.setCalendarPosition(requireContext(), 1) }
+    binding.btnPosBottom.setPreventDoubleClickScaleView { viewModel.setCalendarPosition(requireContext(), 2) }
 
     binding.btnPickMedia.setPreventDoubleClickScaleView {
-        // Existing media pick logic would go here, maybe navigate to Home or trigger picker
+        // Existing media pick logic
     }
 }
 
@@ -114,7 +113,7 @@ private fun SettingFragment.setupColorCircles() {
             background = drawable
             
             setPreventDoubleClickScaleView {
-                viewModel.setCalendarFontColor(color)
+                viewModel.setCalendarFontColor(requireContext(), color)
             }
         }
         layout.addView(imageView)
