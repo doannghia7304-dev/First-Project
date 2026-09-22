@@ -16,6 +16,13 @@ class ApiRepositoryImpl(
 
     override fun getTemplateData(categoryId: String): Flow<Result<List<TemplateDtoModel>>> =
         executeDataCall {
-            apiInterface.getAllTemplate(categoryId).dataResponse.map { it.customField }
+            val response = apiInterface.getAllTemplate(categoryId).dataResponse
+            val filtered = response.filter { it.customField.categoryId == categoryId }
+            if (filtered.isNotEmpty()) {
+                filtered.map { it.customField }
+            } else {
+                // Fallback thông minh: Nếu không khớp categoryId hoặc chưa phân loại, hiển thị toàn bộ template để màn hình Home không bị trống
+                response.map { it.customField }
+            }
         }
 }

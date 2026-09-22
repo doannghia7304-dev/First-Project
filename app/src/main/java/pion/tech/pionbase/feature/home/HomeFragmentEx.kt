@@ -35,4 +35,7 @@ fun HomeFragment.settingEvent() {
     binding.btnSetting.setPreventDoubleClickScaleView {
         navigator.navigateTo(R.id.action_homeFragment_to_settingFragment)
     }
+    binding.btnFavorites.setPreventDoubleClickScaleView {
+        navigator.navigateTo(R.id.action_homeFragment_to_favoritesFragment)
+    }
 }

@@ -4,6 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import pion.tech.pionbase.data.repository.BaseRepository
@@ -18,6 +19,10 @@ class DataStoreRepositoryImpl(
     private val languageCodeKey = stringPreferencesKey("languageCodeKey")
     private val liveWallpaperPathKey = stringPreferencesKey("liveWallpaperPathKey")
     private val videoWallpaperPathKey = stringPreferencesKey("videoWallpaperPathKey")
+    private val isOnboardingCompletedKey = booleanPreferencesKey("isOnboardingCompletedKey")
+    private val isCalendarOverlayEnabledKey = booleanPreferencesKey("isCalendarOverlayEnabledKey")
+    private val calendarPositionKey = intPreferencesKey("calendarPositionKey")
+    private val calendarFontColorKey = intPreferencesKey("calendarFontColorKey")
 
     override fun getIsPremium(): Flow<Result<Boolean>> =
         dataStore.data.executeDataWithFlowCall { prefs ->
@@ -88,6 +93,54 @@ class DataStoreRepositoryImpl(
         executeDataCall {
             dataStore.edit {
                 it[videoWallpaperPathKey] = path
+            }
+        }
+
+    override fun getIsOnboardingCompleted(): Flow<Result<Boolean>> =
+        dataStore.data.executeDataWithFlowCall { prefs ->
+            prefs[isOnboardingCompletedKey] ?: false
+        }
+
+    override fun setIsOnboardingCompleted(isCompleted: Boolean): Flow<Result<Unit>> =
+        executeDataCall {
+            dataStore.edit {
+                it[isOnboardingCompletedKey] = isCompleted
+            }
+        }
+
+    override fun getIsCalendarOverlayEnabled(): Flow<Result<Boolean>> =
+        dataStore.data.executeDataWithFlowCall { prefs ->
+            prefs[isCalendarOverlayEnabledKey] ?: false
+        }
+
+    override fun setIsCalendarOverlayEnabled(isEnabled: Boolean): Flow<Result<Unit>> =
+        executeDataCall {
+            dataStore.edit {
+                it[isCalendarOverlayEnabledKey] = isEnabled
+            }
+        }
+
+    override fun getCalendarPosition(): Flow<Result<Int>> =
+        dataStore.data.executeDataWithFlowCall { prefs ->
+            prefs[calendarPositionKey] ?: 2 // Default to Bottom
+        }
+
+    override fun setCalendarPosition(position: Int): Flow<Result<Unit>> =
+        executeDataCall {
+            dataStore.edit {
+                it[calendarPositionKey] = position
+            }
+        }
+
+    override fun getCalendarFontColor(): Flow<Result<Int>> =
+        dataStore.data.executeDataWithFlowCall { prefs ->
+            prefs[calendarFontColorKey] ?: -1 // Default to White
+        }
+
+    override fun setCalendarFontColor(color: Int): Flow<Result<Unit>> =
+        executeDataCall {
+            dataStore.edit {
+                it[calendarFontColorKey] = color
             }
         }
 }

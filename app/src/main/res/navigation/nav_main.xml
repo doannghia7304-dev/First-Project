@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_main.xml"
+    android:id="@+id/nav_main"
     app:startDestination="@id/splashFragment">
 
     <fragment
@@ -20,6 +20,11 @@
             app:destination="@id/homeFragment"
             app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_splashFragment_to_onboardFragment"
+            app:destination="@id/onboardFragment"
+            app:popUpTo="@id/splashFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
@@ -31,6 +36,18 @@
             app:destination="@id/settingFragment" />
         <action
             android:id="@+id/action_homeFragment_to_previewWallpaperFragment"
+            app:destination="@id/previewWallpaperFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_favoritesFragment"
+            app:destination="@id/favoritesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/favoritesFragment"
+        android:name="pion.tech.pionbase.feature.favorites.FavoritesFragment"
+        android:label="FavoritesFragment"
+        tools:layout="@layout/fragment_favorites">
+        <action
+            android:id="@+id/action_favoritesFragment_to_previewWallpaperFragment"
             app:destination="@id/previewWallpaperFragment" />
     </fragment>
     <fragment
@@ -46,11 +63,6 @@
         <action
             android:id="@+id/action_languageFragment_to_splashFragment"
             app:destination="@id/splashFragment" />
-        <action
-            android:id="@+id/action_languageFragment_to_changeLanguageFragment"
-            app:destination="@id/changeLanguageFragment"
-            app:popUpTo="@id/languageFragment"
-            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/onboardFragment"
@@ -72,17 +84,6 @@
             android:id="@+id/action_settingFragment_to_languageFragment"
             app:destination="@id/languageFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/changeLanguageFragment"
-        android:name="pion.tech.pionbase.feature.changeLanguage.ChangeLanguageFragment"
-        android:label="ChangeLanguageFragment"
-        tools:layout="@layout/fragment_change_language">
-        <action
-            android:id="@+id/action_changeLanguageFragment_to_onboardFragment"
-            app:destination="@id/onboardFragment"
-            app:popUpTo="@id/changeLanguageFragment"
-            app:popUpToInclusive="true" />
-    </fragment>
 
     <fragment
         android:id="@+id/previewWallpaperFragment"
@@ -94,6 +95,10 @@
             app:argType="string" />
         <argument
             android:name="isVideo"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <argument
+            android:name="isStatic"
             app:argType="boolean"
             android:defaultValue="false" />
     </fragment>

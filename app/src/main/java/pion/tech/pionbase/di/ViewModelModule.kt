@@ -4,6 +4,7 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 import pion.tech.pionbase.app.ApiViewModel
 import pion.tech.pionbase.app.CommonViewModel
+import pion.tech.pionbase.feature.favorites.FavoritesViewModel
 import pion.tech.pionbase.feature.home.HomeViewModel
 import pion.tech.pionbase.feature.language.LanguageViewModel
 import pion.tech.pionbase.feature.onboard.OnboardViewModel
@@ -21,4 +22,5 @@ val viewModelModule =
         viewModelOf(::SettingViewModel)
         viewModelOf(::OnboardViewModel)
         viewModelOf(::PreviewWallpaperViewModel)
+        viewModelOf(::FavoritesViewModel)
     }

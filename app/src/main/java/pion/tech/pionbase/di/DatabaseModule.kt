@@ -6,6 +6,7 @@ import org.koin.dsl.module
 import pion.tech.pionbase.BuildConfig
 import pion.tech.pionbase.data.database.AppDatabase
 import pion.tech.pionbase.data.database.dao.DummyDAO
+import pion.tech.pionbase.data.database.dao.FavoriteDao
 
 val databaseModule =
     module {
@@ -32,4 +33,5 @@ val databaseModule =
         }
 
         single<DummyDAO> { get<AppDatabase>().dummyDAO() }
+        single<FavoriteDao> { get<AppDatabase>().favoriteDao() }
     }

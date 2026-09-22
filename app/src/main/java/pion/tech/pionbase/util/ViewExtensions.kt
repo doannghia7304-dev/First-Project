@@ -248,6 +248,7 @@ fun ImageView.loadImage(
         .with(this)
         .load(source)
         .placeholder(placeholder)
+        .centerCrop()
         .into(this)
 }
 
@@ -255,6 +256,7 @@ fun ImageView.loadImage(source: Any?) {
     Glide
         .with(this)
         .load(source)
+        .centerCrop()
         .into(this)
 }
 

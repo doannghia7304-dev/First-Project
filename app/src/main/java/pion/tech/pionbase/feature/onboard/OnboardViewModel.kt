@@ -2,15 +2,19 @@ package pion.tech.pionbase.feature.onboard
 
 import pion.tech.pionbase.base.BaseViewModel
 import pion.tech.pionbase.base.launchDefault
+import pion.tech.pionbase.domain.usecase.onboard.SetOnboardingCompletedUseCase
+import pion.tech.pionbase.util.handleApiCall
 
 sealed class OnboardEvent {
     data object NextPage : OnboardEvent()
     data object PreviousPage : OnboardEvent()
-    data object IAPSkipBtnClicked: OnboardEvent()
-    data object GoToHomeScreen: OnboardEvent()
+    data object IAPSkipBtnClicked : OnboardEvent()
+    data object GoToHomeScreen : OnboardEvent()
 }
 
-class OnboardViewModel : BaseViewModel<Unit, OnboardEvent>(Unit) {
+class OnboardViewModel(
+    private val setOnboardingCompletedUseCase: SetOnboardingCompletedUseCase
+) : BaseViewModel<Unit, OnboardEvent>(Unit) {
     fun nextPage() {
         launchDefault {
             setEvent(OnboardEvent.NextPage)
@@ -30,8 +34,13 @@ class OnboardViewModel : BaseViewModel<Unit, OnboardEvent>(Unit) {
     }
 
     fun goToHomeScreen() {
-        launchDefault {
-            setEvent(OnboardEvent.GoToHomeScreen)
-        }
+        handleApiCall(
+            apiCall = { setOnboardingCompletedUseCase(true) },
+            onSuccess = {
+                launchDefault {
+                    setEvent(OnboardEvent.GoToHomeScreen)
+                }
+            }
+        )
     }
 }

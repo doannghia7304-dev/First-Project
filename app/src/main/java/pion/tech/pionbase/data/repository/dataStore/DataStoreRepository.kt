@@ -27,4 +27,20 @@ interface DataStoreRepository {
     fun getVideoWallpaperPath(): Flow<Result<String?>>
 
     fun setVideoWallpaperPath(path: String): Flow<Result<Unit>>
+
+    fun getIsOnboardingCompleted(): Flow<Result<Boolean>>
+
+    fun setIsOnboardingCompleted(isCompleted: Boolean): Flow<Result<Unit>>
+
+    fun getIsCalendarOverlayEnabled(): Flow<Result<Boolean>>
+
+    fun setIsCalendarOverlayEnabled(isEnabled: Boolean): Flow<Result<Unit>>
+
+    fun getCalendarPosition(): Flow<Result<Int>>
+
+    fun setCalendarPosition(position: Int): Flow<Result<Unit>>
+
+    fun getCalendarFontColor(): Flow<Result<Int>>
+
+    fun setCalendarFontColor(color: Int): Flow<Result<Unit>>
 }

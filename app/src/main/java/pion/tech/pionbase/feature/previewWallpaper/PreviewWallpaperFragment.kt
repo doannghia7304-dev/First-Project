@@ -5,13 +5,14 @@ import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import pion.tech.pionbase.base.BaseFragment
 import pion.tech.pionbase.databinding.FragmentPreviewWallpaperBinding
 import pion.tech.pionbase.service.GifWallpaperService
 import pion.tech.pionbase.service.VideoWallpaperService
 import pion.tech.pionbase.util.collectFlowOnView
 import pion.tech.pionbase.util.displayToast
-import pion.tech.pionbase.util.loadImage
 import pion.tech.pionbase.R
 
 class PreviewWallpaperFragment : BaseFragment<FragmentPreviewWallpaperBinding, PreviewWallpaperViewModel>(
@@ -23,9 +24,21 @@ class PreviewWallpaperFragment : BaseFragment<FragmentPreviewWallpaperBinding, P
         initView()
         applyEvent()
         onBackEvent()
+        val path = arguments?.getString("wallpaperPath") ?: ""
+        if (path.isNotEmpty()) {
+            viewModel.checkFavorite(path)
+        }
     }
 
     override fun subscribeObserver(view: View) {
+        viewModel.uiState
+            .map { it.isFavorite }
+            .distinctUntilChanged()
+            .collectFlowOnView(viewLifecycleOwner) { isFav ->
+                val color = if (isFav) android.graphics.Color.RED else android.graphics.Color.WHITE
+                androidx.core.widget.ImageViewCompat.setImageTintList(binding.btnFavorite, android.content.res.ColorStateList.valueOf(color))
+            }
+
         viewModel.uiEvent.collectFlowOnView(viewLifecycleOwner) { event ->
             when (event) {
                 is PreviewWallpaperUiEvent.WallpaperSavedSuccessfully -> {
