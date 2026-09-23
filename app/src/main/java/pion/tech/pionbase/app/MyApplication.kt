@@ -27,11 +27,26 @@ class MyApplication : Application() {
         }
         setupRemoteConfig()
         
+        if (AppCompatDelegate.getApplicationLocales().isEmpty) {
+            AppCompatDelegate.setApplicationLocales(androidx.core.os.LocaleListCompat.forLanguageTags("en"))
+        }
+
         val dataStoreRepo: pion.tech.pionbase.data.repository.dataStore.DataStoreRepository = get()
-        kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Main).launch {
+        CoroutineScope(Dispatchers.Main).launch {
             dataStoreRepo.getDarkMode().collect { result ->
                 if (result is pion.tech.pionbase.util.Result.Success) {
                     AppCompatDelegate.setDefaultNightMode(result.data)
+                }
+            }
+        }
+        CoroutineScope(Dispatchers.Main).launch {
+            dataStoreRepo.getLanguageCode().collect { result ->
+                if (result is pion.tech.pionbase.util.Result.Success) {
+                    val code = result.data
+                    if (!code.isNullOrEmpty()) {
+                        val locales = androidx.core.os.LocaleListCompat.forLanguageTags(code)
+                        AppCompatDelegate.setApplicationLocales(locales)
+                    }
                 }
             }
         }

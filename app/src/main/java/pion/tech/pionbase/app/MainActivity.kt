@@ -37,8 +37,23 @@ class MainActivity : AppCompatActivity() {
         private const val RESTART_DELAY_MS = 500L
     }
 
+    override fun attachBaseContext(newBase: android.content.Context) {
+        val locales = androidx.appcompat.app.AppCompatDelegate.getApplicationLocales()
+        val languageTag = if (!locales.isEmpty) locales[0]?.language else "en"
+        val locale = java.util.Locale.forLanguageTag(if (!languageTag.isNullOrEmpty()) languageTag else "en")
+        java.util.Locale.setDefault(locale)
+
+        val config = android.content.res.Configuration(newBase.resources.configuration)
+        config.setLocale(locale)
+        val context = newBase.createConfigurationContext(config)
+        super.attachBaseContext(context)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (androidx.appcompat.app.AppCompatDelegate.getApplicationLocales().isEmpty) {
+            androidx.appcompat.app.AppCompatDelegate.setApplicationLocales(androidx.core.os.LocaleListCompat.forLanguageTags("en"))
+        }
         enableEdgeToEdge()
         supportFragmentManager.registerFragmentLifecycleCallbacks(
             FragmentLifecycleCallbacksImpl(),

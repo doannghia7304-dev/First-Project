@@ -47,5 +47,12 @@ class SettingFragment :
             .collectFlowOnView(viewLifecycleOwner) { mode ->
                 updateDarkModeUI(mode)
             }
+
+        viewModel.uiState
+            .map { it.currentLanguageName }
+            .distinctUntilChanged()
+            .collectFlowOnView(viewLifecycleOwner) { name ->
+                binding.tvCurrentLanguage.text = name
+            }
     }
 }

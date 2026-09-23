@@ -113,7 +113,7 @@ class HomeFragment :
                         templateAdapter.submitList(templates)
                     },
                     onError = { throwable ->
-                        displayToast("Error wallpapers: ${throwable.message}")
+                        displayToast(getString(R.string.something_error))
                     }
                 )
             }
@@ -138,7 +138,7 @@ class HomeFragment :
             }
             navigator.navigateTo(R.id.action_homeFragment_to_previewWallpaperFragment, bundle)
         } else {
-            displayToast("Invalid wallpaper")
+            displayToast(getString(R.string.something_error))
         }
     }
 

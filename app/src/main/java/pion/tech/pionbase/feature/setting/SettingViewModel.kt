@@ -18,7 +18,8 @@ data class SettingUiState(
     val isCalendarOverlayEnabled: Boolean = false,
     val calendarPosition: Int = 2, // 0: Top, 1: Center, 2: Bottom
     val calendarFontColor: Int = -1, // Default white
-    val darkMode: Int = androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+    val darkMode: Int = androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM,
+    val currentLanguageName: String = ""
 )
 
 class SettingViewModel(
@@ -55,6 +56,24 @@ class SettingViewModel(
             apiCall = { getDarkModeUseCase() },
             onSuccess = { mode -> setState { copy(darkMode = mode) } }
         )
+        loadCurrentLanguage()
+    }
+
+    private fun loadCurrentLanguage() {
+        val locales = androidx.appcompat.app.AppCompatDelegate.getApplicationLocales()
+        val currentTag = if (!locales.isEmpty) locales[0]?.language else "en"
+        val langName = when (currentTag) {
+            "vi" -> "Việt Nam"
+            "es" -> "Español"
+            "fr" -> "Français"
+            "de" -> "Deutsch"
+            "ja" -> "日本人"
+            "zh" -> "中國人"
+            "ko" -> "한국인"
+            "ru" -> "Pусский"
+            else -> "English"
+        }
+        setState { copy(currentLanguageName = langName) }
     }
 
     fun setDarkMode(mode: Int) {

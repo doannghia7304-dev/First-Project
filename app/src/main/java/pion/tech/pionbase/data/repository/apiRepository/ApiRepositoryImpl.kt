@@ -28,29 +28,13 @@ class ApiRepositoryImpl(
 
     override fun searchWallpapers(query: String): Flow<Result<List<TemplateDtoModel>>> =
         executeDataCall {
+            val githubResponse = apiInterface.getAllTemplate("").dataResponse
+            val githubTemplates = githubResponse.map { it.customField }
+            
             if (query.isBlank()) {
-                val response = apiInterface.getAllTemplate("").dataResponse
-                response.map { it.customField }
+                githubTemplates
             } else {
-                val topicResults = TopicWallpaperProvider.getWallpapersForTopic(query)
-                if (!topicResults.isNullOrEmpty()) {
-                    topicResults
-                } else {
-                    val response = apiInterface.getAllTemplate("").dataResponse
-                    val lowercaseQuery = query.lowercase().trim()
-                    val matched = response.map { it.customField }.filter { dto ->
-                        dto.name?.lowercase()?.contains(lowercaseQuery) == true ||
-                        dto.templateType?.lowercase()?.contains(lowercaseQuery) == true ||
-                        dto.imageModel?.lowercase()?.contains(lowercaseQuery) == true ||
-                        dto.thumbnail?.lowercase()?.contains(lowercaseQuery) == true ||
-                        dto.categoryId?.lowercase()?.contains(lowercaseQuery) == true
-                    }
-                    if (matched.isNotEmpty()) {
-                        matched
-                    } else {
-                        response.map { it.customField }
-                    }
-                }
+                TopicWallpaperProvider.filterWallpapersByQuery(githubTemplates, query)
             }
         }
 }

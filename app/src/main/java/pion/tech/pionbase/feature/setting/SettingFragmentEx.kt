@@ -11,15 +11,12 @@ import pion.tech.pionbase.util.setPreventDoubleClickScaleView
 
 fun SettingFragment.initView() {
     val remoteResult = if (pion.tech.pionbase.util.AppRemoteConfig.isRemoteConfigSuccess) "R" else "D"
-    binding.txvVersion.text = buildString {
-        append("Application version: v")
-        append(" ")
-        append(remoteResult)
-        append(" ")
-        append(BuildConfig.VERSION_CODE)
-        append(" ")
-        append(BuildConfig.VERSION_NAME)
-    }
+    binding.txvVersion.text = getString(
+        R.string.app_version,
+        remoteResult,
+        BuildConfig.VERSION_CODE.toString(),
+        BuildConfig.VERSION_NAME
+    )
     setupColorCircles()
 }
 
@@ -36,6 +33,10 @@ fun SettingFragment.applyEvent() {
     binding.btnPosTop.setPreventDoubleClickScaleView { viewModel.setCalendarPosition(requireContext(), 0) }
     binding.btnPosCenter.setPreventDoubleClickScaleView { viewModel.setCalendarPosition(requireContext(), 1) }
     binding.btnPosBottom.setPreventDoubleClickScaleView { viewModel.setCalendarPosition(requireContext(), 2) }
+
+    binding.btnLanguage.setPreventDoubleClickScaleView {
+        navigator.navigateTo(R.id.action_settingFragment_to_languageFragment)
+    }
 
     binding.btnPickMedia.setPreventDoubleClickScaleView {
         // Existing media pick logic
