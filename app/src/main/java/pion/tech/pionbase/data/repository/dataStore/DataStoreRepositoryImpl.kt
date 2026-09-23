@@ -169,4 +169,45 @@ class DataStoreRepositoryImpl(
                 it[calendarFontColorKey] = color
             }
         }
+
+    private val searchHistoryKey = androidx.datastore.preferences.core.stringPreferencesKey("search_history_key")
+
+    override fun getSearchHistory(): Flow<Result<List<String>>> =
+        dataStore.data.executeDataWithFlowCall { prefs ->
+            val raw = prefs[searchHistoryKey] ?: ""
+            if (raw.isBlank()) emptyList() else raw.split("|||")
+        }
+
+    override fun saveSearchQuery(query: String): Flow<Result<Unit>> =
+        executeDataCall {
+            if (query.isNotBlank()) {
+                dataStore.edit { prefs ->
+                    val raw = prefs[searchHistoryKey] ?: ""
+                    val currentList = if (raw.isBlank()) emptyList() else raw.split("|||")
+                    val updated = (listOf(query.trim()) + currentList.filter { it != query.trim() }).take(10)
+                    prefs[searchHistoryKey] = updated.joinToString("|||")
+                }
+            }
+        }
+
+    override fun clearSearchHistory(): Flow<Result<Unit>> =
+        executeDataCall {
+            dataStore.edit {
+                it.remove(searchHistoryKey)
+            }
+        }
+
+    private val darkModeKey = androidx.datastore.preferences.core.intPreferencesKey("dark_mode_key")
+
+    override fun getDarkMode(): Flow<Result<Int>> =
+        dataStore.data.executeDataWithFlowCall { prefs ->
+            prefs[darkModeKey] ?: androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
+        }
+
+    override fun setDarkMode(mode: Int): Flow<Result<Unit>> =
+        executeDataCall {
+            dataStore.edit {
+                it[darkModeKey] = mode
+            }
+        }
 }

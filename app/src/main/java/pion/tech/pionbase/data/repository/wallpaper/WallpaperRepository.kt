@@ -9,4 +9,12 @@ interface WallpaperRepository {
     fun saveVideoToInternalStorage(uri: Uri): Flow<Result<String>>
     fun saveImageToInternalStorage(uri: Uri): Flow<Result<String>>
     fun saveUrlToInternalStorage(urlString: String, isVideo: Boolean): Flow<Result<String>>
+    fun downloadWallpaperToGallery(
+        pathOrUrl: String,
+        isVideo: Boolean,
+        isGif: Boolean,
+        isCalendarEnabled: Boolean = false,
+        calendarPosition: Int = 2,
+        calendarColor: Int = -1
+    ): Flow<Result<String>>
 }

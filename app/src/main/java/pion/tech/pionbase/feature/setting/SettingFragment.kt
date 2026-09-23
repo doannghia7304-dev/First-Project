@@ -40,5 +40,12 @@ class SettingFragment :
             .collectFlowOnView(viewLifecycleOwner) { color ->
                 updateColorUI(color)
             }
+
+        viewModel.uiState
+            .map { it.darkMode }
+            .distinctUntilChanged()
+            .collectFlowOnView(viewLifecycleOwner) { mode ->
+                updateDarkModeUI(mode)
+            }
     }
 }

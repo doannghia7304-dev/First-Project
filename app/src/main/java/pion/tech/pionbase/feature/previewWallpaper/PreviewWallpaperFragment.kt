@@ -13,6 +13,7 @@ import pion.tech.pionbase.service.GifWallpaperService
 import pion.tech.pionbase.service.VideoWallpaperService
 import pion.tech.pionbase.util.collectFlowOnView
 import pion.tech.pionbase.util.displayToast
+import pion.tech.pionbase.util.handleUiState
 import pion.tech.pionbase.R
 
 class PreviewWallpaperFragment : BaseFragment<FragmentPreviewWallpaperBinding, PreviewWallpaperViewModel>(
@@ -39,11 +40,29 @@ class PreviewWallpaperFragment : BaseFragment<FragmentPreviewWallpaperBinding, P
                 androidx.core.widget.ImageViewCompat.setImageTintList(binding.btnFavorite, android.content.res.ColorStateList.valueOf(color))
             }
 
+        viewModel.uiState
+            .map { it.downloadState }
+            .distinctUntilChanged()
+            .collectFlowOnView(viewLifecycleOwner) { downloadState ->
+                downloadState.handleUiState(
+                    onLoading = { showHideLoading(true) },
+                    onSuccess = { showHideLoading(false) },
+                    onError = { throwable ->
+                        showHideLoading(false)
+                        displayToast(throwable.message ?: getString(R.string.download_failed))
+                    }
+                )
+            }
+
         viewModel.uiEvent.collectFlowOnView(viewLifecycleOwner) { event ->
             when (event) {
                 is PreviewWallpaperUiEvent.WallpaperSavedSuccessfully -> {
                     displayToast(getString(R.string.success_set_wallpaper))
                     openWallpaperPicker(event.isVideo)
+                }
+                is PreviewWallpaperUiEvent.WallpaperDownloadedSuccessfully -> {
+                    showHideLoading(false)
+                    displayToast(getString(R.string.download_success))
                 }
             }
         }

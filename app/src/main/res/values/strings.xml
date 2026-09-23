@@ -77,4 +77,18 @@
     <string name="calendar_theme_overlays" >Calendar Theme Overlays</string>
     <string name="calendar_theme_desc" >Keep your month in view, beautifully.</string>
     <string name="no_favorites_yet" translatable="false">No favorites yet</string>
+    <string name="download_wallpaper">Download</string>
+    <string name="download_success">Downloaded to Gallery!</string>
+    <string name="download_failed">Failed to download wallpaper</string>
+    <string name="search_history">Recent Searches</string>
+    <string name="clear_history">Clear</string>
+    <string name="no_results_found">No wallpapers found</string>
+    <string name="popular_keywords">Popular Keywords</string>
+    <string name="theme_cyberpunk">⚡ Cyberpunk</string>
+    <string name="theme_deep_sea">🌊 Deep Sea</string>
+    <string name="theme_space">🌌 Space</string>
+    <string name="theme_anime">🌸 Anime</string>
+    <string name="theme_cars">🚗 Cars</string>
+    <string name="theme_oled">🖤 OLED Dark</string>
+    <string name="theme_nature">🌿 Nature</string>
 </resources>

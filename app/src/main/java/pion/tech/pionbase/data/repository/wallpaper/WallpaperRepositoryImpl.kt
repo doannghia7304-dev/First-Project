@@ -85,4 +85,23 @@ class WallpaperRepositoryImpl(
         }
         localFile.absolutePath
     }
+
+    override fun downloadWallpaperToGallery(
+        pathOrUrl: String,
+        isVideo: Boolean,
+        isGif: Boolean,
+        isCalendarEnabled: Boolean,
+        calendarPosition: Int,
+        calendarColor: Int
+    ): Flow<Result<String>> = executeDataCall {
+        pion.tech.pionbase.util.MediaStoreUtils.saveMediaToGallery(
+            context,
+            pathOrUrl,
+            isVideo,
+            isGif,
+            isCalendarEnabled,
+            calendarPosition,
+            calendarColor
+        )
+    }
 }

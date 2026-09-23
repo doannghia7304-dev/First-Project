@@ -55,4 +55,7 @@ fun HomeFragment.settingEvent() {
     binding.btnFavorites.setPreventDoubleClickScaleView {
         navigator.navigateTo(R.id.action_homeFragment_to_favoritesFragment)
     }
+    binding.ivSearch.setPreventDoubleClickScaleView {
+        navigator.navigateTo(R.id.action_homeFragment_to_searchFragment)
+    }
 }

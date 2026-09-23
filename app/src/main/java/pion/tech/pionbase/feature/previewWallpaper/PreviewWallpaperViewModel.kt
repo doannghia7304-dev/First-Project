@@ -7,6 +7,7 @@ import pion.tech.pionbase.data.repository.dataStore.DataStoreRepository
 import pion.tech.pionbase.domain.usecase.favorite.AddFavoriteUseCase
 import pion.tech.pionbase.domain.usecase.favorite.CheckIsFavoriteUseCase
 import pion.tech.pionbase.domain.usecase.favorite.RemoveFavoriteUseCase
+import pion.tech.pionbase.domain.usecase.wallpaper.DownloadWallpaperToGalleryUseCase
 import pion.tech.pionbase.domain.usecase.wallpaper.GetCalendarFontColorUseCase
 import pion.tech.pionbase.domain.usecase.wallpaper.GetCalendarOverlayEnabledUseCase
 import pion.tech.pionbase.domain.usecase.wallpaper.GetCalendarPositionUseCase
@@ -24,6 +25,7 @@ class PreviewWallpaperViewModel(
     private val setStaticWallpaperPathUseCase: SetStaticWallpaperPathUseCase,
     private val setActiveWallpaperTypeUseCase: SetActiveWallpaperTypeUseCase,
     private val saveUrlWallpaperUseCase: SaveUrlWallpaperUseCase,
+    private val downloadWallpaperToGalleryUseCase: DownloadWallpaperToGalleryUseCase,
     private val addFavoriteUseCase: AddFavoriteUseCase,
     private val removeFavoriteUseCase: RemoveFavoriteUseCase,
     private val checkIsFavoriteUseCase: CheckIsFavoriteUseCase,
@@ -133,10 +135,39 @@ class PreviewWallpaperViewModel(
             }
         )
     }
+
+    fun downloadToGallery(pathOrUrl: String, isVideo: Boolean, isGif: Boolean = false) {
+        setState { copy(downloadState = UiState.Loading) }
+        val actualGif = isGif || pathOrUrl.endsWith(".gif", ignoreCase = true)
+        val currentState = uiState.value
+        handleApiCall(
+            apiCall = {
+                downloadWallpaperToGalleryUseCase(
+                    pathOrUrl = pathOrUrl,
+                    isVideo = isVideo,
+                    isGif = actualGif,
+                    isCalendarEnabled = currentState.isCalendarEnabled,
+                    calendarPosition = currentState.calendarPosition,
+                    calendarColor = currentState.calendarColor
+                )
+            },
+            onSuccess = { savedPath ->
+                setState { copy(downloadState = UiState.Success(savedPath)) }
+                launchMain {
+                    setEvent(PreviewWallpaperUiEvent.WallpaperDownloadedSuccessfully(savedPath))
+                }
+            },
+            onError = { throwable ->
+                timber.log.Timber.e(throwable, "Download to gallery failed")
+                setState { copy(downloadState = UiState.Error(throwable)) }
+            }
+        )
+    }
 }
 
 data class PreviewWallpaperUiState(
     val setWallpaperState: UiState<Unit> = UiState.None,
+    val downloadState: UiState<String> = UiState.None,
     val isFavorite: Boolean = false,
     val isCalendarEnabled: Boolean = false,
     val calendarPosition: Int = 2,
@@ -145,4 +176,5 @@ data class PreviewWallpaperUiState(
 
 sealed interface PreviewWallpaperUiEvent {
     data class WallpaperSavedSuccessfully(val isVideo: Boolean) : PreviewWallpaperUiEvent
+    data class WallpaperDownloadedSuccessfully(val savedPath: String) : PreviewWallpaperUiEvent
 }

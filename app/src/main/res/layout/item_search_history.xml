@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingHorizontal="@dimen/_16dp"
+    android:paddingVertical="@dimen/_12dp"
+    android:background="?android:attr/selectableItemBackground">
+
+    <ImageView
+        android:layout_width="@dimen/_20dp"
+        android:layout_height="@dimen/_20dp"
+        android:src="@drawable/ic_search"
+        app:tint="@color/text_secondary"
+        android:contentDescription="@null" />
+
+    <TextView
+        android:id="@+id/tvHistoryQuery"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_12dp"
+        android:layout_weight="1"
+        android:fontFamily="@font/font_400"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_14sp" />
+
+</LinearLayout>

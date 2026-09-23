@@ -45,6 +45,19 @@
         app:layout_constraintTop_toTopOf="@id/btnBack" />
 
     <ImageView
+        android:id="@+id/btnDownload"
+        android:layout_width="@dimen/_40dp"
+        android:layout_height="@dimen/_40dp"
+        android:layout_marginEnd="@dimen/_8dp"
+        android:padding="@dimen/_8dp"
+        android:src="@android:drawable/stat_sys_download"
+        app:layout_constraintEnd_toStartOf="@id/btnFavorite"
+        app:layout_constraintTop_toTopOf="@id/btnBack"
+        app:layout_constraintBottom_toBottomOf="@id/btnBack"
+        app:tint="@color/white"
+        android:contentDescription="@null" />
+
+    <ImageView
         android:id="@+id/btnFavorite"
         android:layout_width="@dimen/_40dp"
         android:layout_height="@dimen/_40dp"

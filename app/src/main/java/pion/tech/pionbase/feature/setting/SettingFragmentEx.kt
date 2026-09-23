@@ -28,6 +28,11 @@ fun SettingFragment.applyEvent() {
         viewModel.toggleCalendarOverlay(requireContext(), isChecked)
     }
 
+    binding.switchDarkMode.setOnCheckedChangeListener { _, isChecked ->
+        val mode = if (isChecked) androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES else androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
+        viewModel.setDarkMode(mode)
+    }
+
     binding.btnPosTop.setPreventDoubleClickScaleView { viewModel.setCalendarPosition(requireContext(), 0) }
     binding.btnPosCenter.setPreventDoubleClickScaleView { viewModel.setCalendarPosition(requireContext(), 1) }
     binding.btnPosBottom.setPreventDoubleClickScaleView { viewModel.setCalendarPosition(requireContext(), 2) }
@@ -44,6 +49,12 @@ fun SettingFragment.onBackEvent() {
 fun SettingFragment.updateCalendarOverlayUI(isEnabled: Boolean) {
     binding.switchCalendar.isChecked = isEnabled
     binding.tvCalendarStatus.text = if (isEnabled) getString(R.string.on) else getString(R.string.off)
+}
+
+fun SettingFragment.updateDarkModeUI(mode: Int) {
+    val isDark = mode == androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
+    binding.switchDarkMode.isChecked = isDark
+    binding.tvDarkModeStatus.text = if (isDark) getString(R.string.on) else getString(R.string.off)
 }
 
 fun SettingFragment.updatePositionUI(position: Int) {

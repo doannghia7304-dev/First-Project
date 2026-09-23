@@ -52,6 +52,16 @@ interface DataStoreRepository {
 
     fun setCalendarFontColor(color: Int): Flow<Result<Unit>>
 
+    fun getSearchHistory(): Flow<Result<List<String>>>
+
+    fun saveSearchQuery(query: String): Flow<Result<Unit>>
+
+    fun clearSearchHistory(): Flow<Result<Unit>>
+
+    fun getDarkMode(): Flow<Result<Int>>
+
+    fun setDarkMode(mode: Int): Flow<Result<Unit>>
+
     companion object {
         const val WALLPAPER_TYPE_NONE = 0
         const val WALLPAPER_TYPE_STATIC = 1

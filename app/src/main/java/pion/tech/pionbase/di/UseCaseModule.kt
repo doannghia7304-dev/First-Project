@@ -12,6 +12,12 @@ import pion.tech.pionbase.domain.usecase.language.GetLanguageSelectedUseCase
 import pion.tech.pionbase.domain.usecase.language.SetLanguageSelectedUseCase
 import pion.tech.pionbase.domain.usecase.onboard.GetOnboardingCompletedUseCase
 import pion.tech.pionbase.domain.usecase.onboard.SetOnboardingCompletedUseCase
+import pion.tech.pionbase.domain.usecase.search.ClearSearchHistoryUseCase
+import pion.tech.pionbase.domain.usecase.search.GetSearchHistoryUseCase
+import pion.tech.pionbase.domain.usecase.search.SaveSearchHistoryUseCase
+import pion.tech.pionbase.domain.usecase.search.SearchWallpapersUseCase
+import pion.tech.pionbase.domain.usecase.setting.GetDarkModeUseCase
+import pion.tech.pionbase.domain.usecase.setting.SetDarkModeUseCase
 import pion.tech.pionbase.domain.usecase.wallpaper.*
 
 val homeUseCaseModule = module {
@@ -37,6 +43,7 @@ val wallpaperUseCaseModule = module {
     factoryOf(::SetCalendarPositionUseCase)
     factoryOf(::GetCalendarFontColorUseCase)
     factoryOf(::SetCalendarFontColorUseCase)
+    factoryOf(::DownloadWallpaperToGalleryUseCase)
 }
 
 val languageUseCaseModule = module {
@@ -57,12 +64,26 @@ val favoriteUseCaseModule = module {
     factoryOf(::CheckIsFavoriteUseCase)
 }
 
+val searchUseCaseModule = module {
+    factoryOf(::SearchWallpapersUseCase)
+    factoryOf(::GetSearchHistoryUseCase)
+    factoryOf(::SaveSearchHistoryUseCase)
+    factoryOf(::ClearSearchHistoryUseCase)
+}
+
+val settingUseCaseModule = module {
+    factoryOf(::GetDarkModeUseCase)
+    factoryOf(::SetDarkModeUseCase)
+}
+
 val useCaseModule = module {
     includes(
         homeUseCaseModule,
         wallpaperUseCaseModule,
         languageUseCaseModule,
         onboardUseCaseModule,
-        favoriteUseCaseModule
+        favoriteUseCaseModule,
+        searchUseCaseModule,
+        settingUseCaseModule
     )
 }

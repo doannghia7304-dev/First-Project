@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_home">
+
+    <!-- Top Search Header -->
+    <LinearLayout
+        android:id="@+id/searchHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/_16dp"
+        android:paddingTop="@dimen/_16dp"
+        android:paddingBottom="@dimen/_12dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="@dimen/_36dp"
+            android:layout_height="@dimen/_36dp"
+            android:padding="@dimen/_6dp"
+            android:src="@drawable/ic_back"
+            app:tint="@color/white"
+            android:contentDescription="@null" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_44dp"
+            android:layout_marginStart="@dimen/_12dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_search_input"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="@dimen/_12dp">
+
+            <ImageView
+                android:layout_width="@dimen/_20dp"
+                android:layout_height="@dimen/_20dp"
+                android:src="@drawable/ic_search"
+                app:tint="@color/text_secondary"
+                android:contentDescription="@null" />
+
+            <EditText
+                android:id="@+id/etSearch"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/_8dp"
+                android:layout_weight="1"
+                android:background="@null"
+                android:fontFamily="@font/font_400"
+                android:hint="@string/search_hint"
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="@color/white"
+                android:textColorHint="@color/text_secondary"
+                android:textSize="@dimen/_14sp" />
+
+            <ImageView
+                android:id="@+id/btnClearSearch"
+                android:layout_width="@dimen/_24dp"
+                android:layout_height="@dimen/_24dp"
+                android:padding="@dimen/_4dp"
+                android:src="@android:drawable/ic_menu_close_clear_cancel"
+                android:visibility="gone"
+                app:tint="@color/text_secondary"
+                android:contentDescription="@null" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- History & Popular Themes Layer -->
+    <LinearLayout
+        android:id="@+id/layoutHistory"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/searchHeader">
+
+        <!-- Popular Themes Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_8dp"
+            android:paddingHorizontal="@dimen/_16dp"
+            android:fontFamily="@font/font_700"
+            android:text="@string/popular_keywords"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/_12sp" />
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none"
+            android:clipToPadding="false"
+            android:paddingHorizontal="@dimen/_16dp"
+            android:paddingVertical="@dimen/_8dp">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupThemes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:singleLine="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipCyberpunk"
+                    style="@style/Widget.MaterialComponents.Chip.Action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/theme_cyberpunk"
+                    android:textColor="@color/white"
+                    app:chipBackgroundColor="@color/bg_bottom_nav" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipDeepSea"
+                    style="@style/Widget.MaterialComponents.Chip.Action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/theme_deep_sea"
+                    android:textColor="@color/white"
+                    app:chipBackgroundColor="@color/bg_bottom_nav" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipSpace"
+                    style="@style/Widget.MaterialComponents.Chip.Action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/theme_space"
+                    android:textColor="@color/white"
+                    app:chipBackgroundColor="@color/bg_bottom_nav" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipAnime"
+                    style="@style/Widget.MaterialComponents.Chip.Action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/theme_anime"
+                    android:textColor="@color/white"
+                    app:chipBackgroundColor="@color/bg_bottom_nav" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipCars"
+                    style="@style/Widget.MaterialComponents.Chip.Action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/theme_cars"
+                    android:textColor="@color/white"
+                    app:chipBackgroundColor="@color/bg_bottom_nav" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipOled"
+                    style="@style/Widget.MaterialComponents.Chip.Action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/theme_oled"
+                    android:textColor="@color/white"
+                    app:chipBackgroundColor="@color/bg_bottom_nav" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipNature"
+                    style="@style/Widget.MaterialComponents.Chip.Action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/theme_nature"
+                    android:textColor="@color/white"
+                    app:chipBackgroundColor="@color/bg_bottom_nav" />
+
+            </com.google.android.material.chip.ChipGroup>
+        </HorizontalScrollView>
+
+        <!-- Search History Header -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/_16dp"
+            android:paddingTop="@dimen/_12dp"
+            android:paddingBottom="@dimen/_8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/font_700"
+                android:text="@string/search_history"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/_12sp" />
+
+            <TextView
+                android:id="@+id/btnClearHistory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:fontFamily="@font/font_700"
+                android:text="@string/clear_history"
+                android:textColor="@color/purple_primary"
+                android:textSize="@dimen/_12sp" />
+        </RelativeLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvHistory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_search_history" />
+
+    </LinearLayout>
+
+    <!-- Search Results RecyclerView Layer -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSearchResults"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:paddingHorizontal="@dimen/_12dp"
+        android:paddingTop="@dimen/_8dp"
+        android:visibility="gone"
+        app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/searchHeader"
+        app:spanCount="2"
+        tools:listitem="@layout/item_template" />
+
+    <!-- Empty Results View -->
+    <TextView
+        android:id="@+id/tvNoResults"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/font_400"
+        android:text="@string/no_results_found"
+        android:textColor="@color/text_secondary"
+        android:textSize="@dimen/_16sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/searchHeader" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

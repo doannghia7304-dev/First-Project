@@ -40,6 +40,9 @@
         <action
             android:id="@+id/action_homeFragment_to_favoritesFragment"
             app:destination="@id/favoritesFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
     </fragment>
     <fragment
         android:id="@+id/favoritesFragment"
@@ -101,5 +104,15 @@
             android:name="isStatic"
             app:argType="boolean"
             android:defaultValue="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="pion.tech.pionbase.feature.search.SearchFragment"
+        android:label="SearchFragment"
+        tools:layout="@layout/fragment_search">
+        <action
+            android:id="@+id/action_searchFragment_to_previewWallpaperFragment"
+            app:destination="@id/previewWallpaperFragment" />
     </fragment>
 </navigation>

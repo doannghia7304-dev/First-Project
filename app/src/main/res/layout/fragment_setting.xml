@@ -251,6 +251,7 @@
                         android:textSize="@dimen/_14sp" />
 
                     <TextView
+                        android:id="@+id/tvDarkModeStatus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/font_400"
@@ -258,6 +259,13 @@
                         android:textColor="@color/text_secondary"
                         android:textSize="@dimen/_12sp" />
                 </LinearLayout>
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switchDarkMode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:thumb="@drawable/switch_thumb"
+                    app:track="@drawable/switch_track" />
 
             </LinearLayout>
 
