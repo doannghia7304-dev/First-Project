@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingTranslation">
-    <string name="admob_application_id" translatable="false">ca-app-pub-2222869408518511~9607465111</string>
-    <string name="please_wait" translatable="false">Please wait!</string>
-    <string name="app_name" translatable="false">Wallpaper Master</string>
-    <string name="splash_subtitle" translatable="false">Make every screen yours</string>
-    <string name="loading_inspiration" translatable="false">Loading your inspiration…</string>
+    <string name="admob_application_id">ca-app-pub-2222869408518511~9607465111</string>
+    <string name="please_wait">Please wait!</string>
+    <string name="app_name">Wallpaper Master</string>
+    <string name="splash_subtitle">Make every screen yours</string>
+    <string name="loading_inspiration">Loading your inspiration…</string>
     <string name="loading">Loading</string>
     <string name="home">Home</string>
     <string name="language">Language</string>
@@ -76,5 +76,20 @@
     <string name="live_wallpapers_desc" >Bring your screen to life with subtle motion.</string>
     <string name="calendar_theme_overlays" >Calendar Theme Overlays</string>
     <string name="calendar_theme_desc" >Keep your month in view, beautifully.</string>
-    <string name="no_favorites_yet" translatable="false">No favorites yet</string>
+    <string name="no_favorites_yet">No favorites yet</string>
+    <string name="download_wallpaper">Download</string>
+    <string name="download_success">Downloaded to Gallery!</string>
+    <string name="download_failed">Failed to download wallpaper</string>
+    <string name="search_history">Recent Searches</string>
+    <string name="clear_history">Clear</string>
+    <string name="no_results_found">No wallpapers found</string>
+    <string name="popular_keywords">Popular Keywords</string>
+    <string name="theme_cyberpunk">⚡ Cyberpunk</string>
+    <string name="theme_deep_sea">🌊 Deep Sea</string>
+    <string name="theme_space">🌌 Space</string>
+    <string name="theme_anime">🌸 Anime</string>
+    <string name="theme_cars">🚗 Cars</string>
+    <string name="theme_oled">🖤 OLED Dark</string>
+    <string name="theme_nature">🌿 Nature</string>
+    <string name="app_version">Application version: v%1$s %2$s %3$s</string>
 </resources>

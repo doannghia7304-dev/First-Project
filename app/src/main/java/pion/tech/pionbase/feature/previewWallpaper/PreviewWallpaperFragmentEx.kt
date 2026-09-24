@@ -35,6 +35,13 @@ fun PreviewWallpaperFragment.applyEvent() {
         }
     }
 
+    binding.btnDownload.setPreventDoubleClickScaleView {
+        if (path.isNotEmpty()) {
+            val isGif = !isVideo && !isStatic
+            viewModel.downloadToGallery(path, isVideo, isGif)
+        }
+    }
+
     binding.btnSetWallpaper.setPreventDoubleClickScaleView {
         if (path.isNotEmpty()) {
             if (isStatic) {

@@ -5,6 +5,9 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.khaipv.recovery.core.Recovery
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -23,7 +26,30 @@ class MyApplication : Application() {
             modules(appModules)
         }
         setupRemoteConfig()
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        
+        if (AppCompatDelegate.getApplicationLocales().isEmpty) {
+            AppCompatDelegate.setApplicationLocales(androidx.core.os.LocaleListCompat.forLanguageTags("en"))
+        }
+
+        val dataStoreRepo: pion.tech.pionbase.data.repository.dataStore.DataStoreRepository = get()
+        CoroutineScope(Dispatchers.Main).launch {
+            dataStoreRepo.getDarkMode().collect { result ->
+                if (result is pion.tech.pionbase.util.Result.Success) {
+                    AppCompatDelegate.setDefaultNightMode(result.data)
+                }
+            }
+        }
+        CoroutineScope(Dispatchers.Main).launch {
+            dataStoreRepo.getLanguageCode().collect { result ->
+                if (result is pion.tech.pionbase.util.Result.Success) {
+                    val code = result.data
+                    if (!code.isNullOrEmpty()) {
+                        val locales = androidx.core.os.LocaleListCompat.forLanguageTags(code)
+                        AppCompatDelegate.setApplicationLocales(locales)
+                    }
+                }
+            }
+        }
 
         if (BuildConfig.DEBUG) {
             Recovery

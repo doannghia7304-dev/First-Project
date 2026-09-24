@@ -9,4 +9,6 @@ interface ApiRepository {
     fun getAppCategory(): Flow<Result<List<AppCategoryDtoModel>>>
 
     fun getTemplateData(categoryId: String): Flow<Result<List<TemplateDtoModel>>>
+
+    fun searchWallpapers(query: String): Flow<Result<List<TemplateDtoModel>>>
 }

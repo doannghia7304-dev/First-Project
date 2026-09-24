@@ -8,6 +8,8 @@ import java.io.File
 import pion.tech.pionbase.base.BaseViewModel
 import pion.tech.pionbase.base.launchIO
 import pion.tech.pionbase.data.repository.dataStore.DataStoreRepository
+import pion.tech.pionbase.domain.usecase.setting.GetDarkModeUseCase
+import pion.tech.pionbase.domain.usecase.setting.SetDarkModeUseCase
 import pion.tech.pionbase.domain.usecase.wallpaper.*
 import pion.tech.pionbase.util.CalendarOverlayUtils
 import pion.tech.pionbase.util.handleApiCall
@@ -15,7 +17,9 @@ import pion.tech.pionbase.util.handleApiCall
 data class SettingUiState(
     val isCalendarOverlayEnabled: Boolean = false,
     val calendarPosition: Int = 2, // 0: Top, 1: Center, 2: Bottom
-    val calendarFontColor: Int = -1 // Default white
+    val calendarFontColor: Int = -1, // Default white
+    val darkMode: Int = androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM,
+    val currentLanguageName: String = ""
 )
 
 class SettingViewModel(
@@ -27,6 +31,8 @@ class SettingViewModel(
     private val setCalendarFontColorUseCase: SetCalendarFontColorUseCase,
     private val getStaticWallpaperPathUseCase: GetStaticWallpaperPathUseCase,
     private val getActiveWallpaperTypeUseCase: GetActiveWallpaperTypeUseCase,
+    private val getDarkModeUseCase: GetDarkModeUseCase,
+    private val setDarkModeUseCase: SetDarkModeUseCase,
 ) : BaseViewModel<SettingUiState, Nothing>(SettingUiState()) {
 
     init {
@@ -45,6 +51,38 @@ class SettingViewModel(
         handleApiCall(
             apiCall = { getCalendarFontColorUseCase() },
             onSuccess = { color -> setState { copy(calendarFontColor = color) } }
+        )
+        handleApiCall(
+            apiCall = { getDarkModeUseCase() },
+            onSuccess = { mode -> setState { copy(darkMode = mode) } }
+        )
+        loadCurrentLanguage()
+    }
+
+    private fun loadCurrentLanguage() {
+        val locales = androidx.appcompat.app.AppCompatDelegate.getApplicationLocales()
+        val currentTag = if (!locales.isEmpty) locales[0]?.language else "en"
+        val langName = when (currentTag) {
+            "vi" -> "Việt Nam"
+            "es" -> "Español"
+            "fr" -> "Français"
+            "de" -> "Deutsch"
+            "ja" -> "日本人"
+            "zh" -> "中國人"
+            "ko" -> "한국인"
+            "ru" -> "Pусский"
+            else -> "English"
+        }
+        setState { copy(currentLanguageName = langName) }
+    }
+
+    fun setDarkMode(mode: Int) {
+        handleApiCall(
+            apiCall = { setDarkModeUseCase(mode) },
+            onSuccess = {
+                setState { copy(darkMode = mode) }
+                androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(mode)
+            }
         )
     }
 

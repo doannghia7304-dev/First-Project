@@ -11,15 +11,12 @@ import pion.tech.pionbase.util.setPreventDoubleClickScaleView
 
 fun SettingFragment.initView() {
     val remoteResult = if (pion.tech.pionbase.util.AppRemoteConfig.isRemoteConfigSuccess) "R" else "D"
-    binding.txvVersion.text = buildString {
-        append("Application version: v")
-        append(" ")
-        append(remoteResult)
-        append(" ")
-        append(BuildConfig.VERSION_CODE)
-        append(" ")
-        append(BuildConfig.VERSION_NAME)
-    }
+    binding.txvVersion.text = getString(
+        R.string.app_version,
+        remoteResult,
+        BuildConfig.VERSION_CODE.toString(),
+        BuildConfig.VERSION_NAME
+    )
     setupColorCircles()
 }
 
@@ -28,9 +25,18 @@ fun SettingFragment.applyEvent() {
         viewModel.toggleCalendarOverlay(requireContext(), isChecked)
     }
 
+    binding.switchDarkMode.setOnCheckedChangeListener { _, isChecked ->
+        val mode = if (isChecked) androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES else androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
+        viewModel.setDarkMode(mode)
+    }
+
     binding.btnPosTop.setPreventDoubleClickScaleView { viewModel.setCalendarPosition(requireContext(), 0) }
     binding.btnPosCenter.setPreventDoubleClickScaleView { viewModel.setCalendarPosition(requireContext(), 1) }
     binding.btnPosBottom.setPreventDoubleClickScaleView { viewModel.setCalendarPosition(requireContext(), 2) }
+
+    binding.btnLanguage.setPreventDoubleClickScaleView {
+        navigator.navigateTo(R.id.action_settingFragment_to_languageFragment)
+    }
 
     binding.btnPickMedia.setPreventDoubleClickScaleView {
         // Existing media pick logic
@@ -44,6 +50,12 @@ fun SettingFragment.onBackEvent() {
 fun SettingFragment.updateCalendarOverlayUI(isEnabled: Boolean) {
     binding.switchCalendar.isChecked = isEnabled
     binding.tvCalendarStatus.text = if (isEnabled) getString(R.string.on) else getString(R.string.off)
+}
+
+fun SettingFragment.updateDarkModeUI(mode: Int) {
+    val isDark = mode == androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
+    binding.switchDarkMode.isChecked = isDark
+    binding.tvDarkModeStatus.text = if (isDark) getString(R.string.on) else getString(R.string.off)
 }
 
 fun SettingFragment.updatePositionUI(position: Int) {

@@ -1,6 +1,6 @@
 <resources>
-    <string name="admob_application_id" translatable="false">ca-app-pub-2222869408518511~9607465111</string>
-    <string name="please_wait" translatable="false">Please wait!</string>
+    <string name="admob_application_id">ca-app-pub-2222869408518511~9607465111</string>
+    <string name="please_wait">Please wait!</string>
     <string name="loading">Carregando</string>
     <string name="home">Lar</string>
     <string name="language">Linguagem</string>
