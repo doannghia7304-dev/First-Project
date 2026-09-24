@@ -33,7 +33,9 @@
     <string name="please_select_language">Please select language</string>
     <string name="do_you_want_to_exit">Do you want to exit?</string>
     <string name="exit">Exit</string>
-    <string name="good_evening" >Good evening</string>
+    <string name="good_morning">Good morning</string>
+    <string name="good_afternoon">Good afternoon</string>
+    <string name="good_evening">Good evening</string>
     <string name="categories" >Categories</string>
     <string name="trending" >Trending</string>
     <string name="live_gif" >Live GIF</string>

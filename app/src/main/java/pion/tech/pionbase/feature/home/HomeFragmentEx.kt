@@ -20,6 +20,18 @@ fun HomeFragment.initView() {
         layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         adapter = templateAdapter
     }
+
+    setupGreeting()
+}
+
+fun HomeFragment.setupGreeting() {
+    val hour = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY)
+    val greetingRes = when (hour) {
+        in 5..11 -> R.string.good_morning
+        in 12..17 -> R.string.good_afternoon
+        else -> R.string.good_evening
+    }
+    binding.tvGreeting.setText(greetingRes)
 }
 
 fun HomeFragment.onBackEvent() {

@@ -32,6 +32,8 @@
     <string name="please_select_language">Vui lòng chọn ngôn ngữ</string>
     <string name="do_you_want_to_exit">Bạn có muốn thoát ứng dụng?</string>
     <string name="exit">Thoát</string>
+    <string name="good_morning">Chào buổi sáng</string>
+    <string name="good_afternoon">Chào buổi chiều</string>
     <string name="good_evening">Chào buổi tối</string>
     <string name="categories">Danh mục</string>
     <string name="trending">Xu hướng</string>

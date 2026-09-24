@@ -24,13 +24,32 @@ class ApiRepositoryImpl(
             val categoryName = selectedCategory?.name?.lowercase()?.trim() ?: ""
             val catId = categoryId.lowercase().trim()
 
+            val isDeepSeaCategory = categoryName.contains("deep") || categoryName.contains("sea") || catId.contains("sea") || catId == "cate_002" || catId == "cate_007"
+
             val filtered = allTemplates.filter { dto ->
                 val dtoCatId = dto.categoryId?.lowercase()?.trim() ?: ""
                 val dtoName = dto.name?.lowercase()?.trim() ?: ""
                 val dtoType = dto.templateType?.lowercase()?.trim() ?: ""
+                val dtoThumb = dto.thumbnail?.lowercase()?.trim() ?: ""
+                val dtoImage = dto.imageModel?.lowercase()?.trim() ?: ""
 
-                dtoCatId == catId ||
-                (categoryName.isNotEmpty() && (dtoCatId == categoryName || dtoName.contains(categoryName) || dtoType.contains(categoryName)))
+                val isGifItem = dtoType == "gif" || dtoName.contains("gif") || dtoThumb.endsWith(".gif") || dtoImage.endsWith(".gif")
+
+                if (isDeepSeaCategory) {
+                    !isGifItem && (
+                        dtoName.contains("sea") || dtoName.contains("deep") || dtoCatId.contains("sea") ||
+                        dtoThumb.contains("bien") || dtoImage.contains("bien") ||
+                        dtoCatId == "cate_002" || dtoCatId == "cate_007" ||
+                        (dtoCatId.startsWith("cate_02") && dtoCatId != "cate_028" && dtoCatId != "cate_029" && dtoCatId != "cate_030")
+                    )
+                } else {
+                    dtoCatId == catId ||
+                    (categoryName.isNotEmpty() && (
+                        dtoCatId == categoryName ||
+                        dtoName.contains(categoryName) ||
+                        dtoType.contains(categoryName)
+                    ))
+                }
             }
 
             if (filtered.isNotEmpty()) {
