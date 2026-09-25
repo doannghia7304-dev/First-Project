@@ -11,11 +11,18 @@ import pion.tech.pionbase.data.repository.dataStore.DataStoreRepository
 import pion.tech.pionbase.domain.usecase.setting.GetDarkModeUseCase
 import pion.tech.pionbase.domain.usecase.setting.SetDarkModeUseCase
 import pion.tech.pionbase.domain.usecase.wallpaper.*
+import pion.tech.pionbase.domain.usecase.weather.GetWeatherOverlayEnabledUseCase
+import pion.tech.pionbase.domain.usecase.weather.SetWeatherOverlayEnabledUseCase
 import pion.tech.pionbase.util.CalendarOverlayUtils
 import pion.tech.pionbase.util.handleApiCall
 
+import pion.tech.pionbase.domain.usecase.weather.GetCurrentWeatherUseCase
+import pion.tech.pionbase.data.model.weather.WeatherDtoModel
+
 data class SettingUiState(
     val isCalendarOverlayEnabled: Boolean = false,
+    val isWeatherOverlayEnabled: Boolean = false,
+    val currentWeather: WeatherDtoModel = WeatherDtoModel(),
     val calendarPosition: Int = 2, // 0: Top, 1: Center, 2: Bottom
     val calendarFontColor: Int = -1, // Default white
     val darkMode: Int = androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM,
@@ -25,6 +32,9 @@ data class SettingUiState(
 class SettingViewModel(
     private val getCalendarOverlayEnabledUseCase: GetCalendarOverlayEnabledUseCase,
     private val setCalendarOverlayEnabledUseCase: SetCalendarOverlayEnabledUseCase,
+    private val getWeatherOverlayEnabledUseCase: GetWeatherOverlayEnabledUseCase,
+    private val setWeatherOverlayEnabledUseCase: SetWeatherOverlayEnabledUseCase,
+    private val getCurrentWeatherUseCase: GetCurrentWeatherUseCase,
     private val getCalendarPositionUseCase: GetCalendarPositionUseCase,
     private val setCalendarPositionUseCase: SetCalendarPositionUseCase,
     private val getCalendarFontColorUseCase: GetCalendarFontColorUseCase,
@@ -43,6 +53,14 @@ class SettingViewModel(
         handleApiCall(
             apiCall = { getCalendarOverlayEnabledUseCase() },
             onSuccess = { isEnabled -> setState { copy(isCalendarOverlayEnabled = isEnabled) } }
+        )
+        handleApiCall(
+            apiCall = { getWeatherOverlayEnabledUseCase() },
+            onSuccess = { isEnabled -> setState { copy(isWeatherOverlayEnabled = isEnabled) } }
+        )
+        handleApiCall(
+            apiCall = { getCurrentWeatherUseCase() },
+            onSuccess = { weatherDto -> setState { copy(currentWeather = weatherDto) } }
         )
         handleApiCall(
             apiCall = { getCalendarPositionUseCase() },
@@ -96,6 +114,16 @@ class SettingViewModel(
         )
     }
 
+    fun toggleWeatherOverlay(context: Context, isEnabled: Boolean) {
+        handleApiCall(
+            apiCall = { setWeatherOverlayEnabledUseCase(isEnabled) },
+            onSuccess = {
+                setState { copy(isWeatherOverlayEnabled = isEnabled) }
+                updateStaticWallpaperIfSet(context)
+            }
+        )
+    }
+
     fun setCalendarPosition(context: Context, position: Int) {
         handleApiCall(
             apiCall = { setCalendarPositionUseCase(position) },
@@ -133,13 +161,19 @@ class SettingViewModel(
                                         try {
                                             val srcBitmap = BitmapFactory.decodeFile(file.absolutePath)
                                             val isCalendarEnabled = uiState.value.isCalendarOverlayEnabled
+                                            val isWeatherEnabled = uiState.value.isWeatherOverlayEnabled
+                                            val weather = uiState.value.currentWeather
                                             val position = uiState.value.calendarPosition
                                             val color = uiState.value.calendarFontColor
 
-                                            val finalBitmap = if (srcBitmap != null && isCalendarEnabled) {
-                                                CalendarOverlayUtils.drawCalendarOnBitmap(srcBitmap, true, position, color)
-                                            } else {
-                                                srcBitmap
+                                            var finalBitmap = srcBitmap
+                                            if (finalBitmap != null) {
+                                                if (isCalendarEnabled) {
+                                                    finalBitmap = CalendarOverlayUtils.drawCalendarOnBitmap(finalBitmap, true, position, color)
+                                                }
+                                                if (isWeatherEnabled) {
+                                                    finalBitmap = pion.tech.pionbase.util.weather.WeatherCanvasOverlay.drawWeatherOnBitmap(finalBitmap, true, weather, context)
+                                                }
                                             }
 
                                             val wallpaperManager = WallpaperManager.getInstance(context)

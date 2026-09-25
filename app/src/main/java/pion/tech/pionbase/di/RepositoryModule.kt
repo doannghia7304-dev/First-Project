@@ -15,6 +15,8 @@ import pion.tech.pionbase.data.repository.languageRepository.LanguageRepository
 import pion.tech.pionbase.data.repository.languageRepository.LanguageRepositoryImpl
 import pion.tech.pionbase.data.repository.wallpaper.WallpaperRepository
 import pion.tech.pionbase.data.repository.wallpaper.WallpaperRepositoryImpl
+import pion.tech.pionbase.data.repository.weather.WeatherRepository
+import pion.tech.pionbase.data.repository.weather.WeatherRepositoryImpl
 
 val repositoryModule =
     module {
@@ -24,4 +26,5 @@ val repositoryModule =
         singleOf(::InstalledAppsRepositoryImpl) bind InstalledAppsRepository::class
         singleOf(::WallpaperRepositoryImpl) bind WallpaperRepository::class
         singleOf(::FavoriteRepositoryImpl) bind FavoriteRepository::class
+        singleOf(::WeatherRepositoryImpl) bind WeatherRepository::class
     }
