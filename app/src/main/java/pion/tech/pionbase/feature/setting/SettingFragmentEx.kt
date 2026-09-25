@@ -25,6 +25,10 @@ fun SettingFragment.applyEvent() {
         viewModel.toggleCalendarOverlay(requireContext(), isChecked)
     }
 
+    binding.switchWeather.setOnCheckedChangeListener { _, isChecked ->
+        viewModel.toggleWeatherOverlay(requireContext(), isChecked)
+    }
+
     binding.switchDarkMode.setOnCheckedChangeListener { _, isChecked ->
         val mode = if (isChecked) androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES else androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
         viewModel.setDarkMode(mode)
@@ -50,6 +54,11 @@ fun SettingFragment.onBackEvent() {
 fun SettingFragment.updateCalendarOverlayUI(isEnabled: Boolean) {
     binding.switchCalendar.isChecked = isEnabled
     binding.tvCalendarStatus.text = if (isEnabled) getString(R.string.on) else getString(R.string.off)
+}
+
+fun SettingFragment.updateWeatherOverlayUI(isEnabled: Boolean) {
+    binding.switchWeather.isChecked = isEnabled
+    binding.tvWeatherStatus.text = if (isEnabled) getString(R.string.on) else getString(R.string.off)
 }
 
 fun SettingFragment.updateDarkModeUI(mode: Int) {

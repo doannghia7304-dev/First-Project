@@ -28,6 +28,13 @@ class SettingFragment :
             }
 
         viewModel.uiState
+            .map { it.isWeatherOverlayEnabled }
+            .distinctUntilChanged()
+            .collectFlowOnView(viewLifecycleOwner) { isEnabled ->
+                updateWeatherOverlayUI(isEnabled)
+            }
+
+        viewModel.uiState
             .map { it.calendarPosition }
             .distinctUntilChanged()
             .collectFlowOnView(viewLifecycleOwner) { position ->

@@ -82,6 +82,32 @@ class HomeFragment :
                 )
             }
 
+        // Observe thời tiết từ API Retrofit để hiển thị Weather Badge trên màn hình Home
+        viewModel.uiState
+            .map { it.weatherUiState }
+            .distinctUntilChanged()
+            .collectFlowOnView(viewLifecycleOwner) { state ->
+                state.handleUiState(
+                    onSuccess = { weather ->
+                        val symbol = when (weather.condition) {
+                            pion.tech.pionbase.data.model.weather.WeatherCondition.SUNNY -> "☀️"
+                            pion.tech.pionbase.data.model.weather.WeatherCondition.RAINY -> "🌧️"
+                            pion.tech.pionbase.data.model.weather.WeatherCondition.CLOUDY -> "☁️"
+                            pion.tech.pionbase.data.model.weather.WeatherCondition.SNOWY -> "❄️"
+                            pion.tech.pionbase.data.model.weather.WeatherCondition.THUNDERSTORM -> "🌩️"
+                            null -> "☀️"
+                        }
+                        if (weather.temperatureC != null) {
+                            binding.tvWeatherBadge.text = "$symbol ${weather.temperatureC}°C"
+                            binding.tvWeatherBadge.isVisible = true
+                        } else {
+                            binding.tvWeatherBadge.text = symbol
+                            binding.tvWeatherBadge.isVisible = true
+                        }
+                    }
+                )
+            }
+
         // Observe danh sách Categories từ API thật thông qua activityViewModel (apiViewModel)
         apiViewModel.uiState
             .map { it.categoryUiState }

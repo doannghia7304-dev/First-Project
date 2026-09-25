@@ -68,4 +68,5 @@ val networkModule =
         }
 
         single<ApiInterface> { get<Retrofit>().create(ApiInterface::class.java) }
+        single<pion.tech.pionbase.data.remote.WeatherApiInterface> { get<Retrofit>().create(pion.tech.pionbase.data.remote.WeatherApiInterface::class.java) }
     }
