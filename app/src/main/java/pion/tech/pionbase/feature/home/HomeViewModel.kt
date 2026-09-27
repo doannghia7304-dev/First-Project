@@ -2,13 +2,16 @@ package pion.tech.pionbase.feature.home
 
 import android.net.Uri
 import pion.tech.pionbase.base.BaseViewModel
+import pion.tech.pionbase.base.launchMain
 import pion.tech.pionbase.data.model.installedApp.InstalledAppUIModel
 import pion.tech.pionbase.data.model.installedApp.toPresentation
+import pion.tech.pionbase.data.model.weather.WeatherUIModel
+import pion.tech.pionbase.data.model.weather.toPresentation
 import pion.tech.pionbase.domain.usecase.home.GetInstalledAppsUseCase
 import pion.tech.pionbase.domain.usecase.wallpaper.SaveGifWallpaperUseCase
 import pion.tech.pionbase.domain.usecase.wallpaper.SaveImageWallpaperUseCase
 import pion.tech.pionbase.domain.usecase.wallpaper.SaveVideoWallpaperUseCase
-import pion.tech.pionbase.base.launchMain
+import pion.tech.pionbase.domain.usecase.weather.GetCurrentWeatherUseCase
 import pion.tech.pionbase.util.UiState
 import pion.tech.pionbase.util.handleApiCall
 
@@ -17,10 +20,25 @@ class HomeViewModel(
     private val saveGifWallpaperUseCase: SaveGifWallpaperUseCase,
     private val saveVideoWallpaperUseCase: SaveVideoWallpaperUseCase,
     private val saveImageWallpaperUseCase: SaveImageWallpaperUseCase,
+    private val getCurrentWeatherUseCase: GetCurrentWeatherUseCase,
 ) : BaseViewModel<HomeUiState, HomeUiEvent>(HomeUiState()) {
 
     init {
         getInstalledApps()
+        loadCurrentWeather()
+    }
+
+    fun loadCurrentWeather() {
+        setState { copy(weatherUiState = UiState.Loading) }
+        handleApiCall(
+            apiCall = { getCurrentWeatherUseCase() },
+            onSuccess = { dto ->
+                setState { copy(weatherUiState = UiState.Success(dto.toPresentation())) }
+            },
+            onError = { throwable ->
+                setState { copy(weatherUiState = UiState.Error(throwable)) }
+            }
+        )
     }
 
     fun saveSelectedGif(uri: Uri) {
@@ -89,6 +107,7 @@ class HomeViewModel(
 
 data class HomeUiState(
     val installedAppsUiState: UiState<List<InstalledAppUIModel>> = UiState.None,
+    val weatherUiState: UiState<WeatherUIModel> = UiState.None,
     val saveGifState: UiState<String> = UiState.None,
     val saveVideoState: UiState<String> = UiState.None,
 )

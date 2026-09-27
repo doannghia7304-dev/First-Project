@@ -21,6 +21,9 @@ import pion.tech.pionbase.domain.usecase.search.SearchWallpapersUseCase
 import pion.tech.pionbase.domain.usecase.setting.GetDarkModeUseCase
 import pion.tech.pionbase.domain.usecase.setting.SetDarkModeUseCase
 import pion.tech.pionbase.domain.usecase.wallpaper.*
+import pion.tech.pionbase.domain.usecase.weather.GetCurrentWeatherUseCase
+import pion.tech.pionbase.domain.usecase.weather.GetWeatherOverlayEnabledUseCase
+import pion.tech.pionbase.domain.usecase.weather.SetWeatherOverlayEnabledUseCase
 
 val homeUseCaseModule = module {
     factoryOf(::GetInstalledAppsUseCase)
@@ -80,6 +83,12 @@ val settingUseCaseModule = module {
     factoryOf(::SetDarkModeUseCase)
 }
 
+val weatherUseCaseModule = module {
+    factoryOf(::GetCurrentWeatherUseCase)
+    factoryOf(::GetWeatherOverlayEnabledUseCase)
+    factoryOf(::SetWeatherOverlayEnabledUseCase)
+}
+
 val useCaseModule = module {
     includes(
         homeUseCaseModule,
@@ -88,6 +97,7 @@ val useCaseModule = module {
         onboardUseCaseModule,
         favoriteUseCaseModule,
         searchUseCaseModule,
-        settingUseCaseModule
+        settingUseCaseModule,
+        weatherUseCaseModule
     )
 }

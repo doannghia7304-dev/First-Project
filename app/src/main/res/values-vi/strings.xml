@@ -93,4 +93,13 @@
     <string name="theme_oled">🖤 OLED Tối</string>
     <string name="theme_nature">🌿 Thiên nhiên</string>
     <string name="app_version">Phiên bản ứng dụng: v%1$s %2$s %3$s</string>
+    <string name="weather_based_wallpaper">HÌNH NỀN THEO THỜI TIẾT!</string>
+    <string name="weather_overlay">Thời tiết Overlay</string>
+    <string name="weather_description">Tự động cập nhật thẻ thời tiết thời gian thực lên màn hình hình nền.</string>
+    <string name="weather_sunny">Nắng đẹp &amp; Quang mây</string>
+    <string name="weather_cloudy">Nhiều mây</string>
+    <string name="weather_rainy">Mưa</string>
+    <string name="weather_snowy">Tuyết rơi</string>
+    <string name="weather_thunderstorm">Dông bão</string>
+    <string name="current_location">Vị trí hiện tại</string>
 </resources>

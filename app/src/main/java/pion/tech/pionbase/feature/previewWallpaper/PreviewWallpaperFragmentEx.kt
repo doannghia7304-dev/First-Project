@@ -70,13 +70,19 @@ fun PreviewWallpaperFragment.applyEvent() {
                             viewModel.saveStaticWallpaperPath(file.absolutePath)
                             val srcBitmap = BitmapFactory.decodeFile(file.absolutePath)
                             val isCalendarEnabled = viewModel.uiState.value.isCalendarEnabled
+                            val isWeatherEnabled = viewModel.uiState.value.isWeatherEnabled
+                            val currentWeather = viewModel.uiState.value.currentWeather
                             val position = viewModel.uiState.value.calendarPosition
                             val color = viewModel.uiState.value.calendarColor
 
-                            val finalBitmap = if (srcBitmap != null && isCalendarEnabled) {
-                                CalendarOverlayUtils.drawCalendarOnBitmap(srcBitmap, true, position, color)
-                            } else {
-                                srcBitmap
+                            var finalBitmap = srcBitmap
+                            if (finalBitmap != null) {
+                                if (isCalendarEnabled) {
+                                    finalBitmap = CalendarOverlayUtils.drawCalendarOnBitmap(finalBitmap, true, position, color)
+                                }
+                                if (isWeatherEnabled) {
+                                    finalBitmap = pion.tech.pionbase.util.weather.WeatherCanvasOverlay.drawWeatherOnBitmap(finalBitmap, true, currentWeather, requireContext())
+                                }
                             }
 
                             val wallpaperManager = WallpaperManager.getInstance(requireContext())

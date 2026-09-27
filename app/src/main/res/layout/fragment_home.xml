@@ -21,6 +21,23 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/tvWeatherBadge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_12dp"
+        android:background="@drawable/bg_search_input"
+        android:paddingHorizontal="@dimen/_10dp"
+        android:paddingVertical="@dimen/_4dp"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_12sp"
+        android:visibility="gone"
+        tools:text="☀️ 30°C"
+        tools:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@id/tvGreeting"
+        app:layout_constraintStart_toEndOf="@id/tvGreeting"
+        app:layout_constraintTop_toTopOf="@id/tvGreeting" />
+
+    <TextView
         android:id="@+id/tv_home"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

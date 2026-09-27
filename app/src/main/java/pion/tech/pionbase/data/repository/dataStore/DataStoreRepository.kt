@@ -62,6 +62,10 @@ interface DataStoreRepository {
 
     fun setDarkMode(mode: Int): Flow<Result<Unit>>
 
+    fun getIsWeatherOverlayEnabled(): Flow<Result<Boolean>>
+
+    fun setIsWeatherOverlayEnabled(isEnabled: Boolean): Flow<Result<Unit>>
+
     companion object {
         const val WALLPAPER_TYPE_NONE = 0
         const val WALLPAPER_TYPE_STATIC = 1

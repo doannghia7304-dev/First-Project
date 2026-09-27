@@ -16,6 +16,9 @@ import pion.tech.pionbase.domain.usecase.wallpaper.SetActiveWallpaperTypeUseCase
 import pion.tech.pionbase.domain.usecase.wallpaper.SetLiveWallpaperPathUseCase
 import pion.tech.pionbase.domain.usecase.wallpaper.SetStaticWallpaperPathUseCase
 import pion.tech.pionbase.domain.usecase.wallpaper.SetVideoWallpaperPathUseCase
+import pion.tech.pionbase.domain.usecase.weather.GetCurrentWeatherUseCase
+import pion.tech.pionbase.domain.usecase.weather.GetWeatherOverlayEnabledUseCase
+import pion.tech.pionbase.data.model.weather.WeatherDtoModel
 import pion.tech.pionbase.util.UiState
 import pion.tech.pionbase.util.handleApiCall
 
@@ -32,10 +35,24 @@ class PreviewWallpaperViewModel(
     private val getCalendarOverlayEnabledUseCase: GetCalendarOverlayEnabledUseCase,
     private val getCalendarPositionUseCase: GetCalendarPositionUseCase,
     private val getCalendarFontColorUseCase: GetCalendarFontColorUseCase,
+    private val getWeatherOverlayEnabledUseCase: GetWeatherOverlayEnabledUseCase,
+    private val getCurrentWeatherUseCase: GetCurrentWeatherUseCase,
 ) : BaseViewModel<PreviewWallpaperUiState, PreviewWallpaperUiEvent>(PreviewWallpaperUiState()) {
 
     init {
         loadCalendarSettings()
+        loadWeatherSettings()
+    }
+
+    private fun loadWeatherSettings() {
+        handleApiCall(
+            apiCall = { getWeatherOverlayEnabledUseCase() },
+            onSuccess = { isEnabled -> setState { copy(isWeatherEnabled = isEnabled) } }
+        )
+        handleApiCall(
+            apiCall = { getCurrentWeatherUseCase() },
+            onSuccess = { weatherDto -> setState { copy(currentWeather = weatherDto) } }
+        )
     }
 
     private fun loadCalendarSettings() {
@@ -170,6 +187,8 @@ data class PreviewWallpaperUiState(
     val downloadState: UiState<String> = UiState.None,
     val isFavorite: Boolean = false,
     val isCalendarEnabled: Boolean = false,
+    val isWeatherEnabled: Boolean = false,
+    val currentWeather: WeatherDtoModel = WeatherDtoModel(),
     val calendarPosition: Int = 2,
     val calendarColor: Int = -1
 )

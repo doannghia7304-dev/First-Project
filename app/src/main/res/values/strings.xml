@@ -94,4 +94,13 @@
     <string name="theme_oled">🖤 OLED Dark</string>
     <string name="theme_nature">🌿 Nature</string>
     <string name="app_version">Application version: v%1$s %2$s %3$s</string>
+    <string name="weather_based_wallpaper">WEATHER-BASED WALLPAPER</string>
+    <string name="weather_overlay">Weather Overlay</string>
+    <string name="weather_description">Automatically adapt wallpaper effects based on current weather.</string>
+    <string name="weather_sunny">Clear &amp; Sunny</string>
+    <string name="weather_cloudy">Partly Cloudy</string>
+    <string name="weather_rainy">Rainy</string>
+    <string name="weather_snowy">Snowy</string>
+    <string name="weather_thunderstorm">Thunderstorm</string>
+    <string name="current_location">Current Location</string>
 </resources>

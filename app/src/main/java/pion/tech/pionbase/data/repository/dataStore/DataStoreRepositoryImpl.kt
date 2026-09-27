@@ -210,4 +210,18 @@ class DataStoreRepositoryImpl(
                 it[darkModeKey] = mode
             }
         }
+
+    private val isWeatherOverlayEnabledKey = booleanPreferencesKey("isWeatherOverlayEnabledKey")
+
+    override fun getIsWeatherOverlayEnabled(): Flow<Result<Boolean>> =
+        dataStore.data.executeDataWithFlowCall { prefs ->
+            prefs[isWeatherOverlayEnabledKey] ?: false
+        }
+
+    override fun setIsWeatherOverlayEnabled(isEnabled: Boolean): Flow<Result<Unit>> =
+        executeDataCall {
+            dataStore.edit {
+                it[isWeatherOverlayEnabledKey] = isEnabled
+            }
+        }
 }
