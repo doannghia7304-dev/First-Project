@@ -67,6 +67,18 @@ val networkModule =
                 .build()
         }
 
+        single<Retrofit>(org.koin.core.qualifier.named("WeatherRetrofit")) {
+            Retrofit
+                .Builder()
+                .baseUrl(BuildConfig.WEATHER_API_BASE_URL)
+                .client(get())
+                .addConverterFactory(GsonConverterFactory.create(get()))
+                .build()
+        }
+
         single<ApiInterface> { get<Retrofit>().create(ApiInterface::class.java) }
-        single<pion.tech.pionbase.data.remote.WeatherApiInterface> { get<Retrofit>().create(pion.tech.pionbase.data.remote.WeatherApiInterface::class.java) }
+        single<pion.tech.pionbase.data.remote.WeatherApiInterface> {
+            get<Retrofit>(org.koin.core.qualifier.named("WeatherRetrofit"))
+                .create(pion.tech.pionbase.data.remote.WeatherApiInterface::class.java)
+        }
     }
