@@ -34,9 +34,13 @@ android {
     buildTypes {
         debug {
             buildConfigField("String", "BASE_URL", "\"https://api.piontech.site/stores/\"")
+            buildConfigField("String", "WEATHER_API_BASE_URL", "\"https://api.weatherapi.com/v1/\"")
+            buildConfigField("String", "WEATHER_API_KEY", "\"ad732043bce04713a9a32316262909\"")
         }
         release {
             buildConfigField("String", "BASE_URL", "\"https://api.piontech.site/stores/\"")
+            buildConfigField("String", "WEATHER_API_BASE_URL", "\"https://api.weatherapi.com/v1/\"")
+            buildConfigField("String", "WEATHER_API_KEY", "\"ad732043bce04713a9a32316262909\"")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
